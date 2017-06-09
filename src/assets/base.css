@@ -1,0 +1,122 @@
+#app {
+  font: normal 14px "微软雅黑", "Arial", "Verdana", "sans-serif";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #333;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+body,
+ul,
+li {
+  padding: 0;
+  margin: 0;
+  left: 0;
+  top: 0;
+}
+
+img {
+  border: none;
+}
+
+.good {
+  color: #13CE66;
+}
+
+.bad {
+  color: #FF4949;
+}
+
+.warn {
+  color: #F7BA2A;
+}
+
+.unkown {
+  color: grey;
+}
+
+.h {
+  text-align: left;
+  height: 48px;
+  border-bottom: #dfdfdf 1px solid;
+  margin-bottom: 5px;
+}
+
+.h > .mdi {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 0;
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+  line-height: 48px;
+  color: #01301E;
+  font-weight: bold;
+  text-align: center;
+}
+
+.h .iconfont{
+  font-size: 20px;  
+}
+.h > span {
+  position: absolute;
+  display: block;
+  left: 48px;
+  top: 0;
+  font-size: 16px;
+  line-height: 48px;
+  color: #01301E;
+  font-weight: bold;
+}
+
+.h > .right-btn {
+  margin: 5px 15px;
+  float: right;
+}
+
+.h > .right-btn > input,
+.h > .right-btn > span,
+.h > .right-btn > .el-button {
+  font-size: 18px;
+  margin: 0 5px;
+}
+
+.b {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.b:hover {
+  overflow-Y: auto;
+}
+
+.right-pad-box {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 70%;
+  background-color: #fff;
+  box-shadow: 0px 0 2px rgba(0, 0, 0, 0.8);
+  z-index: 99;
+}
+
+.right-pad-box > .h {
+  background-color: #def;
+}
+
+.right-pad-box > .h > span {
+  left: 20px;
+}
