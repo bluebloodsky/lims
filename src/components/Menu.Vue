@@ -76,12 +76,7 @@ export default {
 
 .first-menu > li:hover,
 .first-menu > li:hover > ul > li:hover {
-  background-color: #d1e3ef;
+  background-color: #01301E;
 }
 
-.first-menu > li:hover > a,
-.first-menu > li:hover > span,
-.first-menu > li:hover > ul > li:hover > a {
-  color: #01301E;
-}
 </style>

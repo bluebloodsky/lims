@@ -1,13 +1,13 @@
 <template>
-  <div style="width:100%;height:100%;">
-      <DavidTriangle ></DavidTriangle>
+  <div>
+    <SIMLDiagnose></SIMLDiagnose>
   </div>
 </template>
 <script>
-import DavidTriangle from '@/pages/diagnose/DavidTriangle'
+import SIMLDiagnose from '@/pages/diagnose/SIMLDiagnose'
 export default {
   components: {
-    DavidTriangle
+    SIMLDiagnose
   }
 }
 </script>

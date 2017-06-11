@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="half-box left-box">
+    <div class="box left-box">
       <div class="h">
         <i class="mdi iconfont icon-config-doc">
         </i>
@@ -14,8 +14,7 @@
       <div class="b">
       </div>
     </div>
-    <div class="half-box right-box">
-      <div class="half-box top-box">
+      <div class="box top-box">
         <div class="h">
           <i class="mdi iconfont icon-debug">
         </i>
@@ -24,7 +23,7 @@
         <div class="b">
         </div>
       </div>
-      <div class="half-box bottom-box">
+      <div class="box bottom-box">
         <div class="h">
           <i class="mdi iconfont icon-log">
         </i>
@@ -39,7 +38,6 @@
         </div>
         <div class="b">
         </div>
-      </div>
     </div>
   </div>
 </template>
@@ -50,60 +48,41 @@ import {
 } from 'vuex'
 export default {
   data() {
-      return {
-        fields: [{
-          name: 'file_name',
-          caption: '文件名'
-        }, {
-          name: 'size',
-          caption: '大小'
-        }, {
-          name: 'update_time',
-          caption: '更新时间'
-        }]
-      }
-    },
-    computed: mapGetters({
-      sysInfo: 'sysInfo',
-      devStatus: 'status',
-      currentData: 'currentData'
-    })
+    return {
+      fields: [{
+        name: 'file_name',
+        caption: '文件名'
+      }, {
+        name: 'size',
+        caption: '大小'
+      }, {
+        name: 'update_time',
+        caption: '更新时间'
+      }]
+    }
+  },
+  computed: mapGetters({
+    sysInfo: 'sysInfo',
+    devStatus: 'status',
+    currentData: 'currentData'
+  })
 }
 </script>
 <style scoped>
-.half-box {
-  border-right: #dfdfdf 1px solid;
-  border-bottom: #dfdfdf 1px solid;
-  float: left;
-  position: relative;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  /* Firefox */
-  -webkit-box-sizing: border-box;
-  /* Safari */
-}
 
 .left-box {
   width: 30%;
   height: 100%;
 }
 
-.right-box {
-  width: 70%;
-  height: 100%;
-}
-
 .top-box {
-  width: 100%;
+  width: 70%;
   height: 30%
 }
 
 .bottom-box {
-  width: 100%;
+  width: 70%;
   height: 70%
 }
 
-.upload-box {
-  margin: 20px
-}
 </style>

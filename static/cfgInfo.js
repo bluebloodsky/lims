@@ -1,3 +1,3 @@
 this.cfgInfo = {
-  baseURL: 'http://localhost:8088/lims/dist/api/'
+  baseURL: 'http://localhost:8090/git/lims/api/'
 }

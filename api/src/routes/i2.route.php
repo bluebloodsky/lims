@@ -44,12 +44,9 @@ $app->group('/i2_sensors', function() {
 $app->group('/i2_params', function(){
     $this->get('', function ($req, $resp, $args) {
         $params = $req->getQueryParams();
-        $groupId = $params['group_id'];
-        if($groupId == null)
-            throw  new Exception("need groupId!");
 
         $m = new I2ParamsModel();
-        $RET = $m->GetParamsByGroupId($groupId);
+        $RET = $m->GetAllInfos();
         $resp->withJson($RET);
         return $resp;
     });

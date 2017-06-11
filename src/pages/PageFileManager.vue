@@ -96,12 +96,14 @@ export default {
             let fileItems = result[key]
             tmp[key] = []
             for (var idx in fileItems) {
-              let item = fileItems[idx];
+              let item = fileItems[idx]
+              let size = item.size
+              let date = new Date(parseInt(item.uptime) * 1000)
               tmp[key].push({
                 url: item.url,
                 name: item.name,
-                size: item.size,
-                uptime: Date(parseInt(item.uptime) * 1000)
+                size: size < (2 << 10) ? size : size < (2 << 20) ? (size / 1024).toFixed(2) + "K" : (size / 1024 / 1024).toFixed(2) + "M",
+                uptime: date.Format("yyyy-MM-dd hh:mm:ss")
               })
             }
           }

@@ -7,14 +7,9 @@
         <span>主机状态</span>
       </div>
       <div class="b" v-if="sysInfo.host_status">
-        <el-form label-position="left" v-if="false">
-          <el-form-item :label="item.caption" v-for="item in host_status_fields">
-            <span>{{ sysInfo.host_status[item.name] }}</span> {{item.unit}}
-          </el-form-item>
-        </el-form>
-        <div v-for="item in host_status_fields" style="text-align:left;font-size:15px;padding: 5px 0 5px 15px;">
-          <label style="box-sizing: border-box;display: inline-block;width: 90px;color: #99a9bf">{{item.caption}}</label>
-          <span style="text-align:center;color: #259b24;font-size: 20px;font-weight: bold;"> {{sysInfo.host_status[item.name]}}</span> {{item.unit}}
+        <div v-for="item in host_status_fields" class="desc-item-box">
+          <label>{{item.caption}}</label>
+          <span> {{sysInfo.host_status[item.name]}}</span> {{item.unit}}
         </div>
       </div>
     </div>
@@ -25,9 +20,9 @@
         <span>内存状态</span>
       </div>
       <div class="b" v-if="sysInfo.mem_status">
-        <div v-for="item in mem_status_fields" style="text-align:left;font-size:15px;padding: 5px 0 5px 15px;">
-          <label style="box-sizing: border-box;display: inline-block;width: 90px;color: #99a9bf">{{item.caption}}</label>
-          <span style="color: #259b24;font-size: 20px;font-weight: bold;"> {{sysInfo.mem_status[item.name]}}</span> {{item.unit}}
+        <div v-for="item in mem_status_fields" class="desc-item-box">
+          <label>{{item.caption}}</label>
+          <span> {{sysInfo.mem_status[item.name]}}</span> {{item.unit}}
         </div>
       </div>
     </div>
@@ -37,7 +32,7 @@
         </i>
         <span>存储状态</span>
       </div>
-      <div class="b" v-if="sysInfo.disk_status">
+      <div class="b">
         <el-table :data="sysInfo.disk_status" border style="width: 100%">
           <el-table-column align="center" sortable :prop="item.name" :label="item.caption" v-for="item in disk_status_fields">
           </el-table-column>
@@ -51,7 +46,7 @@
         <span>服务状态</span>
       </div>
       <div class="b">
-        <el-table :data="pro_status" border style="width: 100%">
+        <el-table :data="proStatus" border style="width: 100%">
           <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in pro_status_fields">
           </el-table-column>
         </el-table>
@@ -124,19 +119,12 @@ export default {
         }, {
           name: 'pid',
           caption: 'pid'
-        }],
-        pro_status: [{
-          pro_name: 'aaa',
-          run_status: 'true',
-          run_time: '12 h',
-          pid: 1000
         }]
       }
     },
     computed: mapGetters({
       sysInfo: 'sysInfo',
-      devStatus: 'status',
-      currentData: 'currentData'
+      proStatus: 'proStatus'
     })
 }
 </script>

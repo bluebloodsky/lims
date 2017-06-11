@@ -1,5 +1,6 @@
 import cfg from './common'
 import axios from 'axios'
+
 export default {
   getDevStatus(cb) {
       //setTimeout(() => cb(_status), 50)

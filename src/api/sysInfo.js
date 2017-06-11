@@ -37,6 +37,16 @@ const _all = {
 }
 export default {
   getSysInfo(cb) {
-    setTimeout(() => cb(_all), 50)
+    cb(_all)
+    /*
+    axios.get("/sys_status", cfg).then(response => {
+      cb(response.data)
+    })
+    */
+  },
+  getProStatus(cb) {
+    axios.get("/proc_status", cfg).then(response => {
+      cb(response.data)
+    })
   }
 }

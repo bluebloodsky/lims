@@ -5,11 +5,8 @@
       <el-select v-model="choose_option.sen_id">
         <el-option :label="item.desc_cn" :value="item.sen_id" v-for="item in sensors"></el-option>
       </el-select>
-      <span>开始时间</span>
-      <el-date-picker v-model="choose_option.start_date" type="date" placeholder="选择日期">
-      </el-date-picker>
-      <span>截止时间</span>
-      <el-date-picker v-model="choose_option.end_date" type="date" placeholder="选择日期">
+      <span>日期范围</span>
+      <el-date-picker v-model="choose_option.daterange" type="daterange" placeholder="选择日期范围">
       </el-date-picker>
       <el-button icon="search" @click="search"></el-button>
     </div>
@@ -19,8 +16,7 @@
         </i>
         <span>趋势图</span>
       </div>
-      <div class="b" id="mychart">
-      </div>
+      <div class="b" id="mychart"> </div>
     </div>
     <div class="box right-box">
       <div class="h">
@@ -28,8 +24,8 @@
         </i>
         <span>历史详情</span>
       </div>
-      <div class="b">{{pageSize}}
-        <el-table :data="tableData5" border style="width: 100%">
+      <div class="b">
+        <el-table :data="tbl_his_data" border style="width: 100%">
           <el-table-column type="expand">
             <template scope="props">
               <el-form label-position="left" inline class="demo-table-expand">
@@ -39,10 +35,10 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :label="field.caption" align="center" :prop="field.name" v-for="field in all_fields">
+          <el-table-column :label="field.caption" align="center" :prop="field.name" v-for="field in tbl_fields">
           </el-table-column>
         </el-table>
-        <el-pagination :current-page.sync="currentPage" :page-sizes="[10, 20, 30, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal" style="width:100%">
+        <el-pagination :current-page.sync="currentPage" :page-sizes="[5, 10, 20, 30, 50]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="pageSizeChange" style="width:100%">
         </el-pagination>
       </div>
     </div>
@@ -59,22 +55,23 @@ import echarts from 'echarts'
 export default {
   data() {
       return {
-        tableData5: [],
-        chart: null,
-        currentPage: 1,
         his_data: [],
+        chart: null,
         choose_option: {
           sen_id: '',
-          start_date: '',
-          end_date: ''
+          daterange: []
         },
-        chartFields: [],
-        all_fields: [{
+        cur_ln_class: '',
+        chart_fields: [],
+        all_fields: [],
+        tbl_fields: [{
           name: 'data_time',
           caption: '采集时间'
         }],
-        pageSize:10,
-        pageTotal:0
+        do_attrs: [],
+        pageSize: 10,
+        total: 0,
+        currentPage: 1
       }
     },
     computed: {
@@ -86,88 +83,122 @@ export default {
         return this.devices.map(item => {
           return {
             sen_id: item.sen_id,
+            ln_class: item.ln_class,
             desc_cn: item.desc_cn
+          }
+        })
+      },
+      tbl_his_data() {
+        return this.his_data.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+      }
+    },
+    watch: {
+      cur_ln_class(newValue) {
+        this.chart_fields = []
+        this.tbl_fields = [{
+          name: 'data_time',
+          caption: '采集时间'
+        }]
+        this.all_fields = [{
+          name: 'data_time',
+          caption: '采集时间'
+        }]
+        this.do_attrs.map((item) => {
+          if (item.ln_class == newValue) {
+            if (item.import_level > 1) {
+              this.tbl_fields.push({
+                name: item.desc_cn,
+                caption: item.desc_cn + (item.unit ? '(' + item.unit + ')' : '')
+              })
+              this.chart_fields.push(item.desc_cn)
+            }
+            if (item.import_level > 0) {
+              this.all_fields.push({
+                name: item.desc_cn,
+                caption: item.desc_cn + (item.unit ? '(' + item.unit + ')' : '')
+              })
+            }
+
           }
         })
       }
     },
-    watch: {
-      his_data: {
-        handler(newValue) {
-
-        }
-      },
-      deep: true
+    mounted() {
+      checkData.getDoAttrs(data => {
+        this.do_attrs = data
+      }, {
+        fields: 'ln_class,desc_cn,import_level,unit'
+      })
+      this.chart = echarts.init(document.getElementById('mychart'))
+      window.onresize = () => {
+        this.chart.resize()
+      }
     },
     methods: {
+      pageSizeChange(newValue) {
+        this.pageSize = newValue
+      },
       search() {
-        checkData.
-        checkData.getBeiJingaqi(data => {
-          this.his_data = data
-          this.chart = echarts.init(document.getElementById('mychart'))
-          this.chart.showLoading()
+        this.cur_ln_class = this.sensors.find(item => item.sen_id == this.choose_option.sen_id).ln_class
+        this.chart.showLoading()
+        checkData.getHisData(data => {
+          this.his_data = []
+          let xAxis = []
+          let series = []
+          this.chart_fields.map(item => {
+            series.push({
+              name: item,
+              data: [],
+              type: 'line'
+            })
+          })
+          data.items.map(item => {
+            let his_data_item = {
+              data_time: item.data_time
+            }
+            item.data_attrs.map(attr => {
+              his_data_item[attr.name] = attr.value
+              let se = series.find(series_item => series_item.name == attr.name)
+              if (se) {
+                se.data.push(attr.value)
+              }
+            })
+            this.his_data.push(his_data_item)
+            xAxis.push(item.data_time)
+          })
+
+          this.total = this.his_data.length
+            /*绘制图表*/
           this.chart.setOption({
-            title: {
-              text: '1#主变油色谱'
+            legend: {
+              data: this.chart_fields
             },
             tooltip: {
               trigger: 'axis'
             },
             xAxis: {
-              data: data.map(function(item) {
-                return item[0];
-              })
+              data: xAxis
             },
             yAxis: {
               splitLine: {
                 show: false
               }
             },
-            toolbox: {
-              left: 'center',
-              feature: {
-                dataZoom: {
-                  yAxisIndex: 'none'
-                },
-                restore: {},
-                saveAsImage: {}
-              }
-            },
             dataZoom: [{
-              startValue: '2014-06-01'
+              type: 'slider',
+              start: 80,
+              end: 100
             }, {
-              type: 'inside'
+              type: 'inside',
+              start: 80,
+              end: 100
             }],
-            visualMap: {
-              top: 10,
-              right: 10,
-              pieces: [{
-                gt: 0,
-                lte: 300,
-                color: '#096'
-              }, {
-                gt: 300,
-                color: '#7e0023'
-              }],
-              outOfRange: {
-                color: '#999'
-              }
-            },
-            series: {
-              name: 'Beijing AQI',
-              type: 'line',
-              data: data.map(function(item) {
-                return item[1];
-              }),
-              markLine: {
-                silent: true,
-                data: [{
-                  yAxis: 300
-                }]
-              }
-            }
+            series: series
           })
           this.chart.hideLoading()
+        }, this.choose_option.sen_id, {
+          time_min: this.choose_option.daterange[0] ? this.choose_option.daterange[0].Format("yyyyMMddhhmmss") : '00000000000000',
+          time_max: this.choose_option.daterange[1] ? this.choose_option.daterange[1].Format("yyyyMMddhhmmss") : '99999999999999'
         })
       }
     }

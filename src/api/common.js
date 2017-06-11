@@ -9,8 +9,7 @@ export default {
     return data
   }],
   headers: { 'X-Requested-With': 'XMLHttpRequest' },
-  params: {
-  },
+  params: {},
   data: {},
   responseType: 'json'
 }

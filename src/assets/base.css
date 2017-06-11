@@ -42,6 +42,18 @@ img {
   color: grey;
 }
 
+.box {
+  border-right: #dfdfdf 1px solid;
+  border-bottom: #dfdfdf 1px solid;
+  float: left;
+  position: relative;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  /* Firefox */
+  -webkit-box-sizing: border-box;
+  /* Safari */
+}
+
 .h {
   text-align: left;
   height: 48px;
@@ -63,9 +75,10 @@ img {
   text-align: center;
 }
 
-.h .iconfont{
-  font-size: 20px;  
+.h .iconfont {
+  font-size: 20px;
 }
+
 .h > span {
   position: absolute;
   display: block;
@@ -99,7 +112,7 @@ img {
 }
 
 .b:hover {
-  overflow-Y: auto;
+  overflow: auto;
 }
 
 .right-pad-box {
@@ -119,4 +132,22 @@ img {
 
 .right-pad-box > .h > span {
   left: 20px;
+}
+
+.desc-item-box {
+  text-align: left;
+  font-size: 15px;
+  padding: 5px 15px;
+}
+
+.desc-item-box > label {
+  display: inline-block;
+  width: 130px;
+  color: #99a9bf
+}
+
+.desc-item-box > span {
+  color: #259b24;
+  font-size: 20px;
+  font-weight: bold;
 }

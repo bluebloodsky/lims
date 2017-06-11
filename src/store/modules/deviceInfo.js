@@ -2,6 +2,7 @@ import apiDeviceInfo from '../../api/deviceInfo'
 import apiSysInfo from '../../api/sysInfo'
 const state = {
   sysInfo: {},
+  proStatus: [],
   devStatus: [],
   currentData: [],
   devices: []
@@ -9,6 +10,7 @@ const state = {
 
 const getters = {
   sysInfo: state => state.sysInfo,
+  proStatus: state => state.proStatus,
   devStatus: state => state.devStatus,
   currentData: state => state.currentData,
   devices: state => state.devices
@@ -18,6 +20,11 @@ const actions = {
   getSysInfo({ commit }) {
     apiSysInfo.getSysInfo(data => {
       commit('getSysInfo', { data })
+    })
+  },
+  getProStatus({ commit }) {
+    apiSysInfo.getProStatus(data => {
+      commit('getProStatus', { data })
     })
   },
   getDevStatus({ commit }) {
@@ -56,6 +63,9 @@ const actions = {
 const mutations = {
   getSysInfo(state, { data }) {
     state.sysInfo = data
+  },
+  getProStatus(state, { data }) {
+    state.proStatus = data
   },
   getDevStatus(state, { data }) {
     state.devStatus = data
