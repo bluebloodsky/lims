@@ -92,6 +92,7 @@ export default {
         //利用索引修改时，vue无法触发页面更新
         let tmp = {}
         fileInfo.getCfgFileList(result => {
+          console.log(result)
           for (let key in result) {
             let fileItems = result[key]
             tmp[key] = []

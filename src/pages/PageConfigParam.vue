@@ -10,11 +10,12 @@
         </div>
       </div>
       <div class="b">
-      {{currentDevice}}
-        <el-table :data="tblMonitorParam" border style="width: 100%" v-if="map_params">
-          <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in monitorParamInfo.fields">
+        <el-table :data="tblMonitorParam" border v-if="map_params">
+          <el-table-column align="center" :filters="filters.filter_ln_class" :filter-method="filterLnClass" filter-placement="bottom-end" prop="ln_class_cn" label="监测类型">
           </el-table-column>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in monitorParamInfo.fields" v-if="!item.filter_flg">
+          </el-table-column>
+          <el-table-column label="操作" align="center">
             <template scope="scope">
               <el-button @click.native.prevent="editMonitorParam(scope.$index)" type="text"><i class="iconfont icon-edit"></i>
               </el-button>
@@ -36,7 +37,9 @@
       </div>
       <div class="b">
         <el-table :data="tblI2Param" border style="width: 100%" v-if="map_params">
-          <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in i2ParamInfo.fields">
+          <el-table-column align="center" :filters="filters.filter_i2_group" :filter-method="filterI2Group" prop="group_name" label="接入数据类型">
+          </el-table-column>
+          <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in i2ParamInfo.fields" v-if="!item.filter_flg">
           </el-table-column>
           <el-table-column fixed="right" label="操作" align="center">
             <template scope="scope">
@@ -84,7 +87,8 @@ export default {
             name: 'ln_class_cn',
             real_name: 'ln_class',
             caption: '监测类型',
-            sel_name: 'map_ln_class'
+            sel_name: 'map_ln_class',
+            filter_flg: true
           }, {
             name: 'do_name',
             caption: '参数名'
@@ -122,7 +126,8 @@ export default {
             name: 'group_name',
             real_name: 'group_id',
             caption: '接入数据类型',
-            sel_name: 'map_i2_group'
+            sel_name: 'map_i2_group',
+            filter_flg: true
           }, {
             name: 'param_desc',
             real_name: 'param_name',
@@ -167,6 +172,24 @@ export default {
       },
       fields() {
         return this.currentDeviceType == 0 ? this.monitorParamInfo.fields : this.i2ParamInfo.fields
+      },
+      filters() {
+        let l_filter_ln_class = []
+        for (let key in this.map_params.map_ln_class) {
+          l_filter_ln_class.push({
+            text: this.map_params.map_ln_class[key],
+            value: this.map_params.map_ln_class[key]
+          })
+        }
+        return {
+          filter_ln_class: l_filter_ln_class,
+          filter_i2_group: this.map_params.map_i2_group.map(item => {
+            return {
+              text: item.group_name,
+              value: item.group_name
+            }
+          })
+        }
       },
       tblI2Param() {
         return this.i2ParamInfo.datas.map(item => {
@@ -226,6 +249,12 @@ export default {
       })
     },
     methods: {
+      filterLnClass(value, row) {
+        return row.ln_class_cn === value;
+      },
+      filterI2Group(value, row) {
+        return row.group_name === value;
+      },
       addMonitorParam() {
         this.flg_showRightBox = true
         this.currentDeviceType = 0
@@ -296,7 +325,7 @@ export default {
               )
               this.monitorParamInfo.datas.splice(index, 1, this.currentDevice)
             }, this.currentDevice)
-          } else { 
+          } else {
             apiBaseInfo.modifyI2Param((result) => {
               let index = this.i2ParamInfo.datas.findIndex((val) =>
                 val.i2_paramgroup_id == this.currentDevice.new_id

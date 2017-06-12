@@ -31,15 +31,6 @@ const _menuItems = [{
   }, {
     name: 'mms配置',
     url: '/mms_config'
-  }, {
-    name: 'ied参数配置',
-    url: '/ed_config'
-  }, {
-    name: '日志配置',
-    url: '/log_config'
-  }, {
-    name: 'ntp配置',
-    url: '/ntp_config'
   }]
 }, {
   name: '程序调试',

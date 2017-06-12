@@ -34,7 +34,7 @@
       </div>
       <div class="b">
         <el-table :data="sysInfo.disk_status" border style="width: 100%">
-          <el-table-column align="center" sortable :prop="item.name" :label="item.caption" v-for="item in disk_status_fields">
+          <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in disk_status_fields">
           </el-table-column>
         </el-table>
       </div>

@@ -12,6 +12,9 @@ import PageHisData from '@/pages/PageHisData'
 import PageAlarm from '@/pages/PageAlarm'
 import PageI2Device from '@/pages/PageI2Device'
 import PageConfigParam from '@/pages/PageConfigParam'
+import PageMmsConfig from '@/pages/PageMmsConfig'
+import PageI2Upload from '@/pages/PageI2Upload'
+import PageUserInfo from '@/pages/PageUserInfo'
 
 Vue.use(Router)
 
@@ -49,6 +52,15 @@ export default new Router({
     }, {
       path: '/his_data',
       component: PageHisData
+    }, {
+      path: '/mms_config',
+      component: PageMmsConfig
+    }, {
+      path: '/i2_upload',
+      component: PageI2Upload
+    }, {
+      path: '/user',
+      component: PageUserInfo
     }]
   }, {
     path: '/register',

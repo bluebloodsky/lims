@@ -12,7 +12,10 @@
           </div>
           <div class="desc-item-box" v-for="attr in item.items[0].data_attrs">
             <label>{{attr.name}}</label>
+            <template v-if="attr.value">
             <span> {{attr.value}}</span> {{attr.unit}}
+            </template>
+            <span v-else>---</span>
           </div>
         </template>
         <span v-else>暂无数据</span>

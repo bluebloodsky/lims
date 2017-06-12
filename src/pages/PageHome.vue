@@ -13,17 +13,7 @@
             <router-link to="/user">
               <i class="iconfont icon-account"> {{userName}}</i>
             </router-link>
-          </li>
-          <li>
-            <router-link to="/message">
-              <i class="iconfont icon-message"> 消息</i>
-            </router-link>
-          </li>
-          <li>
-            <router-link to="/help">
-              <i class="iconfont icon-help"> 帮助</i>
-            </router-link>
-          </li>
+          </li>         
           <li>
             <router-link to="/">
               <i class="iconfont icon-exit"> 退出</i>

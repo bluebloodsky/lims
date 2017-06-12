@@ -14,7 +14,6 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="login" class="primary" @keyup.enter="login">登录</el-button>
-        <el-button @click="$router.push('/register')">注册</el-button>
       </el-form-item>
     </el-form>
   </div>
