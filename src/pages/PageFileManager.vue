@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="half-box v-half">
-      <div class="half-box h-half">
+    <div class="box v-half">
+      <div class="box h-half">
         <div class="h">
           <i class="mdi iconfont icon-log">
         </i>
@@ -21,7 +21,7 @@
           </el-table>
         </div>
       </div>
-      <div class="half-box h-half">
+      <div class="box h-half">
         <div class="h">
           <i class="mdi iconfont icon-config-doc">
         </i>
@@ -42,7 +42,7 @@
         </div>
       </div>
     </div>
-    <div class="half-box v-half">
+    <div class="box v-half">
       <div class="h">
         <i class="mdi iconfont icon-file">
         </i>
@@ -92,7 +92,6 @@ export default {
         //利用索引修改时，vue无法触发页面更新
         let tmp = {}
         fileInfo.getCfgFileList(result => {
-          console.log(result)
           for (let key in result) {
             let fileItems = result[key]
             tmp[key] = []
@@ -108,7 +107,6 @@ export default {
               })
             }
           }
-          console.log(tmp)
           this.cfg_filelist = tmp
         })
       },
@@ -125,18 +123,6 @@ export default {
 }
 </script>
 <style scoped>
-.half-box {
-  border-right: #dfdfdf 1px solid;
-  border-bottom: #dfdfdf 1px solid;
-  float: left;
-  position: relative;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  /* Firefox */
-  -webkit-box-sizing: border-box;
-  /* Safari */
-}
-
 .v-half {
   width: 50%;
   height: 100%;

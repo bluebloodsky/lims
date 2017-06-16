@@ -12,7 +12,7 @@
       <el-table :data="dev_table" border style="width: 100%" v-if="map_params">
         <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in fields">
         </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center">
+        <el-table-column label="操作" align="center">
           <template scope="scope">
             <el-button @click.native.prevent="editRow(scope.$index)" type="text"><i class="iconfont icon-edit"></i>
             </el-button>

@@ -1,3 +1,4 @@
+import Qs from 'qs'
 export default {
   url: '/user',
   method: 'get', // default

@@ -13,7 +13,7 @@
           <div class="desc-item-box" v-for="attr in item.items[0].data_attrs">
             <label>{{attr.name}}</label>
             <template v-if="attr.value">
-            <span> {{attr.value}}</span> {{attr.unit}}
+              <span> {{attr.value}}</span> {{attr.unit}}
             </template>
             <span v-else>---</span>
           </div>
@@ -48,7 +48,7 @@ export default {
 }
 
 .fixedBox > .h {
-  background-color: #def;
+  background-color: rgb(238, 245, 246);
 }
 
 .fixedBox > .h > span {

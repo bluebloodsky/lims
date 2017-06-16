@@ -17,9 +17,9 @@
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template scope="scope">
-              <el-button @click.native.prevent="editMonitorParam(scope.$index)" type="text"><i class="iconfont icon-edit"></i>
+              <el-button @click.native.prevent="editMonitorParam(scope.row)" type="text"><i class="iconfont icon-edit"></i>
               </el-button>
-              <el-button @click.native.prevent="delMonitorParam(scope.$index)" type="text"><i class="iconfont icon-trash"></i>
+              <el-button @click.native.prevent="delMonitorParam(scope.row)" type="text"><i class="iconfont icon-trash"></i>
               </el-button>
             </template>
           </el-table-column>
@@ -41,11 +41,11 @@
           </el-table-column>
           <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in i2ParamInfo.fields" v-if="!item.filter_flg">
           </el-table-column>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column label="操作" align="center">
             <template scope="scope">
-              <el-button @click.native.prevent="editI2Param(scope.$index)" type="text"><i class="iconfont icon-edit"></i>
+              <el-button @click.native.prevent="editI2Param(scope.row)" type="text"><i class="iconfont icon-edit"></i>
               </el-button>
-              <el-button @click.native.prevent="delI2Param(scope.$index)" type="text"><i class="iconfont icon-trash"></i>
+              <el-button @click.native.prevent="delI2Param(scope.row)" type="text"><i class="iconfont icon-trash"></i>
               </el-button>
             </template>
           </el-table-column>
@@ -266,7 +266,7 @@ export default {
         })
         this.currentDevice = _currentDevice
       },
-      addI2Param(index) {
+      addI2Param() {
         this.flg_showRightBox = true
         this.currentDeviceType = 1
         this.flg_new = true
@@ -277,29 +277,37 @@ export default {
         })
         this.currentDevice = _currentDevice
       },
-      editMonitorParam(index) {
+      editMonitorParam(row) {
         this.flg_showRightBox = true
         this.currentDeviceType = 0
         this.flg_new = false
         this.right_title = '修改监测参数信息'
-        this.currentDevice = JSON.parse(JSON.stringify(this.monitorParamInfo.datas[index]))
+        this.currentDevice = JSON.parse(JSON.stringify(this.monitorParamInfo.datas.find(item => item.do_id == row.do_id)))
       },
-      editI2Param(index) {
+      editI2Param(row) {
         this.flg_showRightBox = true
         this.currentDeviceType = 2
         this.flg_new = false
         this.right_title = '修改I2参数信息'
-        this.currentDevice = JSON.parse(JSON.stringify(this.i2ParamInfo.datas[index]))
+        this.currentDevice = JSON.parse(JSON.stringify(this.i2ParamInfo.datas.find(item => item.i2_paramgroup_id == row.i2_paramgroup_id)))
       },
-      delMonitorParam(index) {
+      delMonitorParam(row) {
         apiBaseInfo.delMonitorParam(result => {
-          this.monitorParamInfo.datas.splice(index, 1)
-        }, this.monitorParamInfo.datas[index].do_id)
+          this.monitorParamInfo.datas.map((item, index) => {
+            if (item.do_id == row.do_id) {
+              this.monitorParamInfo.datas.splice(index, 1)
+            }
+          })
+        }, row.do_id)
       },
-      delI2Param(index) {
+      delI2Param(row) {
         apiBaseInfo.delI2Param(result => {
-          this.i2ParamInfo.datas.splice(index, 1)
-        }, this.i2ParamInfo.datas[index].i2_paramgroup_id)
+          this.i2ParamInfo.datas.map((item, index) => {
+            if (item.i2_paramgroup_id == row.i2_paramgroup_id) {
+              this.i2ParamInfo.datas.splice(index, 1)
+            }
+          })
+        }, row.i2_paramgroup_id)
       },
       hideDetail() {
         this.flg_showRightBox = false

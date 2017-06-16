@@ -13,7 +13,7 @@
             <router-link to="/user">
               <i class="iconfont icon-account"> {{userName}}</i>
             </router-link>
-          </li>         
+          </li>
           <li>
             <router-link to="/">
               <i class="iconfont icon-exit"> 退出</i>
@@ -60,7 +60,7 @@ export default {
     let loadingInstance = Loading.service({
       fullscreen: true
     })
-    apiBaseInfo.getMenuInfo((menus) => {
+    apiBaseInfo.getMenuInfo(menus => {
       this.menuItems = menus
       this.$store.dispatch('getMapParams', () => {
         this.$store.dispatch('getDevices')
@@ -74,7 +74,7 @@ export default {
       this.$store.dispatch('getCurrentData')
       this.$store.dispatch('getDevStatus')
       this.$store.dispatch('getSysInfo')
-    }, 60000)
+    }, 10000)
   }
 }
 </script>

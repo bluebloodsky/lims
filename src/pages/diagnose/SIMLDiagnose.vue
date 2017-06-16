@@ -68,6 +68,8 @@ export default {
     this.resultCanvas = document.getElementById("david-fg")
     this.davidTriangle = new Diagnose.drawDavidTriangle()
     this.davidTriangle.InitTriangle(canvas)
+    
+    this.davidTriangle.drawResult(this.resultCanvas, this.sourceData)
   }
 }
 </script>

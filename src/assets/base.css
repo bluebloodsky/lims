@@ -108,12 +108,12 @@ img {
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: hidden;
-}
-
-.b:hover {
   overflow: auto;
 }
+
+/*.b:hover {
+  overflow: auto;
+}*/
 
 .right-pad-box {
   position: absolute;
@@ -127,7 +127,7 @@ img {
 }
 
 .right-pad-box > .h {
-  background-color: #def;
+  background-color: rgb(238, 245, 246);
 }
 
 .right-pad-box > .h > span {

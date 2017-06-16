@@ -34,7 +34,7 @@
         <el-table :data="cagInfo.datas" border style="width: 100%" v-if="map_params">
           <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in cagInfo.fields">
           </el-table-column>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column label="操作" align="center">
             <template scope="scope">
               <el-button @click.native.prevent="editCagInfo(scope.$index)" type="text"><i class="iconfont icon-edit"></i>
               </el-button>
@@ -58,7 +58,7 @@
         <el-table :data="tblSensorData" border style="width: 100%" v-if="map_params">
           <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in sensorInfo.fields">
           </el-table-column>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column label="操作" align="center">
             <template scope="scope">
               <el-button @click.native.prevent="editSensorInfo(scope.$index)" type="text"><i class="iconfont icon-edit"></i>
               </el-button>
@@ -221,7 +221,6 @@ export default {
         let map_ln = {}
         if (this.currentDevice && this.currentDevice.group_id) {
           let i2_group = this.map_params.map_i2_group.find(item => item.group_id == this.currentDevice.group_id)
-          console.log(i2_group)
           this.devices.map(item => {
             if (item.ln_class == i2_group.ln_name) {
               map_ln[item.ln_inst] = item.desc_cn
