@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="b">
-        <div class="half-box">
+        <div class="box half-box">
           <div class="h">
             <i class="mdi iconfont icon-base"></i>
             <span>基本信息</span>
@@ -47,7 +47,7 @@
             </el-form>
           </div>
         </div>
-        <div class="half-box">
+        <div class="box half-box">
           <div class="h">
             <i class="mdi iconfont icon-attribute"></i>
             <span>属性信息</span>
@@ -194,14 +194,5 @@ export default {
 .half-box {
   width: 50%;
   height: 100%;
-  border-right: #dfdfdf 1px solid;
-  border-bottom: #dfdfdf 1px solid;
-  float: left;
-  position: relative;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  /* Firefox */
-  -webkit-box-sizing: border-box;
-  /* Safari */
 }
 </style>

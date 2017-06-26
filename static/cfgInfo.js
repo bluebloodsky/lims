@@ -1,3 +1,3 @@
 this.cfgInfo = {
-  baseURL: 'http://localhost:8088/lims/api/'
+  baseURL: 'http://172.17.11.236:8088/om/api/'
 }

@@ -1,12 +1,8 @@
 <template>
-  <el-row>
-    <el-col :span="16" style="position:relative;height:100%">
-      <DevStatus></DevStatus>
-    </el-col>
-    <el-col :span="8" style="position:relative;height:100%">
-      <HostStatus></HostStatus>
-    </el-col>
-  </el-row>
+  <div>
+    <DevStatus class="box left-box"></DevStatus>
+    <HostStatus class="box right-box"></HostStatus>
+  </div>
 </template>
 <script>
 import DevStatus from '@/pages/status/DevStatus'
@@ -19,5 +15,12 @@ export default {
 }
 </script>
 <style scoped>
-
+.left-box{
+  width: 60%;
+  height: 100%;
+}
+.right-box{
+  width: 40%;
+  height: 100%;
+}
 </style>

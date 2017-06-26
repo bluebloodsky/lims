@@ -18,7 +18,7 @@
               <el-option :label="key" :value="key" v-for="key in select_options[item.sel_name]"></el-option>
             </el-select>
             <el-switch :width="switch_width" v-model="mmsInfo.datas[item.name]" on-value="1" off-value="0" v-else-if="item.type=='switch'"></el-switch>
-            <el-input v-model="mmsInfo.datas[item.name]" :disabled="item.disabled" v-else></el-input>
+            <el-input v-model="mmsInfo.datas[item.name]" :readonly="item.readonly" v-else></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -79,7 +79,7 @@ export default {
           fields: [{
             name: 'SclFile_IcdFileDir',
             caption: 'Icd文件目录(relative)',
-            disabled: true
+            readonly: true
           }, {
             name: 'SclFile_IcdFileName',
             caption: 'Icd文件名',
@@ -88,7 +88,7 @@ export default {
           }, {
             name: 'SclFile_IedName',
             caption: '可用Ied名',
-            disabled: true
+            readonly: true
           }, {
             name: 'SclFile_APName',
             caption: '可用AP名',
@@ -196,7 +196,6 @@ export default {
         let icd_files = Object.keys(this.iedInfo)
         let current_icd_file_name = this.mmsInfo.datas['SclFile_IcdFileName']
         let aps = []
-        console.log(this.iedInfo[current_icd_file_name])
         if (this.iedInfo[current_icd_file_name]) {
           aps = this.iedInfo[current_icd_file_name].AP
           this.mmsInfo.datas.SclFile_IedName = this.iedInfo[current_icd_file_name].iedName

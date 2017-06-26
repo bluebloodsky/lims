@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="b">
-        <el-form :form="iedParams" label-width="200px" style="text-align:left;padding: 20px">
+        <el-form label-width="200px" style="padding: 20px">
           <el-form-item v-for="item in iedParams" :label="item.desc_cn">
             <el-switch :width="switch_width" v-model="item.value" on-value="1" off-value="0" v-if="item.key=='autoRun' || item.key=='sendMsg'"></el-switch>
             <el-input v-model="item.value" v-else></el-input>
@@ -20,37 +20,28 @@
         </el-form>
       </div>
     </div>
-    <div class="box top-box">
+    <div class="box middle-box">
       <div class="h">
         <i class="mdi iconfont icon-debug">
         </i>
         <span>指令下达</span>
       </div>
       <div class="b">
-        <template v-for="item in issueInfo.fields">
-          <span>{{item.caption}}</span>
-          <el-select v-model="currentIssue[item.real_name]" v-if="item.type == 'select'">
-            <el-option :label="val" :value="key" v-for="(val,key) in select_options[item.sel_name]"></el-option>
-          </el-select>
-          <el-input v-model="currentIssue[item.name]" v-else></el-input>
-        </template>
+        <el-form label-width="200px" label-position="top" style="padding: 20px 10px">
+          <el-form-item v-for="item in issueInfo.fields" :label="item.caption">
+            <el-select v-model="issueInfo.datas[item.name]" v-if="item.type == 'select'">
+              <el-option :label="val" :value="key" v-for="(val,key) in select_options[item.sel_name]"></el-option>
+            </el-select>
+            <el-input v-model="issueInfo.datas[item.name]" :readonly="item.readonly" v-else></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="issue">下发</el-button>
+          </el-form-item>
+        </el-form>
       </div>
     </div>
-    <div class="box bottom-box">
-      <div class="h">
-        <i class="mdi iconfont icon-log">
-        </i>
-        <span>日志信息</span>
-        <div class="right-btn">
-          <span>每次刷新行数</span>
-          <input></input>
-          <el-button type="text" @click="">
-            <i class="iconfont icon-search"></i>
-          </el-button>
-        </div>
-      </div>
-      <div class="b">
-      </div>
+    <div class="box right-box">
+      <LogViewer url="/log_content"></LogViewer>
     </div>
   </div>
 </template>
@@ -60,42 +51,39 @@ import {
   mapActions
 } from 'vuex'
 import apiCfgInfo from '@/api/cfgInfo'
+import LogViewer from '@/components/LogViewer'
 export default {
   data() {
       return {
         switch_width: 80,
         iedParams: [],
-        currentIssue: {},
         issueInfo: {
           fields: [{
-            name: 'desc_cn',
             caption: '设备',
-            real_name: 'sen_id',
+            name: 'sen_id',
             type: 'select',
-            sel_name: ''
+            sel_name: 'sel_sensors'
           }, {
-            name: 'order',
             caption: '指令',
-            real_name: 'order_id',
+            name: 'cmd',
             type: 'select',
             sel_name: 'sel_orders'
           }, {
             name: 'param',
-            caption: '参数',
+            caption: '参数'
           }, {
-            name: 'desc',
-            caption: '描述'
+            name: 'comment',
+            caption: '参数格式',
+            readonly: true
           }],
           datas: {
             sen_id: '',
-            order_id: '',
+            cmd: '',
             param: '',
-            desc: ''
+            comment: ''
           }
         }
-
       }
-
     },
     computed: {
       ...mapGetters({
@@ -103,8 +91,34 @@ export default {
         devices: 'devices'
       }),
       select_options() {
+        let sel_sensors = {}
+        let sel_orders = {}
+        this.devices.map(item => {
+          sel_sensors[item.sen_id] = item.desc_cn
+        })
+        let l_sen_id = this.issueInfo.datas['sen_id']
+        if (l_sen_id) {
+          let l_sensor = this.devices.find(item => item.sen_id == l_sen_id)
+          let l_orders = this.map_params.map_sen_debug.find(item => item.ln_class == l_sensor.ln_class && item.sen_type == l_sensor.sen_type)
+          if (l_orders && l_orders.attrs) {
+            l_orders.attrs.map(item => {
+              sel_orders[item.cmd] = item.desc_cn
+              if (this.issueInfo.datas['cmd'] == item.cmd) {
+                this.issueInfo.datas['param'] = item.def_data
+                this.issueInfo.datas['comment'] = item.comment
+              }
+            })
 
+          }
+        }
+        return {
+          sel_sensors: sel_sensors,
+          sel_orders: sel_orders
+        }
       }
+    },
+    components: {
+      LogViewer
     },
     mounted() {
       apiCfgInfo.getCommuAttrs(data => {
@@ -124,6 +138,19 @@ export default {
             type: 'success'
           })
         }, obj)
+      },
+      issue() {
+        let url = "/sensors/" + this.issueInfo.datas.sen_id + "/debug_orders"
+        apiCfgInfo.postInfoByJson(url, {
+          cmd: this.issueInfo.datas.cmd,
+          param: this.issueInfo.datas.param
+        }, data => {
+          this.$message({
+            showClose: true,
+            message: data,
+            type: 'success'
+          })
+        })
       }
     }
 }
@@ -134,13 +161,13 @@ export default {
   height: 100%;
 }
 
-.top-box {
-  width: 70%;
-  height: 30%
+.middle-box {
+  width: 15%;
+  height: 100%
 }
 
-.bottom-box {
-  width: 70%;
-  height: 70%
+.right-box {
+  width: 55%;
+  height: 100%
 }
 </style>

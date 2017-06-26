@@ -158,11 +158,14 @@ export default {
             type: 'select',
             sel_name: 'map_i2_group'
           }, {
-            name: 'desc_cn',
+            name: 'ln_desc',
             caption: '传感器名称',
             real_name: 'ln_inst',
             type: 'select',
             sel_name: 'map_ln'
+          }, {
+            name: 'desc_cn',
+            caption: 'i2设备描述'
           }, {
             name: 'equipment_id',
             caption: '一次设备编码'
@@ -200,7 +203,7 @@ export default {
           newItem.group_name = l_group.group_name
           newItem.phase_name = this.map_params.map_phase[item.phase]
           let l_device = this.devices.find(adata => adata.ln_inst == item.ln_inst && adata.ln_class == l_group.ln_name)
-          newItem.desc_cn = l_device ? l_device.desc_cn : null
+          newItem.ln_desc = l_device ? l_device.desc_cn : null
           return newItem
         })
       },
@@ -344,17 +347,17 @@ export default {
 </script>
 <style scoped>
 .left-box {
-  width: 30%;
+  width: 25%;
   height: 100%;
 }
 
 .top-box {
-  width: 70%;
+  width: 75%;
   height: 30%
 }
 
 .bottom-box {
-  width: 70%;
+  width: 75%;
   height: 70%
 }
 </style>

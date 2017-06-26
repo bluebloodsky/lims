@@ -1,6 +1,6 @@
 <template>
-  <div style="height:100%">
-    <div class="half-box">
+  <div>
+    <div class="box half-box">
       <div class="h">
         <i class="mdi iconfont icon-host">
         </i>
@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-    <div class="half-box">
+    <div class="box half-box">
       <div class="h">
         <i class="mdi iconfont icon-memory">
         </i>
@@ -26,27 +26,27 @@
         </div>
       </div>
     </div>
-    <div class="box">
+    <div class="box bottom-box">
       <div class="h">
         <i class="mdi iconfont icon-storage">
         </i>
         <span>存储状态</span>
       </div>
       <div class="b">
-        <el-table :data="sysInfo.disk_status" border style="width: 100%">
+        <el-table :data="sysInfo.disk_status" border>
           <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in disk_status_fields">
           </el-table-column>
         </el-table>
       </div>
     </div>
-    <div class="box">
+    <div class="box bottom-box">
       <div class="h">
         <i class="mdi iconfont icon-process">
         </i>
         <span>服务状态</span>
       </div>
       <div class="b">
-        <el-table :data="proStatus" border style="width: 100%">
+        <el-table :data="proStatus" border>
           <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in pro_status_fields">
           </el-table-column>
         </el-table>
@@ -129,55 +129,13 @@ export default {
 }
 </script>
 <style scoped>
-.half-box,
-.box {
-  width: 100%;
-  height: 35%;
-  border-right: #dfdfdf 1px solid;
-  border-bottom: #dfdfdf 1px solid;
-  float: left;
-  position: relative;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  /* Firefox */
-  -webkit-box-sizing: border-box;
-  /* Safari */
-}
-
 .half-box {
   width: 50%;
   height: 30%;
 }
 
-.half-box .el-row {
-  text-align: center;
-  padding: 5px 15px;
-  font-size: 16px;
-}
-
-.half-box .el-row span {
-  color: #259b24;
-  font-weight: bold;
-}
-
-.el-form {
-  font-size: 0;
-  margin-left: 15px;
-}
-
-.el-form-item {
-  margin-right: 0;
-  margin-bottom: 0;
-}
-
-.el-form-item label {
-  width: 90px;
-  color: #fff;
-}
-
-.el-form-item span {
-  font-weight: bold;
-  color: #259b24;
-  font-size: 20px;
+.bottom-box{
+  width: 100%;
+  height: 35%;
 }
 </style>

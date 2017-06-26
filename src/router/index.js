@@ -18,7 +18,7 @@ import PageUserInfo from '@/pages/PageUserInfo'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [{
     path: '/',
     component: PageLogin
@@ -67,3 +67,11 @@ export default new Router({
     component: PageRegister
   }]
 })
+
+
+router.beforeEach((to, from, next) => {
+  console.log("before route")
+  next()
+})
+
+export default router

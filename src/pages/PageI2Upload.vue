@@ -1,29 +1,31 @@
 <template>
   <div>
-    <div class="box top-box">
+    <div class="box left-box">
       <div class="h">
         <i class="mdi iconfont icon-debug">
         </i>
         <span>指令下达</span>
       </div>
       <div class="b">
+        <el-form label-width="200px" label-position="top" style="padding: 20px 10px">
+          <el-form-item label="设备">
+            <el-select v-model="issueInfo.sen_id">
+              <el-option :label="item.desc_cn" :value="item.sensor_id" v-for="item in i2_sensors"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="指令">
+            <el-select v-model="issueInfo.cmd">
+              <el-option :label="val" :value="key" v-for="(val,key) in cmds"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="issue">下发</el-button>
+          </el-form-item>
+        </el-form>
       </div>
     </div>
-    <div class="box bottom-box">
-      <div class="h">
-        <i class="mdi iconfont icon-log">
-        </i>
-        <span>日志信息</span>
-        <div class="right-btn">
-          <span>每次刷新行数</span>
-          <input></input>
-          <el-button type="text" @click="">
-            <i class="iconfont icon-search"></i>
-          </el-button>
-        </div>
-      </div>
-      <div class="b">
-      </div>
+    <div class="box right-box">
+      <LogViewer url="/"></LogViewer>
     </div>
   </div>
 </template>
@@ -32,37 +34,51 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
+import apiI2Info from '@/api/i2Info'
+import LogViewer from '@/components/LogViewer'
 export default {
   data() {
       return {
-        fields: [{
-          name: 'file_name',
-          caption: '文件名'
-        }, {
-          name: 'size',
-          caption: '大小'
-        }, {
-          name: 'update_time',
-          caption: '更新时间'
-        }]
+        issueInfo: {
+          sen_id: '',
+          cmd: ''
+        },
+        i2_sensors: [],
+        cmds: {
+          1: '心跳上传',
+          2: '数据上传',
+          3: '配置上传'
+        }
       }
     },
-    computed: mapGetters({
-      sysInfo: 'sysInfo',
-      devStatus: 'status',
-      currentData: 'currentData'
-    })
+    computed: {
+      ...mapGetters({
+        map_params: 'map_params'
+      })
+    },
+    mounted() {
+      apiI2Info.getSensorInfo(result => {
+        this.i2_sensors = result
+      })
+    },
+    components: {
+      LogViewer
+    },
+    methods:{
+      issue(){
+        
+      }
+    }
 }
 </script>
 <style scoped>
-
-.top-box {
-  width: 100%;
-  height: 30%
+.left-box {
+  width: 20%;
+  height: 100%
 }
 
-.bottom-box {
-  width: 100%;
-  height: 70%
+.right-box {
+  width: 80%;
+  height: 100%
 }
 </style>

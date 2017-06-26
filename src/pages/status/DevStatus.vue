@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div>
     <div class="h">
       <i class="mdi iconfont icon-status">
         </i>
@@ -125,20 +125,6 @@ export default {
 }
 </script>
 <style scoped>
-.box {
-  width: 100%;
-  height: 100%;
-  border-right: #dfdfdf 1px solid;
-  border-bottom: #dfdfdf 1px solid;
-  float: left;
-  position: relative;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  /* Firefox */
-  -webkit-box-sizing: border-box;
-  /* Safari */
-}
-
 .legend {
   padding: 5px;
   text-align: right;

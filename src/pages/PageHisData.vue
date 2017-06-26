@@ -205,18 +205,8 @@ export default {
 }
 </script>
 <style scoped>
-.box {
-  border-right: #dfdfdf 1px solid;
-  border-bottom: #dfdfdf 1px solid;
-  position: absolute;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  /* Firefox */
-  -webkit-box-sizing: border-box;
-  /* Safari */
-}
-
 .top-box {
+  position: absolute;
   left: 0;
   right: 0;
   top: 10px;
@@ -225,6 +215,7 @@ export default {
 }
 
 .left-box {
+  position: absolute;
   left: 0;
   right: 50%;
   top: 60px;
@@ -232,6 +223,7 @@ export default {
 }
 
 .right-box {
+  position: absolute;
   left: 50%;
   right: 0;
   top: 60px;
