@@ -19,7 +19,6 @@
   </div>
 </template>
 <script>
-import auth from '../api/auth'
 export default {
   props: {
     token: {
@@ -42,16 +41,20 @@ export default {
         username: this.username,
         password: this.password
       }
-      auth.login(user, (token) => {
-        this.$router.push('/status')
-      }, () => {
-        this.$message({
-          message: '登录失败',
-          type: 'warning'
-        });
+      this.$store.dispatch('login', {
+        user: user,
+        cb: () => {
+          let redirect = decodeURIComponent(this.$route.query.redirect || '/status');
+          this.$router.push(redirect)
+        },
+        cb_err: () => {
+          this.$message({
+            message: '登录失败',
+            type: 'warning'
+          })
+        }
       })
     }
-
   }
 }
 </script>

@@ -9,6 +9,10 @@ a {
   text-decoration: none;
 }
 
+a:hover {
+  cursor: pointer
+}
+
 ul {
   list-style: none;
 }
@@ -110,6 +114,7 @@ img {
   bottom: 0;
   overflow: auto;
 }
+
 
 /*.b:hover {
   overflow: auto;

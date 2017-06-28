@@ -15,9 +15,9 @@
             </router-link>
           </li>
           <li>
-            <router-link to="/">
+            <a @click="logout">
               <i class="iconfont icon-exit"> 退出</i>
-            </router-link>
+            </a>
           </li>
         </ul>
       </el-col>
@@ -62,19 +62,35 @@ export default {
     })
     apiBaseInfo.getMenuInfo(menus => {
       this.menuItems = menus
+      apiBaseInfo.getMapParams(()=>{
+
+      })
+       loadingInstance.close()
+      /*
       this.$store.dispatch('getMapParams', () => {
         this.$store.dispatch('getDevices')
         this.$store.dispatch('getCurrentData')
         this.$store.dispatch('getDevStatus')
         this.$store.dispatch('getSysInfo')
-        loadingInstance.close()
+       
       })
+      */
     })
     setInterval(() => {
+      /*
       this.$store.dispatch('getCurrentData')
       this.$store.dispatch('getDevStatus')
       this.$store.dispatch('getSysInfo')
+    */
     }, 10000)
+  },
+  methods: {
+    logout() {
+      this.$store.commit('logout')
+      this.$router.push({
+        path: '/login'
+      })
+    }
   }
 }
 </script>

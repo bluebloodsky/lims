@@ -1,5 +1,4 @@
-import cfg from './common'
-import axios from 'axios'
+
 const _all = {
   'host_status': {
     'runTime': 1000,
@@ -39,13 +38,13 @@ export default {
   getSysInfo(cb) {
     cb(_all)
     /*
-    axios.get("/sys_status", cfg).then(response => {
+    axios.get("/sys_status").then(response => {
       cb(response.data)
     })
     */
   },
   getProStatus(cb) {
-    axios.get("/proc_status", cfg).then(response => {
+    axios.get("/proc_status").then(response => {
       cb(response.data)
     })
   }

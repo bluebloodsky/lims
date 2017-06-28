@@ -1,6 +1,5 @@
 import Qs from 'qs'
-import cfg from './common'
-import axios from 'axios'
+import axios from './http'
 
 const _menuItems = [{
   name: '状态总览',
@@ -47,7 +46,7 @@ const _menuItems = [{
 }]
 export default {
   getMapParams(cb, option) {
-      axios.get("/map_params?" + Qs.stringify(option), cfg).then(response => {
+      axios.get("/map_params?" + Qs.stringify(option)).then(response => {
         cb(response.data)
       })
     },
@@ -55,42 +54,42 @@ export default {
       cb(_menuItems)
     },
     getMonitorParams(cb, option) {
-      axios.get("/do_attrs" + Qs.stringify(option), cfg).then(response => {
+      axios.get("/do_attrs" + Qs.stringify(option)).then(response => {
         cb(response.data)
       })
     },
     getI2Params(cb, option) {
-      axios.get("/i2_params" + Qs.stringify(option), cfg).then(response => {
+      axios.get("/i2_params" + Qs.stringify(option)).then(response => {
         cb(response.data)
       })
     },
     delMonitorParam(cb, id) {
-      axios.delete("/do_attrs/" + id, cfg).then(response => {
+      axios.delete("/do_attrs/" + id).then(response => {
         cb(response.data)
       })
     },
     delI2Param(cb, id) {
-      axios.delete("/i2_params/" + id, cfg).then(response => {
+      axios.delete("/i2_params/" + id).then(response => {
         cb(response.data)
       })
     },
     addMonitorParam(cb, data) {
-      axios.post("/do_attrs", JSON.stringify(data), cfg).then(response => {
+      axios.post("/do_attrs", JSON.stringify(data)).then(response => {
         cb(response.data)
       })
     },
     modifyMonitorParam(cb, data) {
-      axios.post("/do_attrs/" + data.do_id, JSON.stringify(data), cfg).then(response => {
+      axios.post("/do_attrs/" + data.do_id, JSON.stringify(data)).then(response => {
         cb(response.data)
       })
     },
     addI2Param(cb, data) {
-      axios.post("/i2_params", JSON.stringify(data), cfg).then(response => {
+      axios.post("/i2_params", JSON.stringify(data)).then(response => {
         cb(response.data)
       })
     },
     modifyI2Param(cb, data) {
-      axios.post("/i2_params/" + data.i2_paramgroup_id, JSON.stringify(data), cfg).then(response => {
+      axios.post("/i2_params/" + data.i2_paramgroup_id, JSON.stringify(data)).then(response => {
         cb(response.data)
       })
     }

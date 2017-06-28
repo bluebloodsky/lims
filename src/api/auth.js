@@ -1,5 +1,3 @@
-import cfg from './common'
-import axios from 'axios'
 export default {
   login(user, cb, errorCb) {
     let token = '123456'
