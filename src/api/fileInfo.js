@@ -1,4 +1,4 @@
-
+import axios from '../http'
 export default {
   getCfgFileList(cb) {
     axios.get("/cfg_filelist").then(response => {

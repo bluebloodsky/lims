@@ -16,36 +16,38 @@
         <el-row v-for="(ln,key) in lnDevices" v-if="map_params&&map_params['map_ln_class']">
           <el-col :span="3" class="left-desc">{{map_params['map_ln_class'][key]}}</el-col>
           <el-col :span="21" v-for="(line,index) in ln" :offset="index==0?0:3" class="right-status">
-            <el-tooltip placement="right" effect="dark" v-for="device in line">
-              <div slot="content">
-                <ul v-if="device.data">
-                  <li>
-                    <span>监测时间</span>：<span>{{device.data.data_time}}</span>
-                  </li>
-                  <template v-if="device.data.data_attrs">
-                    <li v-for="aData in device.data.data_attrs">
-                      <span>{{aData.name}}</span>：
-                      <template v-if="aData.value">
-                        <span>{{aData.value}}</span> {{aData.unit}}
-                      </template>
-                      <span v-else>--</span>
+            <div v-for="device in line" @click="redirectHistoryPage(device.sen_id)">
+              <el-tooltip placement="right" effect="dark">
+                <div slot="content">
+                  <ul v-if="device.data">
+                    <li>
+                      <span>监测时间</span>：<span>{{device.data.data_time}}</span>
                     </li>
-                  </template>
-                  <li v-else>
-                    <span>数据无效</span>
-                  </li>
-                </ul>
-                <span v-else>暂无数据</span>
-              </div>
-              <div class="device-box">
-                <div>
-                  <i class="iconfont icon-ball" :class="getClassStatus(device.status?device.status.mov_dev_conf:null)"></i>
-                  <i class="iconfont icon-ball" :class="getClassStatus(device.status?device.status.sup_dev_run:null)"></i>
-                  <i class="iconfont icon-ball" :class="getClassStatus(device.status?device.status.data_status:null)"></i>
+                    <template v-if="device.data.data_attrs">
+                      <li v-for="aData in device.data.data_attrs">
+                        <span>{{aData.name}}</span>：
+                        <template v-if="aData.value">
+                          <span>{{aData.value}}</span> {{aData.unit}}
+                        </template>
+                        <span v-else>--</span>
+                      </li>
+                    </template>
+                    <li v-else>
+                      <span>数据无效</span>
+                    </li>
+                  </ul>
+                  <span v-else>暂无数据</span>
                 </div>
-                <div>{{device['desc_cn']}}</div>
-              </div>
-            </el-tooltip>
+                <div class="device-box">
+                  <div>
+                    <i class="iconfont icon-ball" :class="getClassStatus(device.status?device.status.mov_dev_conf:null)"></i>
+                    <i class="iconfont icon-ball" :class="getClassStatus(device.status?device.status.sup_dev_run:null)"></i>
+                    <i class="iconfont icon-ball" :class="getClassStatus(device.status?device.status.data_status:null)"></i>
+                  </div>
+                  <div>{{device['desc_cn']}}</div>
+                </div>
+              </el-tooltip>
+            </div>
           </el-col>
         </el-row>
       </div>
@@ -119,7 +121,12 @@ export default {
     methods: {
       getClassStatus(statusVal) {
         return statusVal == 0 ? 'good' : (statusVal == 1 ? 'bad' : statusVal == 2 ? 'warn' : 'unkown')
+      },
+      redirectHistoryPage(sen_id) {
+        this.$router.push("/his_data/" + sen_id)
+        console.log(sen_id)
       }
+
     }
 
 }

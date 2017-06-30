@@ -1,3 +1,4 @@
+import axios from '../http'
 
 export default {
   getDevStatus(cb) {

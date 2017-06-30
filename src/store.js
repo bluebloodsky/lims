@@ -2,12 +2,10 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 //import Qs from 'qs'
 //import axios from './http'
-/*
 import apiBaseInfo from '@/api/baseInfo'
 import apiAuth from '@/api/auth'
 import apiDeviceInfo from '@/api/deviceInfo'
 import apiSysInfo from '@/api/sysInfo'
-*/
 
 Vue.use(Vuex)
 
@@ -80,7 +78,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    /*
     login({ commit }, { user, cb, cberr }) {
       apiAuth.login(user, token => {
           let userName = user.username
@@ -90,9 +87,8 @@ export default new Vuex.Store({
         cberr)
     },
     getMapParams({ commit }, cb) {
-      axios.get("/map_params").then(response => {
-        console.log(response)
-        commit('getMapParams', { data:response.data })
+      apiBaseInfo.getMapParams(data => {
+        commit('getMapParams', { data })
         cb()
       })
     },
@@ -137,6 +133,5 @@ export default new Vuex.Store({
         commit('delDevice', sen_id)
       }, sen_id)
     }
-    */
   }
 })

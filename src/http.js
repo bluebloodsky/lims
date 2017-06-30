@@ -1,11 +1,11 @@
 import axios from 'axios'
-import store from './store'
 import router from './router'
+import store from './store'
 
 console.log(store)
 console.log(router)
   // axios 配置
-axios.defaults.timeout = 5000
+axios.defaults.timeout = 10000
 axios.defaults.baseURL = cfgInfo.baseURL
 
 /*

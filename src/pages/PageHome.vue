@@ -62,26 +62,19 @@ export default {
     })
     apiBaseInfo.getMenuInfo(menus => {
       this.menuItems = menus
-      apiBaseInfo.getMapParams(()=>{
-
-      })
-       loadingInstance.close()
-      /*
       this.$store.dispatch('getMapParams', () => {
+        loadingInstance.close()
         this.$store.dispatch('getDevices')
         this.$store.dispatch('getCurrentData')
         this.$store.dispatch('getDevStatus')
         this.$store.dispatch('getSysInfo')
-       
+
       })
-      */
     })
     setInterval(() => {
-      /*
       this.$store.dispatch('getCurrentData')
       this.$store.dispatch('getDevStatus')
       this.$store.dispatch('getSysInfo')
-    */
     }, 10000)
   },
   methods: {

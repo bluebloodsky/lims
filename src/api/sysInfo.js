@@ -1,4 +1,4 @@
-
+import axios from '../http'
 const _all = {
   'host_status': {
     'runTime': 1000,

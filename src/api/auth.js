@@ -1,3 +1,4 @@
+import axios from '../http'
 export default {
   login(user, cb, errorCb) {
     let token = '123456'

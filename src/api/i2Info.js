@@ -1,4 +1,4 @@
-
+import axios from '../http'
 export default {
   getCacInfo(cb) {
       axios.get("/cac_infos").then(response => {

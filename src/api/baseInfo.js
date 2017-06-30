@@ -1,5 +1,5 @@
 import Qs from 'qs'
-import axios from './http'
+import axios from '../http'
 
 const _menuItems = [{
   name: '状态总览',

@@ -15,18 +15,18 @@ import PageConfigParam from '@/pages/PageConfigParam'
 import PageMmsConfig from '@/pages/PageMmsConfig'
 import PageI2Upload from '@/pages/PageI2Upload'
 import PageUserInfo from '@/pages/PageUserInfo'
-
+import store from './store'
+console.log('router:')
+console.log(store)
 Vue.use(Router)
-  /*
-  if (window.localStorage.getItem('token')) {
-    store.commit('login', {
-      token: window.localStorage.getItem('token'),
-      user: window.localStorage.getItem('user')
-    })
-  }
-  */
+if (window.localStorage.getItem('token')) {
+  store.commit('login', {
+    token: window.localStorage.getItem('token'),
+    user: window.localStorage.getItem('user')
+  })
+}
 
-const myRouter = new Router({
+const router = new Router({
   routes: [{
     path: '/',
     redirect: '/status'
@@ -64,7 +64,7 @@ const myRouter = new Router({
       path: '/config_param',
       component: PageConfigParam
     }, {
-      path: '/his_data',
+      path: '/his_data/:sen_id',
       component: PageHisData
     }, {
       path: '/mms_config',
@@ -85,14 +85,13 @@ const myRouter = new Router({
   }]
 })
 
-/*
 router.beforeEach((to, from, next) => {
   if (!to.matched.some(r => r.meta.noRequireAuth)) {
     if (store.state.token) {
       next();
     } else {
       next({
-        path: '/',
+        path: '/login',
         query: { redirect: to.fullPath }
       })
     }
@@ -101,5 +100,4 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-*/
-export default myRouter
+export default router

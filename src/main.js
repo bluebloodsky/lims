@@ -1,8 +1,8 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import store from './store'
 import router from './router'
+import store from './store'
 import App from './App'
 import ElementUI from 'element-ui'
 import 'element-theme-default'
@@ -22,30 +22,6 @@ Date.prototype.Format = function (fmt) {
     if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
   return fmt;
 }
-
-
-if (window.localStorage.getItem('token')) {
-  store.commit('login', {
-    token: window.localStorage.getItem('token'),
-    user: window.localStorage.getItem('user')
-  })
-}
-router.beforeEach((to, from, next) => {
-    if (!to.matched.some(r => r.meta.noRequireAuth)) {
-      if (store.state.token) {
-        next();
-      } else {
-        next({
-          path: '/login',
-          query: { redirect: to.fullPath }
-        })
-      }
-    } else {
-      next();
-    }
-  })
-  /*
-   */
 
 Vue.config.productionTip = false
 Vue.prototype.cfgInfo = cfgInfo

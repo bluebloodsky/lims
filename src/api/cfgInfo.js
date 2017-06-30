@@ -1,4 +1,5 @@
 import Qs from 'qs'
+import axios from '../http'
 
 export default {
   getInfo(url, cb, option) {

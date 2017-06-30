@@ -58,7 +58,7 @@ export default {
         his_data: [],
         chart: null,
         choose_option: {
-          sen_id: '',
+          sen_id: this.$route.params.sen_id,
           daterange: []
         },
         cur_ln_class: '',
@@ -133,6 +133,16 @@ export default {
       window.onresize = () => {
         this.chart.resize()
       }
+
+      let min_date = new Date()
+      min_date.setTime(min_date.getTime() - 3600 * 1000 * 24 * 7)
+      this.choose_option.daterange = [min_date, new Date()]
+      if (!this.choose_option.sen_id) {
+        if (this.devices && this.devices.length) {
+          this.choose_option.sen_id = this.devices[0].sen_id
+        }
+      }
+      this.search()
     },
     methods: {
       pageSizeChange(newValue) {
