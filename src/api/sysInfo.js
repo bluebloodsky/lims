@@ -36,12 +36,9 @@ const _all = {
 }
 export default {
   getSysInfo(cb) {
-    cb(_all)
-    /*
     axios.get("/sys_status").then(response => {
       cb(response.data)
     })
-    */
   },
   getProStatus(cb) {
     axios.get("/proc_status").then(response => {

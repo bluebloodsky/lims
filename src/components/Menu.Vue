@@ -22,10 +22,8 @@ export default {
 </script>
 <style scoped>
 .first-menu {
-  background-color: #58a;
   height: 33px;
   float: left;
-  width: 100%;
 }
 
 .first-menu > li {
@@ -56,7 +54,7 @@ export default {
 }
 
 .first-menu > li:hover > ul > li {
-  background: #58a;
+  background: #0097a7;
 }
 
 .first-menu > li:hover > ul > li > a {
@@ -76,7 +74,7 @@ export default {
 
 .first-menu > li:hover,
 .first-menu > li:hover > ul > li:hover {
-  background-color: #01301E;
+  background-color: #00acc1;
 }
 
 </style>

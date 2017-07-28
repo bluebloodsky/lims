@@ -1,137 +1,48 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-//import Qs from 'qs'
-//import axios from './http'
-import apiBaseInfo from '@/api/baseInfo'
-import apiAuth from '@/api/auth'
-import apiDeviceInfo from '@/api/deviceInfo'
-import apiSysInfo from '@/api/sysInfo'
-
+import apiAuth from './api/auth'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     user: null,
-    token: null,
-    map_params: null,
-    sysInfo: {},
-    proStatus: [],
-    devStatus: [],
-    currentData: [],
-    devices: []
+    token: null
   },
   getters: {
     user: state => state.user,
-    token: state => state.token,
-    map_params: state => state.map_params,
-    sysInfo: state => state.sysInfo,
-    proStatus: state => state.proStatus,
-    devStatus: state => state.devStatus,
-    currentData: state => state.currentData,
-    devices: state => state.devices
+    token: state => state.token
   },
   mutations: {
-    login(state, { userName, token }) {
-      localStorage.token = token
-      localStorage.user = userName
+    login(state, { cur_user, token }) {
+      localStorage.om_token = token
+      localStorage.om_user = JSON.stringify(cur_user)
       state.token = token
-      state.user = userName
+      state.user = cur_user
     },
     logout(state) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
+      localStorage.removeItem('om_token')
+      localStorage.removeItem('om_user')
       state.token = null
       state.user = null
-    },
-    getMapParams(state, { data }) {
-      state.map_params = data
-    },
-    getSysInfo(state, data) {
-      state.sysInfo = data
-    },
-    getProStatus(state, data) {
-      state.proStatus = data
-    },
-    getDevStatus(state, data) {
-      state.devStatus = data
-    },
-    getCurrentData(state, data) {
-      state.currentData = data
-    },
-    getDevices(state, data) {
-      state.devices = data
-    },
-    addDevice(state, data) {
-      state.devices.push(data)
-    },
-    modifyDevice(state, data) {
-      let index = state.devices.findIndex((val) =>
-        val.sen_id == data.sen_id
-      )
-      state.devices.splice(index, 1, data)
-    },
-    delDevice(state, sen_id) {
-      let index = state.devices.findIndex((val) =>
-        val.sen_id == sen_id
-      )
-      state.devices.splice(index, 1)
     }
   },
   actions: {
-    login({ commit }, { user, cb, cberr }) {
-      apiAuth.login(user, token => {
-          let userName = user.username
-          commit('login', { userName, token })
+    login({ commit }, { user, cb, cb_err }) {
+      apiAuth.login(user, data => {
+        if (data.pass) // 验证通过
+        {
+          let cur_user = {
+            username: user.username,
+            level: data['level'],
+            desc: data["desc"]
+          }
+          let token = '123'
+          commit('login', { cur_user, token })
           cb()
-        },
-        cberr)
-    },
-    getMapParams({ commit }, cb) {
-      apiBaseInfo.getMapParams(data => {
-        commit('getMapParams', { data })
-        cb()
-      })
-    },
-    getSysInfo({ commit }) {
-      apiSysInfo.getSysInfo(data => {
-        commit('getSysInfo', data)
-      })
-    },
-    getProStatus({ commit }) {
-      apiSysInfo.getProStatus(data => {
-        commit('getProStatus', data)
-      })
-    },
-    getDevStatus({ commit }) {
-      apiDeviceInfo.getDevStatus(data => {
-        commit('getDevStatus', data)
-      })
-    },
-    getCurrentData({ commit }) {
-      apiDeviceInfo.getCurrentData(data => {
-        commit('getCurrentData', data)
-      })
-    },
-    getDevices({ commit }) {
-      apiDeviceInfo.getDevices(data => {
-        commit('getDevices', data)
-      })
-    },
-    addDevice({ commit }, device) {
-      apiDeviceInfo.addDevice(data => {
-        device.sen_id = data
-        commit('addDevice', device)
-      }, device)
-    },
-    modifyDevice({ commit }, device) {
-      apiDeviceInfo.modifyDevice(data => {
-        commit('modifyDevice', device)
-      }, device)
-    },
-    delDevice({ commit }, sen_id) {
-      apiDeviceInfo.delDevice(() => {
-        commit('delDevice', sen_id)
-      }, sen_id)
+        } else {
+          cb_err(data.msg)
+        }
+      }, cb_err)
     }
   }
 })

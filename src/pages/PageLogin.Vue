@@ -13,7 +13,7 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="login" class="primary" @keyup.enter="login">登录</el-button>
+        <el-button @click="login" class="primary">登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -47,9 +47,9 @@ export default {
           let redirect = decodeURIComponent(this.$route.query.redirect || '/status');
           this.$router.push(redirect)
         },
-        cb_err: () => {
+        cb_err: (msg) => {
           this.$message({
-            message: '登录失败',
+            message: msg ,
             type: 'warning'
           })
         }

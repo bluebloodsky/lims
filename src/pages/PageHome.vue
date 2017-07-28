@@ -1,31 +1,25 @@
 <template>
   <div>
-    <el-row class="top">
-      <el-col :span="8" style="text-align:left;padding-left:5px">
-        <router-link to="/"><img src="../assets/logo.png"></router-link>
-      </el-col>
-      <el-col :span="8">
-        <h1 style="display:inline">{{title}}</h1>
-      </el-col>
-      <el-col :span="8">
-        <ul>
-          <li>
-            <router-link to="/user">
-              <i class="iconfont icon-account"> {{userName}}</i>
-            </router-link>
-          </li>
-          <li>
-            <a @click="logout">
+    <div class="top">
+      <img src="../assets/logo.png">
+      <h2>{{title}}</h2>
+      <ZlMenu :datas="menuItems" style="margin-top:8px"></ZlMenu>
+      <ul class="right-btns">
+        <li>
+          <router-link to="/user">
+            <i class="iconfont icon-account"> 管理員</i>
+          </router-link>
+        </li>
+        <li>
+          <a @click="logout">
               <i class="iconfont icon-exit"> 退出</i>
             </a>
-          </li>
-        </ul>
-      </el-col>
-    </el-row>
-    <el-row style="margin:2px 0">
-      <ZlMenu :datas="menuItems"></ZlMenu>
-    </el-row>
-    <router-view style="position:absolute; left:0;top:80px;bottom:20px; right:0"></router-view>
+        </li>
+      </ul>
+    </div>
+    <div style="position:absolute; left:5px;top:55px;bottom:20px; right:0">
+      {{menuItems}}
+    </div>
     <div class="footer">
       Copyright © 2017 国网电力科学研究院 武汉南瑞有限责任公司. All Rights Reserved
     </div>
@@ -33,49 +27,40 @@
 </template>
 <script>
 import ZlMenu from '@/components/Menu'
+import apiBaseInfo from '@/api/baseInfo'
 import {
   Loading
 } from 'element-ui'
+import {
+  mapGetters
+} from 'vuex'
 
-import apiBaseInfo from '@/api/baseInfo'
 export default {
   props: {
     title: {
       type: String
-    },
-    userName: {
-      type: String,
-      default: 'admin'
     }
   },
   data() {
     return {
-      menuItems: []
+      menus: []
+    }
+  },
+  computed: {
+    ...mapGetters({
+      user: 'user',
+    }),
+    menuItems() {
+      return this.menus
     }
   },
   components: {
     ZlMenu
   },
   mounted() {
-    let loadingInstance = Loading.service({
-      fullscreen: true
-    })
     apiBaseInfo.getMenuInfo(menus => {
-      this.menuItems = menus
-      this.$store.dispatch('getMapParams', () => {
-        loadingInstance.close()
-        this.$store.dispatch('getDevices')
-        this.$store.dispatch('getCurrentData')
-        this.$store.dispatch('getDevStatus')
-        this.$store.dispatch('getSysInfo')
-
-      })
+      this.menus = menus
     })
-    setInterval(() => {
-      this.$store.dispatch('getCurrentData')
-      this.$store.dispatch('getDevStatus')
-      this.$store.dispatch('getSysInfo')
-    }, 10000)
   },
   methods: {
     logout() {
@@ -84,34 +69,43 @@ export default {
         path: '/login'
       })
     }
+  },
+  destroyed() {
+    //window.clearInterval(this.timer)
   }
 }
+
 </script>
 <style scoped>
 .top {
-  background-color: #d1e3ef;
-  color: #01301E;
-  line-height: 45px;
-  height: 45px;
+  background-color: #0097a7;
+  color: white;
+  line-height: 50px;
+  height: 50px;
   padding: 0;
   margin: 0;
-  overflow: hidden;
 }
 
-.el-col > ul {
-  list-style: none;
-  overflow: hidden;
-  margin-top: 5px;
-  height: 40px;
-  line-height: 40px;
+.top>img {
+  float: left;
+  margin: 3px 10px
+}
+
+.top h2 {
+  margin: 0 10px;
+  float: left;
+}
+
+.right-btns{
   float: right;
 }
-
-.el-col > ul>li {
+.top>ul>li {
   float: left;
   margin-right: 20px;
 }
-
+.top a{
+  color: white
+}
 .footer {
   position: fixed;
   bottom: 0;
@@ -121,7 +115,7 @@ export default {
   right: 0;
   left: 0;
   text-align: center;
-  background: #5F8BA4;
+  background: #0097a7;
   font-size: 12px;
   color: #fff;
 }
@@ -129,4 +123,5 @@ export default {
 a {
   color: #01301E;
 }
+
 </style>

@@ -8,7 +8,7 @@ export default {
   name: 'app',
   data() {
     return {
-      title: '智能设备在线监测系统',
+      title: '武汉南瑞实验室信息管理系统',
     }
   }
 }

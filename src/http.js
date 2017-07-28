@@ -1,14 +1,13 @@
 import axios from 'axios'
-import router from './router'
 import store from './store'
+import router from './router'
 
 console.log(store)
 console.log(router)
-  // axios 配置
-axios.defaults.timeout = 10000
+// axios 配置
+axios.defaults.timeout = 15000
 axios.defaults.baseURL = cfgInfo.baseURL
 
-/*
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
@@ -29,16 +28,16 @@ axios.interceptors.response.use(
   error => {
     if (error.response) {
       switch (error.response.status) {
-      case 401:
-        // 401 清除token信息并跳转到登录页面
-        store.commit('logout');
-        router.replace({
-          path: 'login',
-          query: { redirect: router.currentRoute.fullPath }
-        })
+        case 401:
+          // 401 清除token信息并跳转到登录页面
+          store.commit('logout');
+          router.replace({
+            path: 'login',
+            query: { redirect: router.currentRoute.fullPath }
+          })
       }
     }
     return Promise.reject(error)
   });
-*/
+
 export default axios;

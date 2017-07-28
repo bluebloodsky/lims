@@ -1,13 +1,14 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import axios from './http'
 import router from './router'
 import store from './store'
 import App from './App'
 import ElementUI from 'element-ui'
 import 'element-theme-default'
 
-Date.prototype.Format = function (fmt) {
+Date.prototype.Format = function(fmt) {
   var o = {
     "M+": this.getMonth() + 1, //月份 
     "d+": this.getDate(), //日 
@@ -25,11 +26,12 @@ Date.prototype.Format = function (fmt) {
 
 Vue.config.productionTip = false
 Vue.prototype.cfgInfo = cfgInfo
+Vue.prototype.axios = axios
 Vue.use(ElementUI)
-  /* eslint-disable no-new */
+/* eslint-disable no-new */
 new Vue({
   el: '#app',
-  store,
   router,
+  store,
   render: h => h(App)
 })

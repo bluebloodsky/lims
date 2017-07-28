@@ -29,24 +29,25 @@ export default {
         logInfo: ''
       }
     },
-    props: ['url'],
+    props: ['type'],
     methods: {
       getLogContent() {
-        apiCfgInfo.getInfo(this.url, data => {
+        apiCfgInfo.getInfo('/log_content', data => {
           if (data && data.log_content && data.log_content.length) {
-            let logs = data.log_content
-            this.startNum += logs.length
-            this.logInfo = this.logInfo + logs.join("")
+            let logs = data.log_content;
+            this.startNum = data.last_line;
+            this.logInfo += logs.join("\n");
             setTimeout(() => {
-              let container = document.getElementsByTagName("textarea")
+              let container = document.getElementsByTagName("textarea");
               for (let i = 0; i < container.length; i++) {
-                container[i].scrollTop = container[i].scrollHeight
+                container[i].scrollTop = container[i].scrollHeight;
               }
             }, 50)
           }
         }, {
           start: this.startNum,
-          limit: this.limitNum
+          limit: this.limitNum,
+          type: this.type
         })
       }
     },
