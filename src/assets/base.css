@@ -9,12 +9,17 @@ a {
   text-decoration: none;
 }
 
-a:hover {
+a:hover,
+button:hover {
   cursor: pointer
 }
 
 ul {
   list-style: none;
+}
+
+h2 {
+  text-align: center;
 }
 
 body,
@@ -30,26 +35,7 @@ img {
   border: none;
 }
 
-.good {
-  color: #13CE66;
-}
-
-.bad {
-  color: #FF4949;
-}
-
-.warn {
-  color: #F7BA2A;
-}
-
-.unkown {
-  color: grey;
-}
-
 .box {
-  border-right: #dfdfdf 1px solid;
-  border-bottom: #dfdfdf 1px solid;
-  float: left;
   position: relative;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -60,65 +46,51 @@ img {
 
 .h {
   text-align: left;
-  height: 48px;
+  height: 24px;
   border-bottom: #dfdfdf 1px solid;
-  margin-bottom: 5px;
+  background-color: #F2F2F2;
 }
 
-.h > .mdi {
+.h>span {
   position: absolute;
   display: block;
-  left: 0;
-  top: 0;
-  width: 48px;
-  height: 48px;
-  font-size: 20px;
-  line-height: 48px;
+  left: 5px;
+  top: 2px;
+  height: 20px;
+  font-size: 16px;
+  line-height: 20px;
   color: #01301E;
-  font-weight: bold;
   text-align: center;
 }
 
 .h .iconfont {
-  font-size: 20px;
+  font-size: 15px;
 }
 
-.h > span {
-  position: absolute;
-  display: block;
-  left: 48px;
-  top: 0;
-  font-size: 16px;
-  line-height: 48px;
-  color: #01301E;
-  font-weight: bold;
-}
-
-.h > .right-btn {
-  margin: 5px 15px;
+.h>.right-btn {
   float: right;
+  margin: 0 10px;
 }
 
-.h > .right-btn > input,
-.h > .right-btn > span,
-.h > .right-btn > .el-button {
-  font-size: 18px;
-  margin: 0 5px;
+.h>.right-btn>input,
+.h>.right-btn>span,
+.h>.right-btn>button {
+  font-size: 16px;
+  margin: 0;
+  border: none;
+  background-color: transparent;
+  width: 25px;
 }
 
 .b {
   position: absolute;
-  top: 48px;
+  top: 24px;
   left: 0;
   right: 0;
   bottom: 0;
   overflow: auto;
+  padding:  5px;
 }
-
-
-/*.b:hover {
-  overflow: auto;
-}*/
 
 .right-pad-box {
   position: absolute;
@@ -131,11 +103,11 @@ img {
   z-index: 99;
 }
 
-.right-pad-box > .h {
+.right-pad-box>.h {
   background-color: rgb(238, 245, 246);
 }
 
-.right-pad-box > .h > span {
+.right-pad-box>.h>span {
   left: 20px;
 }
 
@@ -145,13 +117,13 @@ img {
   padding: 5px 15px;
 }
 
-.desc-item-box > label {
+.desc-item-box>label {
   display: inline-block;
   width: 130px;
   color: #99a9bf
 }
 
-.desc-item-box > span {
+.desc-item-box>span {
   color: #259b24;
   font-size: 20px;
   font-weight: bold;

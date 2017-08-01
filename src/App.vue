@@ -1,15 +1,19 @@
 <template>
   <div id="app">
-    <router-view :title="title"></router-view>
+    <PageHome :title="title"></PageHome>
   </div>
 </template>
 <script>
+import PageHome from './pages/PageHome'
 export default {
   name: 'app',
   data() {
     return {
       title: '武汉南瑞实验室信息管理系统',
     }
+  },
+  components: {
+    PageHome
   }
 }
 </script>

@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="top">
-      <img src="../assets/logo.png">
+      <img src="../assets/logo2.png">
       <h2>{{title}}</h2>
       <ZlMenu :datas="menuItems" style="margin-top:8px"></ZlMenu>
       <ul class="right-btns">
         <li>
-          <router-link to="/user">
+          <a @click="logout">
             <i class="iconfont icon-account"> 管理員</i>
-          </router-link>
+          </a>
         </li>
         <li>
           <a @click="logout">
@@ -17,12 +17,7 @@
         </li>
       </ul>
     </div>
-    <div style="position:absolute; left:5px;top:55px;bottom:20px; right:0">
-      {{menuItems}}
-    </div>
-    <div class="footer">
-      Copyright © 2017 国网电力科学研究院 武汉南瑞有限责任公司. All Rights Reserved
-    </div>
+    <vue-tabs></vue-tabs>
   </div>
 </template>
 <script>
@@ -88,7 +83,8 @@ export default {
 
 .top>img {
   float: left;
-  margin: 3px 10px
+  margin: 10px 10px;
+  height: 30px;
 }
 
 .top h2 {
@@ -96,28 +92,17 @@ export default {
   float: left;
 }
 
-.right-btns{
+.right-btns {
   float: right;
 }
+
 .top>ul>li {
   float: left;
   margin-right: 20px;
 }
-.top a{
+
+.top a {
   color: white
-}
-.footer {
-  position: fixed;
-  bottom: 0;
-  margin: 0;
-  height: 20px;
-  line-height: 20px;
-  right: 0;
-  left: 0;
-  text-align: center;
-  background: #0097a7;
-  font-size: 12px;
-  color: #fff;
 }
 
 a {
