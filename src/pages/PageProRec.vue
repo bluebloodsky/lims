@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h2>电磁兼容实验室检测委托协议</h2>
+    <h2>避雷器试验室检测委托协议</h2>
     <div class="nav">
       <ul class="left-info">
-        <li class="done"><a>基本信息</a></li>
-        <li class="current"><a>试品主要技术参数</a></li>
-        <li><a>试验项目及主要技术参数</a></li>
+        <li class="done"><a @click="cur_page=1">基本信息</a></li>
+        <li class="current"><a @click="cur_page=2">试品主要技术参数</a></li>
+        <li><a @click="cur_page=3" disable>试验项目及主要技术参数</a></li>
       </ul>
       <div class="right-btn">
         <button>流程复制</button>
@@ -14,170 +14,249 @@
       </div>
     </div>
     <div class="main-wrapper">
-      <div class="box top-box">
-        <div class="h">
-          <span>委托方</span>
-          <div class="right-btn">
-            <button type="text"><i class="iconfont icon-search"></i></button>
+      <div v-show="cur_page==1">
+        <div class="box" v-if="clientAttrs&&clientAttrs.length">
+          <div class="h">
+            <span>委托方</span>
+            <div class="right-btn">
+              <button type="text"><i class="iconfont icon-search"></i></button>
+            </div>
+          </div>
+          <div class="b">
+            <form>
+              <div class="form-item" v-for="attr in clientAttrs">
+                <span>{{attr.desc}}</span>*
+                <div class="right-info">
+                  <input v-model="client[attr.name]" disabled>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
-        <div class="b">
-          <form>
-            <div class="form-item">
-              <span>委托单位</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
+        <div class="box" v-if="serviceAttrs&&serviceAttrs.length">
+          <div class="h">
+            <span>检测方</span>
+          </div>
+          <div class="b">
+            <form>
+              <div class="form-item" v-for="attr in serviceAttrs">
+                <span>{{attr.desc}}</span>*
+                <div class="right-info">
+                  <input v-model="service[attr.name]" disabled>
+                </div>
               </div>
-            </div>
-            <div class="form-item"><span>联系地址</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
+            </form>
+          </div>
+        </div>
+        <div class="box" v-if="protocolAttrs&&protocolAttrs.length">
+          <div class="h">
+            <span>协议内容</span>
+          </div>
+          <div class="b">
+            <form>
+              <div class="form-item" v-for="attr in protocolAttrs">
+                <span>{{attr.desc}}</span>
+                <div class="right-info">
+                  <template v-if="attr.type=='checkbox'">
+                    <template v-for="subItem in protocol[attr.name]">
+                      <input type="checkbox" class="checkbox" :value="subItem.value" v-model="subItem.checked">
+                      <span>{{baseAttrs[attr.options][subItem.value]}}</span>
+                    </template>
+                  </template>
+                  <select v-model="protocol[attr.name]" v-else-if="attr.type=='select'">
+                    <option :value="key" v-for="(subItem,key) in baseAttrs[attr.options]">{{subItem}}</option>
+                  </select>
+                  <input v-model="protocol[attr.name]" v-else>
+                </div>
               </div>
-            </div>
-            <div class="form-item"><span>E-mail</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>联系人</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>电话/传真</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>邮编</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
-      <div class="box top-box">
-        <div class="h">
-          <span>检测方</span>
+      <div v-show="cur_page==2">
+        <div class="box" v-if="productBaseAttrs&&productBaseAttrs.length">
+          <div class="h">
+            <span>检测试品基本信息</span>
+          </div>
+          <div class="b">
+            <form>
+              <div class="form-item" v-for="attr in productBaseAttrs">
+                <span>{{attr.desc}}</span>
+                <div class="right-info">
+                  <template v-if="attr.type=='checkbox'">
+                    <template v-for="subItem in product[attr.name]">
+                      <input type="checkbox" class="checkbox" :value="subItem.value" v-model="subItem.checked">
+                      <span>{{baseAttrs[attr.options][subItem.value]}}</span>
+                    </template>
+                  </template>
+                  <select v-model="product[attr.name]" v-else-if="attr.type=='select'">
+                    <option :value="key" v-for="(subItem,key) in baseAttrs[attr.options]">{{subItem}}</option>
+                  </select>
+                  <input v-model="product[attr.name]" v-else-if="attr.type=='input'">
+                  <input v-model="product[attr.name]" type="date" v-else-if="attr.type=='date'">
+                </div>
+              </div>
+              <div class="form-item">
+                <span>出厂编码</span>
+                <div class="right-info">
+                  <input v-model="product_code">
+                </div>
+                <button>+</button>
+              </div>
+              <div v-for="item in product.product_codes" class="form-code-item">
+                <span class="form-code-name">{{item.code}}</span>
+                <span class="form-code-desc">试品铭牌及产品外形照片<a>【上传】</a></span>
+                <span class="form-code-img">
+                <div v-for="img in item.imgs" class="box-img">
+                  <img src="../assets/logo.png"> 
+                  <button>X</button>
+                </div>
+                </span>
+                <button>-</button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div class="b">
-          <form>
-            <div class="form-item"><span>检测单位</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
+        <div class="box" v-if="productImportAttrs&&productImportAttrs.length">
+          <div class="h">
+            <span>检测试品重要信息</span>
+          </div>
+          <div class="b">
+            <form>
+              <div class="form-item" v-for="attr in productImportAttrs">
+                <span>{{attr.desc}}</span>
+                <div class="right-info">
+                  <template v-if="attr.type=='checkbox'">
+                    <template v-for="subItem in product[attr.name]">
+                      <input type="checkbox" class="checkbox" :value="subItem.value" v-model="subItem.checked">
+                      <span>{{baseAttrs[attr.options][subItem.value]}}</span>
+                    </template>
+                  </template>
+                  <select v-model="product[attr.name]" v-else-if="attr.type=='select'">
+                    <option :value="key" v-for="(subItem,key) in baseAttrs[attr.options]">{{subItem}}</option>
+                  </select>
+                  <input v-model="product[attr.name]" v-else-if="attr.type=='input'">
+                  <input v-model="product[attr.name]" type="date" v-else-if="attr.type=='date'">
+                </div>
               </div>
-            </div>
-            <div class="form-item"><span>联系地址</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>E-mail</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>联系人</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>电话/传真</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>开户单位</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>邮编</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>银行帐户</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>开户银行</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>税号</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
-      <div class="box top-box">
-        <div class="h">
-          <span>协议内容</span>
-        </div>
-        <div class="b">
-          <form>
-            <div class="form-item"><span>检测类别</span>
-              <div class="right-info">
-                <input type="checkbox" class="checkbox" :checked="ischecked"><span>GB/T 1094.1-2013</span>
-                <input type="checkbox" class="checkbox"><span>GB/T 1094.1-2013</span>
-                <input type="checkbox" class="checkbox"><span>GB/T 1094.1-2013</span>
-              </div>
-            </div>
-            <div class="form-item"><span>联系地址</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>E-mail</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>联系人</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>电话/传真</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>开户单位</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>邮编</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-            <div class="form-item"><span>银行帐户</span>*
-              <div class="right-info">
-                <input v-model="client.account" disabled>
-              </div>
-            </div>
-          </form>
-        </div>
+      <div v-show="cur_page==3">
+        <table border v-if="testItemAttrs&&testItemAttrs.length" style="width: 100%;border: 1px solid #ececec; border-collapse: collapse;text-align:left">
+          <tbody>
+            <tr>
+              <th>序号</th>
+              <th colspan="2">检测项目</th>
+              <th>技术要求</th>
+            </tr>
+            <tr v-for="(item,index) in choose_items">
+              <td>{{index+1}}</td>
+              <td v-if="getItemAttrById(item.value).subItems">
+                <input type="checkbox" class="checkbox" :value="item.value" v-model="item.checked">
+                <span>{{getItemAttrById(item.value).desc}}</span>
+              </td>
+              <td>{{item}}</td>
+              <td>
+                <TestItemParam :item_name="getItemAttrById(item.value).name">
+                  <template :slot='param.name 'v-for="param in getItemAttrById(item.value).params">
+                    <input v-if="">
+                  </template>
+                </TestItemParam>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </template>
 <script>
+import TestItemParam from './TestItemParam'
+import {
+  mapGetters,
+  mapActions
+} from 'vuex'
 export default {
   data() {
     return {
+      cur_page: 3,
+      product_code: '',
       client: {
-        account: '国网电力科学研究院武汉南瑞有限责任公司'
+        del_name: '国网电力科学研究院武汉南瑞有限责任公司'
       },
-      ischecked: false
+      service: {
+        address: '湖北省武汉市洪山区珞瑜路143号'
+      },
+      protocol: {
+        test_type: [{
+          checked: true,
+          value: '1'
+        }, {
+          checked: true,
+          value: '2'
+        }, {
+          checked: true,
+          value: '3'
+        }, {
+          checked: false,
+          value: '4'
+        }],
+        seal_type: [{
+          checked: true,
+          value: '1'
+        }, {
+          checked: true,
+          value: '2'
+        }, {
+          checked: true,
+          value: '3'
+        }, {
+          checked: true,
+          value: '4'
+        }],
+        report_type: '2'
+      },
+      product: {
+        product_codes: [{
+          code: '111',
+          imgs: ['../assets/test.png', '../assets/logo.png']
+        }, {
+          code: '111',
+          imgs: ['../assets/test.png']
+        }, {
+          code: '111',
+          imgs: ['../assets/logo.png']
+        }]
+      },
+      choose_items: [{
+        checked: true,
+        value: '1'
+      }, {
+        checked: false,
+        value: '2'
+      }, {
+        checked: false,
+        value: '3'
+      }]
+    }
+  },
+  components: { TestItemParam },
+  computed: {
+    ...mapGetters({
+      baseAttrs: 'baseAttrs',
+      clientAttrs: 'clientAttrs',
+      serviceAttrs: 'serviceAttrs',
+      protocolAttrs: 'protocolAttrs',
+      productBaseAttrs: 'productBaseAttrs',
+      productImportAttrs: 'productImportAttrs',
+      testItemAttrs: 'testItemAttrs'
+    })
+  },
+  methods: {
+    getItemAttrById(id) {
+      return this.testItemAttrs.find(item => item.id == id)
     }
   }
 }
@@ -191,9 +270,7 @@ export default {
   line-height: 28px;
 }
 
-.top-box {
-  position: relative;
-  height: 200px;
+.box {
   width: 100%;
 }
 
@@ -205,6 +282,12 @@ export default {
   float: left;
   width: 196px;
   text-align: center;
+}
+
+.left-info>li>a {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .done {
@@ -235,7 +318,7 @@ export default {
   width: 45%;
   position: relative;
   margin: 5px 10px;
-  text-align: center;
+  text-align: left;
   display: inline-block;
 }
 
@@ -250,7 +333,8 @@ export default {
   display: inline-block;
 }
 
-.right-info>input {
+.right-info>input,
+.right-info>select {
   width: 100%;
   font-size: 14px;
 }
@@ -258,6 +342,64 @@ export default {
 .right-info>.checkbox {
   width: 15px;
   height: 15px;
+}
+
+.form-code-item {
+  position: relative;
+  text-align: center;
+  height: 60px;
+  width: 95%;
+  margin-left: 10px;
+  border: #dfdfdf 1px solid;
+}
+
+.form-code-item>.form-code-name {
+  line-height: 60px;
+  width: 20%;
+  display: inline-block;
+  border-right: #dfdfdf 1px solid;
+  float: left;
+}
+
+.form-code-item>.form-code-desc {
+  line-height: 60px;
+  width: 30%;
+  display: inline-block;
+  border-right: #dfdfdf 1px solid;
+  float: left;
+}
+
+.form-code-item>.form-code-img {
+  width: 45%;
+  display: inline-block;
+  border-right: #dfdfdf 1px solid;
+  float: left;
+}
+
+.box-img {
+  position: relative;
+  display: inline-block;
+  height: 50px;
+  width: 100px;
+  line-height: 50px;
+  margin: 5px 10px;
+  border: #dfdfdf 1px solid;
+}
+
+.box-img>img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.box-img>button {
+  position: absolute;
+  font-size: 12px;
+  right: -2px;
+  top: 0px;
+  color: red;
+  text-align: center;
+  border: none;
+  background-color: transparent;
 }
 
 </style>

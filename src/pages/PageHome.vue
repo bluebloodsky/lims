@@ -56,6 +56,13 @@ export default {
     apiBaseInfo.getMenuInfo(menus => {
       this.menus = menus
     })
+    this.$store.dispatch('getBaseAttrs')
+    this.$store.dispatch('getClientAttrs')
+    this.$store.dispatch('getServiceAttrs')
+    this.$store.dispatch('getProtocolAttrs')
+    this.$store.dispatch('getProductBaseAttrs')
+    this.$store.dispatch('getProductImportAttrs')
+    this.$store.dispatch('getTestItemAttrs')
   },
   methods: {
     logout() {

@@ -327,14 +327,15 @@ class TemplateProcessor
     public function cloneBlock($blockname, $clones = 1, $replace = true)
     {
         $xmlBlock = null;
+        $str_reg = '/(<w:p>\${' . $blockname . '}<\/w:p>)(.*)(<w:p>\${\/' . $blockname . '}<\/w:p>)/is';
         preg_match(
-            '/(<\?xml.*)(<w:p.*>\${' . $blockname . '}<\/w:.*?p>)(.*)(<w:p.*\${\/' . $blockname . '}<\/w:.*?p>)/is',
+            $str_reg,
             $this->tempDocumentMainPart,
             $matches
         );
 
-        if (isset($matches[3])) {
-            $xmlBlock = $matches[3];
+        if (isset($matches[2])) {
+            $xmlBlock = $matches[2];
             $cloned = array();
             for ($i = 1; $i <= $clones; $i++) {
                 $cloned[] = $xmlBlock;
@@ -342,7 +343,7 @@ class TemplateProcessor
 
             if ($replace) {
                 $this->tempDocumentMainPart = str_replace(
-                    $matches[2] . $matches[3] . $matches[4],
+                    $matches[1] . $matches[2] . $matches[3],
                     implode('', $cloned),
                     $this->tempDocumentMainPart
                 );
@@ -386,7 +387,20 @@ class TemplateProcessor
      */
     public function deleteBlock($blockname)
     {
-        $this->replaceBlock($blockname, '');
+        $str_reg = '/(<w:p>\${' . $blockname . '}<\/w:p>)(.*)(<w:p>\${\/' . $blockname . '}<\/w:p>)/is';
+        preg_match(
+            $str_reg,
+            $this->tempDocumentMainPart,
+            $matches
+        );
+
+        if (isset($matches[2])) {
+            $this->tempDocumentMainPart = str_replace(
+                $matches[1] . $matches[2] . $matches[3],
+                '',
+                $this->tempDocumentMainPart
+            );
+        }
     }
 
     /**
