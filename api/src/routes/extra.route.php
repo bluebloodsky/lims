@@ -139,14 +139,14 @@ $app->group('/log_content', function () {
     $this->get('', function ($req, $resp, $args) {
         $params = $req->getQueryParams();
 
-        if(!array_has($params, 'type'))
+        if(!array_key_exists($params, 'type'))
             throw new Exception("need file type !");
         $type =  $params['type'];
         if($type != "i2" && $type != "ied")
             throw new Exception("bad type value $type");
 
-        $limit = array_has($params, 'limit') ? $params['limit'] : 200;
-        $start = array_has($params, 'start') ? $params['start'] : 0;
+        $limit = array_key_exists($params, 'limit') ? $params['limit'] : 200;
+        $start = array_key_exists($params, 'start') ? $params['start'] : 0;
 
         $RET = LogContentExtra::GetLogContent($type, $start, $limit);
         return $resp->withJson($RET);

@@ -7,6 +7,7 @@ import store from './store'
 import App from './App'
 import ElementUI from 'element-ui'
 import 'element-theme-default'
+import fullCalendar from 'vue-fullcalendar'
 
 Date.prototype.Format = function(fmt) {
   var o = {
@@ -28,6 +29,8 @@ Vue.config.productionTip = false
 Vue.prototype.cfgInfo = cfgInfo
 Vue.prototype.axios = axios
 Vue.use(ElementUI)
+
+Vue.component('full-calendar', fullCalendar)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -37,7 +37,7 @@ class DoAttrModel
         $join = [];
         $where_clause = [];
         $cols =['do_id', 'ln_class', 'do_name', 'desc_cn', 'unit', 'ratio', 'import_level', 'do_order', 'short_addr', 'cdc_type_id', 'precision'];
-        if(array_has($params , "fields"))
+        if(array_key_exists($params , "fields"))
         {
             $fields = preg_split("/,/", $params["fields"]);
             $fields = array_map(function($item){
@@ -52,7 +52,7 @@ class DoAttrModel
             array_push($fields , "cdc_type_model.desc_cn(cdc_type_desc)") ;
             $join['[>]cdc_type_model'] = 'cdc_type_id' ;
         }
-        if(array_has($params , "cdc_type_name")){
+        if(array_key_exists($params , "cdc_type_name")){
             $join['[>]cdc_type_model'] = 'cdc_type_id' ;
             $where_clause = ['cdc_type_model.cdc_type_name' => $params["cdc_type_name"]];
             unset($params["cdc_type_name"]);

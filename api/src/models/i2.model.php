@@ -76,7 +76,7 @@ class I2SensorModel extends I2BaseModel
     }
     public function GetAll($params)
     {
-        if(array_has($params , "fields")){
+        if(array_key_exists($params , "fields")){
             $l_cols =  preg_split("/,/", $params["fields"]);
         }
         else{

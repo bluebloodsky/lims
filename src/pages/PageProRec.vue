@@ -119,11 +119,36 @@
         </div>
         <div class="box" v-if="productImportAttrs&&productImportAttrs.length">
           <div class="h">
-            <span>检测试品重要信息</span>
+            <span>检测试品主要技术参数</span>
           </div>
           <div class="b">
             <form>
               <div class="form-item" v-for="attr in productImportAttrs">
+                <span>{{attr.desc}}</span>
+                <div class="right-info">
+                  <template v-if="attr.type=='checkbox'">
+                    <template v-for="subItem in product[attr.name]">
+                      <input type="checkbox" class="checkbox" :value="subItem.value" v-model="subItem.checked">
+                      <span>{{baseAttrs[attr.options][subItem.value]}}</span>
+                    </template>
+                  </template>
+                  <select v-model="product[attr.name]" v-else-if="attr.type=='select'">
+                    <option :value="key" v-for="(subItem,key) in baseAttrs[attr.options]">{{subItem}}</option>
+                  </select>
+                  <input v-model="product[attr.name]" v-else-if="attr.type=='input'">
+                  <input v-model="product[attr.name]" type="date" v-else-if="attr.type=='date'">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="box" v-if="productCommonAttrs&&productCommonAttrs.length">
+          <div class="h">
+            <span>检测试品共性参数信息</span>
+          </div>
+          <div class="b">
+            <form>
+              <div class="form-item" v-for="attr in productCommonAttrs">
                 <span>{{attr.desc}}</span>
                 <div class="right-info">
                   <template v-if="attr.type=='checkbox'">
@@ -151,21 +176,45 @@
               <th colspan="2">检测项目</th>
               <th>技术要求</th>
             </tr>
-            <tr v-for="(item,index) in choose_items">
-              <td>{{index+1}}</td>
-              <td v-if="getItemAttrById(item.value).subItems">
-                <input type="checkbox" class="checkbox" :value="item.value" v-model="item.checked">
-                <span>{{getItemAttrById(item.value).desc}}</span>
-              </td>
-              <td>{{item}}</td>
-              <td>
-                <TestItemParam :item_name="getItemAttrById(item.value).name">
-                  <template :slot='param.name 'v-for="param in getItemAttrById(item.value).params">
-                    <input v-if="">
-                  </template>
-                </TestItemParam>
-              </td>
-            </tr>
+            <template v-for="(item,index) in testItems">
+              <template v-if="item.children">
+                <tr v-for="(subItem,subIndex) in item.children">
+                  <td :rowspan="item.children.length" v-if="subIndex===0">{{index+1}}</td>
+                  <td :rowspan="item.children.length" v-if="subIndex===0">
+                    <input type="checkbox" :value="item.id" v-model="item.checked">
+                    <span>{{item.label}}</span>
+                  </td>
+                  <td>{{subItem.label}}</td>
+                  <td>
+                    <TempTestItemParam :item_name="subItem.name" :tpl="subItem.tpl">
+                      <template v-if="subItem.params">
+                        <template v-for="param in subItem.params">
+                          <template v-if="param.type=='radio'">
+                            <input type="radio" v-model="param.value" :name="param.name" :slot="param.name+'_'+opt_key" :value="opt_key" v-for="(option,opt_key) in baseAttrs[param.options]">
+                          </template>
+                          <input :slot="param.name" v-model="param.value" v-else>
+                        </template>
+                      </template>
+                    </TempTestItemParam>
+                  </td>
+                </tr>
+              </template>
+              <!--不带子项目-->
+              <tr v-else>
+                <td>{{index+1}}</td>
+                <td colspan="2">
+                  <input type="checkbox" :value="item.id" v-model="item.checked">
+                  <span>{{item.label}}</span>
+                </td>
+                <td>
+                  <TempTestItemParam :item_name="item.name" :tpl="item.tpl">
+                    <template v-if="item.params">
+                      <input :slot="param.name" v-for="param in item.params" v-model="param.value">
+                    </template>
+                  </TempTestItemParam>
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -173,23 +222,34 @@
   </div>
 </template>
 <script>
-import TestItemParam from './TestItemParam'
+//import TempTestItemParam from './TempTestItemParam'
 import {
   mapGetters,
   mapActions
 } from 'vuex'
+
+var TempTestItemParam = {
+  props: ['item_name', 'tpl'],
+  created(){
+    this.$options.template = this.tpl
+  }
+}
+
 export default {
   data() {
     return {
-      cur_page: 3,
+      cur_page: 1,
       product_code: '',
       client: {
-        del_name: '国网电力科学研究院武汉南瑞有限责任公司'
+        name: '国网电力科学研究院武汉南瑞有限责任公司'
       },
       service: {
         address: '湖北省武汉市洪山区珞瑜路143号'
       },
+      testItems: [],
       protocol: {
+        client: '1',
+        service: '2',
         test_type: [{
           checked: true,
           value: '1'
@@ -203,7 +263,7 @@ export default {
           checked: false,
           value: '4'
         }],
-        seal_type: [{
+        stamp_type: [{
           checked: true,
           value: '1'
         }, {
@@ -231,18 +291,27 @@ export default {
         }]
       },
       choose_items: [{
-        checked: true,
-        value: '1'
+        id: '2',
+        params: [{
+          name: 'pdbj',
+          value: 12.5
+        }]
       }, {
-        checked: false,
-        value: '2'
-      }, {
-        checked: false,
-        value: '3'
+        id: '5',
+        params: [{
+          name: 'bend_select',
+          value: 1
+        }, {
+          name: 'bend_f1',
+          value: 12
+        }, {
+          name: 'stretch_select',
+          value: 2
+        }]
       }]
     }
   },
-  components: { TestItemParam },
+  components: { TempTestItemParam },
   computed: {
     ...mapGetters({
       baseAttrs: 'baseAttrs',
@@ -251,12 +320,59 @@ export default {
       protocolAttrs: 'protocolAttrs',
       productBaseAttrs: 'productBaseAttrs',
       productImportAttrs: 'productImportAttrs',
+      productCommonAttrs: 'productCommonAttrs',
       testItemAttrs: 'testItemAttrs'
     })
   },
+  mounted() {
+    this.getTestItems()
+  },
   methods: {
-    getItemAttrById(id) {
-      return this.testItemAttrs.find(item => item.id == id)
+    getTestItems() {
+      this.testItems = []
+      this.testItemAttrs.map(item => {
+        var choose_item = this.choose_items.find(sub_item => sub_item.id == item.id)
+        var real_item = JSON.parse(JSON.stringify(item))
+        real_item.checked = false
+        if (real_item.params) {
+          real_item.params.map(param => {
+            param.value = ""
+          })
+        }
+        if (real_item.children) {
+          real_item.children.map(subItem => {
+            if (subItem.params) {
+              subItem.params.map(param => {
+                param.value = ""
+              })
+            }
+          })
+        }
+        if (choose_item) {
+          real_item.checked = true
+          if (choose_item.params) {
+            choose_item.params.map(real_param => {
+              if (real_item.params) {
+                real_item.params.map(param => {
+                  if (param.name == real_param.name)
+                    param.value = real_param.value
+                })
+              }
+              if (real_item.children) {
+                real_item.children.map(subItem => {
+                  if (subItem.params) {
+                    subItem.params.map(param => {
+                      if (param.name == real_param.name)
+                        param.value = real_param.value
+                    })
+                  }
+                })
+              }
+            })
+          }
+        }
+        this.testItems.push(real_item)
+      })
     }
   }
 }

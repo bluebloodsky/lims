@@ -120,7 +120,7 @@ $app->group('/cag_infos', function() {
 $app->get('/i2_groups', function ($req, $resp, $args) {
     $params = $req->getQueryParams();
     $fields = [] ;
-    if(array_has($params , "fields"))
+    if(array_key_exists($params , "fields"))
     {
         $fields = preg_split('/,/', array_get($params, 'fields', ''));
     }

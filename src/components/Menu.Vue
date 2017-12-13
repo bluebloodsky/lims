@@ -30,7 +30,6 @@ export default {
   methods: {
     clickMenuItem(item) {
       this.selected = item.name
-
       this.$taber.open({
         name: item.url,
         params: {

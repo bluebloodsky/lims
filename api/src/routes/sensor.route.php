@@ -2,8 +2,8 @@
 $app->group('/sensors', function () {
 	$this->get('' , function ($req, $resp, $args) {
 		$params = $req->getQueryParams();
-		$groupby = array_has($params, "groupby") ? $params["groupby"] : '';
-        $fields = array_has($params, "fields") ? $params["fields"] : '';
+		$groupby = array_key_exists($params, "groupby") ? $params["groupby"] : '';
+        $fields = array_key_exists($params, "fields") ? $params["fields"] : '';
 		//$fields = $params["fields"];
 		if($fields){
 		    $fields = preg_split("/,/" , $fields);

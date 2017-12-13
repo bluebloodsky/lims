@@ -62,7 +62,11 @@ export default {
     this.$store.dispatch('getProtocolAttrs')
     this.$store.dispatch('getProductBaseAttrs')
     this.$store.dispatch('getProductImportAttrs')
+    this.$store.dispatch('getProductCommonAttrs')
     this.$store.dispatch('getTestItemAttrs')
+    this.$taber.open({
+      name: 'desktop'
+    })
   },
   methods: {
     logout() {

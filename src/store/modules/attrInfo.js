@@ -6,6 +6,7 @@ const state = {
   protocolAttrs: [],
   productBaseAttrs: [],
   productImportAttrs: [],
+  productCommonAttrs: [],
   testItemAttrs: []
 }
 const getters = {
@@ -14,6 +15,7 @@ const getters = {
   protocolAttrs: state => state.protocolAttrs,
   productBaseAttrs: state => state.productBaseAttrs,
   productImportAttrs: state => state.productImportAttrs,
+  productCommonAttrs: state => state.productCommonAttrs,
   testItemAttrs: state => state.testItemAttrs
 }
 const actions = {
@@ -42,6 +44,11 @@ const actions = {
       commit(types.GET_PRODUCT_IMPORT_ATTRS, data)
     })
   },
+  getProductCommonAttrs({ commit }) {
+    baseInfo.getProductCommonAttrs(data => {
+      commit(types.GET_PRODUCT_COMMON_ATTRS, data)
+    })
+  },
   getTestItemAttrs({ commit }) {
     baseInfo.getTestItemAttrs(data => {
       commit(types.GET_TESTITEM_ATTRS, data)
@@ -63,6 +70,9 @@ const mutations = {
   },
   [types.GET_PRODUCT_IMPORT_ATTRS](state, data) {
     state.productImportAttrs = data
+  },
+  [types.GET_PRODUCT_COMMON_ATTRS](state, data) {
+    state.productCommonAttrs = data
   },
   [types.GET_TESTITEM_ATTRS](state, data) {
     state.testItemAttrs = data

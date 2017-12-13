@@ -4,6 +4,7 @@
   -moz-osx-font-smoothing: grayscale;
   color: #333;
 }
+
 a {
   text-decoration: none;
 }
@@ -46,20 +47,22 @@ img {
 .h {
   text-align: left;
   height: 24px;
+  padding-left: 10px;
   border-bottom: #dfdfdf 1px solid;
-  background-color: #F2F2F2;
+  background-color: rgb(223, 236, 236);
 }
 
 .h>span {
-  position: absolute;
-  display: block;
-  left: 5px;
-  top: 2px;
   height: 20px;
   font-size: 16px;
   line-height: 20px;
   color: #01301E;
-  text-align: center;
+}
+
+.h>a {
+  float: right;
+  display: inline-block;
+  padding: 0 10px; 
 }
 
 .h .iconfont {
@@ -68,7 +71,7 @@ img {
 
 .h>.right-btn {
   float: right;
-  margin: 0 10px;
+  margin: -5px 10px;
 }
 
 .h>.right-btn>input,
@@ -83,7 +86,7 @@ img {
 
 .b {
   top: 24px;
-  padding:  5px;
+  padding: 5px;
 }
 
 .right-pad-box {
@@ -121,4 +124,8 @@ img {
   color: #259b24;
   font-size: 20px;
   font-weight: bold;
+}
+
+.disabled{  
+  background-color: rgb(235, 235, 228);
 }

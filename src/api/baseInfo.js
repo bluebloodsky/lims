@@ -59,7 +59,11 @@ const _menuItems = [{
   }, {
     name: '模板管理',
     level: 1,
-    url: 'file_manager'
+    url: 'tpl_manager'
+  }, {
+    name: '工作流管理',
+    level: 1,
+    url: 'workflow_manager'
   }, {
     name: '内审管理',
     level: 1,
@@ -92,7 +96,7 @@ const _menuItems = [{
 }]
 
 const _client_attrs = [{
-  name: 'del_name',
+  name: 'name',
   desc: '委托单位',
   type: 'input'
 }, {
@@ -118,7 +122,7 @@ const _client_attrs = [{
 }]
 
 const _service_attrs = [{
-  name: 'service_name',
+  name: 'name',
   desc: '检测单位',
   type: 'input'
 }, {
@@ -245,12 +249,76 @@ const _product_import_attrs = [{
   name: 'pf_ref_cur',
   desc: '工频参考电流',
   type: 'input'
+}, {
+  name: 'f1',
+  desc: '抗弯负荷',
+  type: 'select',
+  options: 'seal_type'
+}]
+
+const _product_common_attrs = [{
+  name: 'lig_imp_vol',
+  desc: '雷电冲击电压',
+  type: 'input'
+}, {
+  name: 'step_imp_vol',
+  desc: '陡坡冲击电压',
+  type: 'input'
+}, {
+  name: 'ope_imp_vol',
+  desc: '操作冲击电压',
+  type: 'input'
+}, {
+  name: 'dc_vol_down',
+  desc: '直流参考电压下限',
+  type: 'input'
+}, {
+  name: 'lg_imp_up',
+  desc: '直流参考电压上限',
+  type: 'input'
+}, {
+  name: 'pf_ref_vol',
+  desc: '工频参考电压',
+  type: 'input'
+}, {
+  name: 'um',
+  desc: '设备最高电压',
+  type: 'input'
+}, {
+  name: 'tot_cur_con',
+  desc: '全电流持续电流',
+  type: 'input'
+}, {
+  name: 'ris_cur_con',
+  desc: '阻性电流持续电流',
+  type: 'input'
+}, {
+  name: 'pf_dry_ws_vol',
+  desc: '工频干耐受电压',
+  type: 'input'
+}, {
+  name: 'lig_imp_ws_level',
+  desc: '雷电冲击耐受水平',
+  type: 'input'
+}, {
+  name: 'ope_imp_ws_level',
+  desc: '操作冲击耐受水平',
+  type: 'input'
+}, {
+  name: 'pf_wet_ws_vol',
+  desc: '工频湿耐受电压',
+  type: 'input'
 }]
 
 const _product_base_attrs = [{
   name: 'product_name',
   desc: '试品名称',
-  type: 'input'
+  type: 'table',
+  children: [{
+    name: 'product_name',
+    desc: '试品名称',
+    type: 'input'
+  }]
 }, {
   name: 'product_model',
   desc: '型号规格',
@@ -289,73 +357,267 @@ const _product_base_attrs = [{
 }]
 
 const _test_item_attrs = [{
-  id: '1',
-  name: 'fhwtwgjc',
-  desc: '复合外套外观检查',
-}, {
-  id: '2',
-  name: 'pdbjjc',
-  desc: '爬电比距检查',
-  params: [{
-    name: 'pdbj',
-    desc: '爬电比距',
-    unit: 'kV',
-    type: 'input'
-  }]
-}, {
-  id: '3',
-  name: 'cysy',
-  desc: '残压试验',
-  subItems: [{
-    name: 'ldcjcysy',
-    desc: '雷电冲击残压试验',
-    params: [{
-      name: 'cy',
-      desc: '残压',
-      type: 'input',
-      unit: 'kVp'
+    id: '1',
+    name: 'fhwtwgjc',
+    label: '复合外套外观检查',
+    tpl: `<div>总缺陷面积应不大于外套总表面积的0.2%</div><slot name='wg_data'></slot>`,
+    params:[{
+      name:'wg_data',
+      label:'结果数据',
+      type:'table',
+      readonly:false,
+      options: '',
+      cols:[{
+        name:'data1',
+        label:'温度',
+        type:'input',
+        readonly:true
+      },{
+        name:'data2',
+        label:'湿度',
+        type:'input',
+        readonly:false
+      },{
+        name:'data3',
+        label:'湿度',
+        type:'input',
+        readonly:false
+      },{
+        name:'data2',
+        label:'湿度',
+        type:'input',
+        readonly:false
+      },{
+        name:'data3',
+        label:'湿度',
+        type:'input',
+        readonly:false
+      },{
+        name:'data2',
+        label:'湿度',
+        type:'input',
+        readonly:false
+      },{
+        name:'data3',
+        label:'湿度',
+        type:'input',
+        readonly:false
+      },{
+        name:'data2',
+        label:'湿度',
+        type:'input',
+        readonly:false
+      },{
+        name:'data3',
+        label:'湿度',
+        type:'input',
+        readonly:false
+      },{
+        name:'data2',
+        label:'顶层液体温度（℃）',
+        type:'input',
+        readonly:false
+      },{
+        name:'data3',
+        label:'顶层液体温度（℃）',
+        type:'input',
+        readonly:false
+      },{
+        name:'data2',
+        label:'顶层液体温度（℃）',
+        type:'input',
+        readonly:false
+      },{
+        name:'data3',
+        label:'顶层液体温度（℃）',
+        type:'input',
+        readonly:false
+      }]
     }]
   }, {
-    name: 'cxcjcysy',
-    desc: '操作冲击残压试验',
+    id: '2',
+    name: 'pdbjjc',
+    label: '爬电比距检查',
+    tpl: `<div>
+    爬电比距≥
+    <slot name='pdbj'></slot>mm/kV
+  </div>`,
     params: [{
-      name: 'cy',
-      desc: '残压',
+      name: 'pdbj',
+      label: '爬电比距',
       type: 'input',
-      unit: 'kVp'
+      options: '',
+      readonly: false
+    }]
+  },
+  {
+    id: "3",
+    name: 'zlckdysy',
+    label: '直流参考电压试验',
+    tpl: `<div>73kV≤U1mA.DC≤76kV</div>`,
+    params: [{
+      name: 'min',
+      label: '最小值',
+      type: 'input',
+      options: '',
+      readonly: false
+    }, {
+      name: 'max',
+      label: '最大值',
+      type: 'input',
+      options: '',
+      readonly: false
     }]
   }, {
-    name: 'dbcjcysy',
-    desc: '陡波冲击残压试验',
-    params: [{
-      name: 'cy',
-      desc: '残压',
-      type: 'input',
-      unit: 'kVp'
+    id: '4',
+    name: 'cysy',
+    label: '残压试验',
+    children: [{
+      id: '31',
+      name: 'ldcjcysy',
+      label: '雷电冲击残压试验',
+      tpl: `<div>≤ <slot name="ldcjcy"></slot> kVP</div>`,
+      params: [{
+        name: 'ldcjcy',
+        label: '雷电冲击残压',
+        type: 'input',
+        options: '',
+        readonly: true
+      }]
+    }, {
+      id: '32',
+      name: 'czcjcysy',
+      label: '操作冲击残压试验',
+      tpl: `<div>≤ <slot name="czcjcy"></slot> kVP</div>`,
+      params: [{
+        name: 'czcjcy',
+        label: '操作冲击残压',
+        type: 'input',
+        options: '',
+        readonly: false
+      }]
+    }, {
+      id: '33',
+      name: 'dbcjcysy',
+      label: '陡波冲击残压试验',
+      tpl: `<div>≤ <slot name="dbcjcy"></slot> kVP</div>`,
+      params: [{
+        name: 'dbcjcy',
+        label: '陡波冲击残压',
+        type: 'input',
+        options: '',
+        readonly: false
+      }]
     }]
-  }]
-}]
+  }, {
+    id: '5',
+    name: 'jxfhsy',
+    label: '机械负荷试验',
+    children: [{
+      id: '51',
+      name: 'bend',
+      label: '弯曲',
+      tpl: `<div>
+    <slot name="bend_select_1"></slot>根据抗弯符合F1
+    <slot name="bend_f1"></slot>N计算
+    <br>
+    <slot name="bend_select_2"></slot>宣称整只抗弯强度应不小于
+    <slot name="bend_min_f"></slot>kN,
+    <slot name="bend_min_s"></slot>s~
+    <slot name="bend_max_s"></slot>s,而不破坏
+  </div>`,
+      params: [{
+        name: 'bend_select',
+        label: '弯曲参数选择',
+        type: 'radio',
+        options: 'bend_select',
+        readonly: false
+      }, {
+        name: 'bend_f1',
+        label: '抗弯负荷',
+        type: 'input',
+        options: '',
+        readonly: false
+      }, {
+        name: 'bend_min_f',
+        label: '宣称最小强度',
+        type: 'input',
+        options: '',
+        readonly: false
+      }, {
+        name: 'bend_min_s',
+        label: '宣称最小秒数',
+        type: 'input',
+        options: '',
+        readonly: false
+      }, {
+        name: 'bend_max_s',
+        label: '宣称最大秒数',
+        type: 'input',
+        options: '',
+        readonly: false
+      }]
+    }, {
+      id: '52',
+      name: 'stretch',
+      label: '拉伸',
+      tpl: `<div>
+    <slot name="stretch_select_1"></slot>根据15倍避雷器自重计算
+    <br>
+    <slot name="stretch_select_2"></slot>宣称整只拉伸强度应不小于
+    <slot name="stretch_min_f"></slot>kN,
+    <slot name="stretch_min_s"></slot>s~
+    <slot name="stretch_max_s"></slot>s,而不破坏
+  </div>`,
+      params: [{
+        name: 'stretch_select',
+        label: '弯曲参数选择',
+        type: 'radio',
+        options: 'stretch_select',
+        readonly: false
+      }, {
+        name: 'stretch_min_f',
+        label: '宣称最小强度',
+        type: 'input',
+        options: '',
+        readonly: false
+      }, {
+        name: 'stretch_min_s',
+        label: '宣称最小秒数',
+        type: 'input',
+        options: '',
+        readonly: false
+      }, {
+        name: 'stretch_max_s',
+        label: '宣称最大秒数',
+        type: 'input',
+        options: '',
+        readonly: false
+      }]
+    }]
+  },
+]
 const _base_attrs = {
-  test_type: {
+  "test_type": {
     '1': '型式试验',
     '2': '例行检验',
     '3': '特殊试验',
     '4': '性能试验(单项)',
     '5': '性能试验(多项)'
   },
-  report_type: {
+  "report_type": {
     '1': '检测报告',
     '2': '试验报告'
   },
-  report_format: {
+  "report_format": {
     '1': '中文版',
     '2': '英文版'
   },
-  report_unit: {
+  "report_unit": {
     '1': '中国电力科学研究院',
     '2': '电力工业电气设备质量检验测试中心'
   },
-  stamp_type: {
+  "stamp_type": {
     '1': 'CNAS L0699',
     '2': 'CMA 中国电力科学研究院',
     '3': 'CMA 电力工业电气设备质量检验测试中心',
@@ -363,52 +625,75 @@ const _base_attrs = {
     '5': '试验报告专用章',
     '6': '型式评价专用章'
   },
-  come_type: {
+  "come_type": {
     '1': '送样',
     '2': '抽样'
   },
-  comp_do: {
+  "comp_do": {
     '1': '自提',
     '2': '自弃',
     '3': '检测方代办托运'
   },
-  product_status: {
+  "product_status": {
     '1': '完好',
     '2': '其他'
   },
-  nom_dis_cur: {
+  "nom_dis_cur": {
     '1': '1.5',
     '2': '2.5',
     '3': '5',
     '4': '10',
     '5': '20'
   },
-  pol_level: {
+  "pol_level": {
     '1': 'Ⅰ',
     '2': 'Ⅱ',
     '3': 'Ⅲ',
     '4': 'Ⅳ'
   },
-  cell_num: {
+  "cell_num": {
     '1': '1',
     '2': '2',
     '3': '3',
     '4': '4',
     '5': '5'
   },
-  sea_height: {
+  "sea_height": {
     '1': '0',
     '2': '1000',
     '3': '2000',
     '4': '3000',
     '5': '其他'
   },
-  sur_type: {
+  "sur_type": {
     '1': '复合',
     '2': '瓷',
     '3': 'GIS',
     '4': '插拔式',
     '5': '外壳不带电'
+  },
+  "bend_select": {
+    "1": "计算值",
+    "2": "宣称值"
+  },
+  "stretch_select": {
+    "1": "计算值",
+    "2": "宣称值"
+  },
+  "task_type": {
+    '1': '业务流程',
+    '2': '实验流程'
+  },
+  "task_step": {
+    "1": '业务受理',
+    "2": '协议审核',
+    "3": '价格审核',
+    "4": '客户确认',
+    "5": '任务下发',
+    "6": '原始记录编制',
+    "7": '原始记录审核',
+    "8": '实验报告编制',
+    "9": '实验报告审核'
   }
 }
 export default {
@@ -429,6 +714,9 @@ export default {
   },
   getProductImportAttrs(cb, option) {
     cb(_product_import_attrs)
+  },
+  getProductCommonAttrs(cb, option) {
+    cb(_product_common_attrs)
   },
   getTestItemAttrs(cb, option) {
     cb(_test_item_attrs)

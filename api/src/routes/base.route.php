@@ -1,6 +1,6 @@
 <?php
 $app->get('/', function ($req, $response, $args) {
-
+    /*
     $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(API . 'resources/model/test.docx');
 //    $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(API . 'resources/model/project.docx');
     $templateProcessor->deleteBlock('BLOCK1');
@@ -14,4 +14,7 @@ $app->get('/', function ($req, $response, $args) {
     header('Content-Disposition:attachment;filename="test.docx"');
     header("Content-Transfer-Encoding:binary");
     $templateProcessor->saveAs('php://output');
+    */
+    $response->write("Welcome to use!");
+    return $response;
 });

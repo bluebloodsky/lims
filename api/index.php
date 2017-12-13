@@ -36,7 +36,22 @@ foreach (glob(ROUTEDIR . '*.php') as $router) {
 $asJsonMidd = function ($req, $resp, $next) {
     try
     {
+        /*
+        if($req->getUri()->getPath() !="/users/validate"){
+            $str_auth = $req->getHeader('Authorization');
+            if($str_auth || $str_auth != ''){
+                $resp = $resp->withJson(['error' => 'Unauthorized'] , 401);
+                $resp = $resp->withHeader('Access-Control-Allow-Origin', '*');
+                $resp = $resp->withHeader('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization');
+                $resp = $resp->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT, DELETE');
+                return $resp;
+            }
+        }
+        */
         $resp = $next($req, $resp);
+        $resp = $resp->withHeader('Access-Control-Allow-Origin', '*');
+        $resp = $resp->withHeader('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization');
+        $resp = $resp->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT, DELETE');
     } catch (Exception $e) {
         $resp = $resp->withJson(['error' => $e->getMessage()], 500);
         error_log("Exception occured: " . $e->getMessage());

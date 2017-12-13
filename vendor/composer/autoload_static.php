@@ -19,15 +19,23 @@ class ComposerStaticInit71d0d87fc3b8ad11fc851861933cdfc3
         ),
         'S' => 
         array (
+            'Symfony\\Component\\ExpressionLanguage\\' => 37,
+            'Symfony\\Component\\EventDispatcher\\' => 34,
+            'Symfony\\Component\\Cache\\' => 24,
+            'Stagehand\\FSM\\' => 14,
             'Slim\\' => 5,
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'Psr\\Cache\\' => 10,
             'PhpOffice\\PhpWord\\' => 18,
             'PhpOffice\\Common\\' => 17,
+            'PHPMentors\\Workflower\\' => 22,
+            'PHPMentors\\DomainKata\\' => 22,
         ),
         'M' => 
         array (
@@ -57,9 +65,29 @@ class ComposerStaticInit71d0d87fc3b8ad11fc851861933cdfc3
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-escaper/src',
         ),
+        'Symfony\\Component\\ExpressionLanguage\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/expression-language',
+        ),
+        'Symfony\\Component\\EventDispatcher\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
+        ),
+        'Symfony\\Component\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/cache',
+        ),
+        'Stagehand\\FSM\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/piece/stagehand-fsm/src',
+        ),
         'Slim\\' => 
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
+        ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
         ),
         'Psr\\Log\\' => 
         array (
@@ -73,6 +101,10 @@ class ComposerStaticInit71d0d87fc3b8ad11fc851861933cdfc3
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
+        'Psr\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/cache/src',
+        ),
         'PhpOffice\\PhpWord\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoffice/phpword/src/PhpWord',
@@ -80,6 +112,14 @@ class ComposerStaticInit71d0d87fc3b8ad11fc851861933cdfc3
         'PhpOffice\\Common\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoffice/common/src/Common',
+        ),
+        'PHPMentors\\Workflower\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmentors/workflower/src',
+        ),
+        'PHPMentors\\DomainKata\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmentors/domain-kata/src',
         ),
         'Monolog\\' => 
         array (

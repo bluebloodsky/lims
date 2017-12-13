@@ -12,11 +12,11 @@ class SensorModel
     public static function GetSensorsDataGroupBy($groupby, $fields, $params)
     {
         $db = GetCfgDb();
-        if (array_has($params, "groupby")) {
+        if (array_key_exists($params, "groupby")) {
             unset($params["groupby"]);
         }
 
-        if (array_has($params, "fields")) {
+        if (array_key_exists($params, "fields")) {
             unset($params["fields"]);
         }
 
@@ -96,7 +96,7 @@ class SensorModel
                 $attr["desc_cn"]    = $row["sen_attr_desc"];
                 $id2Attr[$sen_id][] = $attr;
             }
-            if (!array_has($id2Sensor, $sen_id)) {
+            if (!array_key_exists($id2Sensor, $sen_id)) {
                 unset($row['attr']);
                 unset($row['value']);
                 unset($row['sen_attr_desc']);
@@ -191,7 +191,7 @@ class SensorBasicStatus
     {
         $data_db = GetIedDataDb();
         $cols    = ["sen_id", "data_time", "mov_dev_conf", "sup_dev_run", "data_status"];
-        if (array_has($where, "top") && !array_has($where["AND"], "sen_id")) {
+        if (array_key_exists($where, "top") && !array_key_exists($where["AND"], "sen_id")) {
             $top   = $where['top'];
             $where = "where (select count(*) from status_sensor as b
                 where b.sen_id = status_sensor.sen_id and b.status_id > status_sensor.status_id) < $top
@@ -202,7 +202,7 @@ class SensorBasicStatus
         /*
         $hasDataStatus = false;
         $dataStatusFilter = 0;
-        if (array_has($where, 'data_status')) {
+        if (array_key_exists($where, 'data_status')) {
         $hasDataStatus = true;
         $dataStatusFilter = $where['data_status'];
         unset($where['data_status']);
@@ -411,7 +411,7 @@ class SensorBasicStatus
             $where["AND"]['sen_id'] = $id;
         }
 
-        if (array_has($params, 'top')) {
+        if (array_key_exists($params, 'top')) {
             $where['top'] = $params['top'];
         }
         return self::_getSenBasicStatus($where);
@@ -470,7 +470,7 @@ class SensorData
             foreach ($sen_sources as $ln_class => $item) {
                 $data_ln_tbl = "data_$ln_class";
                 $ln_insts    = array_column($item["sensors"], "ln_inst");
-                if (array_has($senId2dataLnWhere, 'TOP')) {
+                if (array_key_exists($senId2dataLnWhere, 'TOP')) {
                     $top       = $senId2dataLnWhere['TOP'];
                     $str_insts = implode(",", $ln_insts);
                     $sql       = "select * from $data_ln_tbl as a where (select count(*) from $data_ln_tbl as b
@@ -494,7 +494,7 @@ class SensorData
                                 $aData["data_time"]  = $data_row["Data_Time"];
                                 $aData["data_attrs"] = [];
                                 foreach ($item["do_attrs"] as $do_name => $do_item) {
-                                    if (array_has($data_row, $do_name)) {
+                                    if (array_key_exists($data_row, $do_name)) {
                                         $attr["name"] = $do_item["do_name_cn"];
                                         $attr["unit"] = $do_item["unit"];
                                         if (is_numeric($do_item["precision"])) {
@@ -591,25 +591,25 @@ class SensorData
     {
         $join_where["AND"] = ['sen_cfg_tbl.sen_id' => $sen_id];
         $data_ln_tbl_where = array();
-        if (array_has($args, 'top')) {
+        if (array_key_exists($args, 'top')) {
             $data_ln_tbl_where['TOP'] = $args['top'];
         } else {
-            if (array_has($args, 'time')) {
+            if (array_key_exists($args, 'time')) {
                 $v                              = $args['time'];
                 $data_ln_tbl_where['data_time'] = self::_str2Time($v);
             } else {
-                if (array_has($args, 'time_min')) {
+                if (array_key_exists($args, 'time_min')) {
                     $v                                         = $args['time_min'];
                     $data_ln_tbl_where["AND"]['data_time[>=]'] = self::_str2Time($v);
                 }
-                if (array_has($args, 'time_max')) {
+                if (array_key_exists($args, 'time_max')) {
                     $v                                         = $args['time_max'];
                     $data_ln_tbl_where["AND"]['data_time[<=]'] = self::_str2Time($v);
                 }
             }
         }
 
-        if (array_has($args, 'import_level')) {
+        if (array_key_exists($args, 'import_level')) {
             // import_level in (....)
             $join_where["AND"]['do_map_model.import_level'] = preg_split('/,/', $args['import_level']);
         }
@@ -633,11 +633,11 @@ class SensorData
 
         $data_ln_tbl_where                   = array();
         $data_ln_tbl_where["AND"]["ln_inst"] = $ln_inst;
-        if (array_has($args, 'time_min')) {
+        if (array_key_exists($args, 'time_min')) {
             $v                                         = $args['time_min'];
             $data_ln_tbl_where["AND"]['data_time[>=]'] = self::_str2Time($v);
         }
-        if (array_has($args, 'time_max')) {
+        if (array_key_exists($args, 'time_max')) {
             $v                                         = $args['time_max'];
             $data_ln_tbl_where["AND"]['data_time[<=]'] = self::_str2Time($v);
         }
@@ -687,7 +687,7 @@ class SensorData
         $where["AND"]['ln_class'] = $lnNames;
 
         ##### get all the specify columns for $lnNames filter by import_level.
-        if (array_has($args, 'import_level')) {
+        if (array_key_exists($args, 'import_level')) {
             // import_level in (....)
             $where["AND"]['import_level'] = preg_split('/,/', $args['import_level']);
         } else {
