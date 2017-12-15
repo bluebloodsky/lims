@@ -65,7 +65,7 @@ export default {
     this.$store.dispatch('getProductCommonAttrs')
     this.$store.dispatch('getTestItemAttrs')
     this.$taber.open({
-      name: 'desktop'
+      name: 'workflow_manager'
     })
   },
   methods: {
