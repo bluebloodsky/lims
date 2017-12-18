@@ -13,16 +13,15 @@
       <div class="h h1">
         <span>流程图</span>
       </div>
-      <div class="b" @keyup="keydown">
+      <div class="b">
         <svg class="flowChart" @mouseup="drop" @mousemove="move" @click="contextmenuPositon=[-9999,-9999]">
-          <ProcessSvg v-for="item in currentwfc.processes" :item="item" @grab="grab" @rightClick="contextmenu">
+          <ProcessSvg v-for="(item,index) in currentwfc.processes" :item="item" @grab="grab" @rightClick="contextmenu" :selected="processSelIndex==index">
           </ProcessSvg>
-          <ArrowSvg :item="item" v-for="item in currentwfc.arrows"></ArrowSvg>
-          <rect :x="selectSvg[0]" :y="selectSvg[1]" :width="selectSvg[2]" :height="selectSvg[3]" stroke="#22C" fill="none" stroke-dasharray="5,5"></rect>
+          <ArrowSvg :item="item" @grab="grabArrow" v-for="(item,index) in currentwfc.arrows" :selected="arrowSelIndex==index"></ArrowSvg>
         </svg>
         <ul :style="{left:contextmenuPositon[0] + 'px',top:contextmenuPositon[1] + 'px'}" class="contextmenu" @contextmenu.prevent>
           <li><a>编辑</a></li>
-          <li><a @click="delSvg">删除</a></li>
+          <li><a @click="delProcess">删除</a></li>
         </ul>
       </div>
     </div>
@@ -55,11 +54,13 @@ export default {
     return {
       contextmenuPositon: [-9999, -9999], //svg组件右键菜单位置
       cursePoint: [], //记录svg鼠标点击位置
-      currentSvg: null, //当前svg组件
       currentStation: {}, //当前站
       currentwfc: {}, //当前业务流程图
       eventStatus: 1, //事件状态, 1选中 ,2连接
       moveFlg: false, //处于移动状态
+      processSelIndex: -1, //选中组件      
+      arrowSelIndex: -1, //选中箭头
+      newProcess: null,
       wfcs: [{
         id: null,
         processId: 1,
@@ -88,7 +89,7 @@ export default {
       },
       stations: [{
         name: 'station1',
-        label: '互感器质检站',
+        label: '试验站1',
         processes: [{
           id: 1,
           processId: 1,
@@ -104,41 +105,41 @@ export default {
         }]
       }, {
         name: 'station2',
-        label: '变压器质检站',
+        label: '试验站2',
         processes: []
       }, {
         name: 'station3',
-        label: '避雷器质检站',
+        label: '试验站3',
         processes: []
       }]
     }
   },
-  computed: {
-    selectSvg() {
-      if (this.currentSvg && this.currentSvg.id) {
-        return [this.currentSvg.point[0] - 5, this.currentSvg.point[1] - 5, 160, 50]
-      } else {
-        return [-9999, -9999, 0, 0]
-      }
-    }
-  },
   mounted() {
     window.onkeydown = e => {
-      console.log(e)
       if (e.code == 'Delete') {
-        if (this.currentSvg){
-          this.delSvg()
+        if (this.processSelIndex != -1) {
+          this.delProcess()
+          this.processSelIndex = -1
+        } else if (this.arrowSelIndex != -1) {
+          let selArrow = this.currentwfc.arrows[this.arrowSelIndex]
+          let wfc = this.currentwfc.processes.find(item => selArrow.id == item.id)
+          let parentIdIndex = wfc.parentIds.indexOf(selArrow.parentId)
+          wfc.parentIds.splice(parentIdIndex, 1)
+          this.calcArrows()
+          this.arrowSelIndex = -1
         }
       }
     }
   },
   components: { ProcessSvg, ArrowSvg },
+
   methods: {
     changeItem(data, node) {
-      if (!node.isLeaf)
+      if (node&&!node.isLeaf)
         return
       this.currentStation = data
-      this.currentSvg = null
+      this.processSelIndex = -1
+      this.arrowSelIndex = -1
       this.currentwfc = {
         processes: JSON.parse(JSON.stringify(data.processes)),
         arrows: []
@@ -171,8 +172,10 @@ export default {
               }
 
               this.currentwfc.arrows.push({
-                startPoint,
-                endPoint
+                startPoint: startPoint,
+                endPoint: endPoint,
+                id: item.id,
+                parentId: parentId
               })
             } else {
               item.parentIds.splice(index, 1)
@@ -184,28 +187,47 @@ export default {
     contextmenu(e, item) {
       this.contextmenuPositon = [e.layerX, e.layerY]
     },
+    grabArrow(e, item) {
+      this.processSelIndex = -1
+      this.currentwfc.arrows.forEach((subItem, index) => {
+        if(subItem.id == item.id && subItem.parentId == item.parentId){
+          this.arrowSelIndex = index
+        }
+      })
+    },
     grab(e, item) {
+      if (this.arrowSelIndex != -1) { //当前为箭头
+        this.arrowSelIndex = -1
+      }
       if (item.id) { //已有svg
-        let childSvg = this.currentwfc.processes.find(wfc => wfc.id == item.id)
+        let processIndex, processItem
+        this.currentwfc.processes.forEach((subItem, index) => {
+          if (subItem.id == item.id) {
+            processIndex = index
+            processItem = subItem
+          }
+        })
         if (this.eventStatus == 2) { //连接状态
-          if (this.currentSvg) {
-            if (this.currentSvg.id != childSvg.id) { //进行连接
-              if (childSvg.parentIds.indexOf(this.currentSvg.id) == -1 &&
-                this.currentSvg.parentIds.indexOf(childSvg.id) == -1
+          if (this.processSelIndex != -1) {
+            if (this.processSelIndex != processIndex) { //进行连接
+              let parentitem = this.currentwfc.processes[this.processSelIndex]
+              if (processItem.parentIds.indexOf(parentitem.id) == -1 &&
+                parentitem.parentIds.indexOf(processItem.id) == -1
               ) {
-                childSvg.parentIds.push(this.currentSvg.id)
+                processItem.parentIds.push(parentitem.id)
                 this.calcArrows()
               }
             } else {
-              this.currentSvg = null;
+              this.processSelIndex = -1;
               return
             }
           }
         }
-        this.currentSvg = childSvg
-      } else if (this.eventStatus == 1) { //新建
-        this.currentSvg = item
-        this.currentSvg.parentIds = []
+        this.processSelIndex = processIndex
+      } else { //新建
+        this.processSelIndex = -1;
+        this.newProcess = item
+        this.newProcess.parentIds = []
       }
       if (this.eventStatus == 1) {
         this.cursePoint = [e.layerX, e.layerY]
@@ -213,36 +235,41 @@ export default {
       }
     },
     drop(e) {
+      if (this.processSelIndex == -1) {
+        return
+      }
       if (this.moveFlg) {
         this.calcArrows()
         this.moveFlg = false
       }
     },
-    keydown(e) {
-      console.log(e)
-    },
-    delSvg() {
-      let index = this.currentwfc.processes.indexOf(this.currentSvg)
-      if (index != -1) {
-        this.currentSvg = null
-        this.currentwfc.processes.splice(index, 1)
+    delProcess() {
+      if (this.processSelIndex != -1) {
+        this.currentwfc.processes.splice(this.processSelIndex, 1)
         this.contextmenuPositon = [-9999, -9999]
         this.calcArrows()
+        this.processSelIndex = -1
       }
     },
     move(e) {
+      if (this.processSelIndex == -1 && !this.newProcess) {
+        return
+      }
       if (this.moveFlg) {
         let newCursePoint = [e.layerX, e.layerY]
-        if (!this.currentSvg.id) { //新建svg  
+        if (this.processSelIndex == -1) {
           if (this.currentwfc.processes.length) {
-            this.currentSvg.id = this.currentwfc.processes[this.currentwfc.processes.length - 1].id + 1
+            this.newProcess.id = this.currentwfc.processes[this.currentwfc.processes.length - 1].id + 1
           } else {
-            this.currentSvg.id = 1
+            this.newProcess.id = 1
           }
-          this.currentSvg.point = [newCursePoint[0] - 50, newCursePoint[1] - 10]
-          this.currentwfc.processes.push(this.currentSvg)
+          this.newProcess.point = [newCursePoint[0] - 50, newCursePoint[1] - 20]
+          this.currentwfc.processes.push(JSON.parse(JSON.stringify(this.newProcess)))
+          this.newProcess = null
+          this.processSelIndex = this.currentwfc.processes.length - 1
         } else {
-          this.currentSvg.point = [this.currentSvg.point[0] + newCursePoint[0] - this.cursePoint[0], this.currentSvg.point[1] + newCursePoint[1] - this.cursePoint[1]]
+          let currentProcess = this.currentwfc.processes[this.processSelIndex]
+          currentProcess.point = [currentProcess.point[0] + newCursePoint[0] - this.cursePoint[0], currentProcess.point[1] + newCursePoint[1] - this.cursePoint[1]]
         }
         this.cursePoint = newCursePoint
       }
