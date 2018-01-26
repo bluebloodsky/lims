@@ -1,0 +1,21 @@
+{
+  "input": "protocol.yaml",
+  "output": "protocol.html",
+  "format": "singlefile",
+  "markdown": true,
+  "theme": {
+    "default": "blue",
+    "GET": "blue",
+    "POST": "indigo",
+    "DELETE": "red",
+    "PUT": "amber"
+  },
+  "fixedNav": true,
+  "autoTags": true,
+  "indent": 2,
+  "collapse":{
+    "path":true
+    ,"method":true
+    ,"tool":true
+  }
+}
