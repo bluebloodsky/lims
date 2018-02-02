@@ -1,24 +1,31 @@
 import * as types from '../mutation-types'
 import baseInfo from '../../api/baseInfo'
 const state = {
-  clientAttrs: [],
-  serviceAttrs: [],
-  protocolAttrs: [],
-  productBaseAttrs: [],
-  productImportAttrs: [],
-  productCommonAttrs: [],
+  baseAttrs:[],
+  orderClientAttrs: [],
+  orderServerAttrs: [],
+  orderContentAttrs: [],
+  sampleBaseInfoAttrs: [],
+  sampleMainParaAttrs: [],
+  sampleCommonParaAttrs: [],
   testItemAttrs: []
 }
 const getters = {
-  clientAttrs: state => state.clientAttrs,
-  serviceAttrs: state => state.serviceAttrs,
-  protocolAttrs: state => state.protocolAttrs,
-  productBaseAttrs: state => state.productBaseAttrs,
-  productImportAttrs: state => state.productImportAttrs,
-  productCommonAttrs: state => state.productCommonAttrs,
+  baseAttrs: state => state.baseAttrs,
+  orderClientAttrs: state => state.orderClientAttrs,
+  orderServerAttrs: state => state.orderServerAttrs,
+  orderContentAttrs: state => state.orderContentAttrs,
+  sampleBaseInfoAttrs: state => state.sampleBaseInfoAttrs,
+  sampleMainParaAttrs: state => state.sampleMainParaAttrs,
+  sampleCommonParaAttrs: state => state.sampleCommonParaAttrs,
   testItemAttrs: state => state.testItemAttrs
 }
 const actions = {
+   getBaseAttrs({ commit }) {
+    baseInfo.getBaseAttrs(data => {
+      commit(types.GET_BASE_ATTRS, data)
+    })
+  },
   getClientAttrs({ commit }) {
     baseInfo.getClientAttrs(data => {
       commit(types.GET_CLIENT_ATTRS, data)
@@ -56,23 +63,26 @@ const actions = {
   }
 }
 const mutations = {
+  [types.GET_BASE_ATTRS](state, data) {
+    state.baseAttrs = data
+  },
   [types.GET_CLIENT_ATTRS](state, data) {
-    state.clientAttrs = data
+    state.orderClientAttrs = data
   },
   [types.GET_SERVICE_ATTRS](state, data) {
-    state.serviceAttrs = data
+    state.orderServerAttrs = data
   },
   [types.GET_PROTOCOL_ATTRS](state, data) {
-    state.protocolAttrs = data
+    state.orderContentAttrs = data
   },
   [types.GET_PRODUCT_BASE_ATTRS](state, data) {
-    state.productBaseAttrs = data
+    state.sampleBaseInfoAttrs = data
   },
   [types.GET_PRODUCT_IMPORT_ATTRS](state, data) {
-    state.productImportAttrs = data
+    state.sampleMainParaAttrs = data
   },
   [types.GET_PRODUCT_COMMON_ATTRS](state, data) {
-    state.productCommonAttrs = data
+    state.sampleCommonParaAttrs = data
   },
   [types.GET_TESTITEM_ATTRS](state, data) {
     state.testItemAttrs = data

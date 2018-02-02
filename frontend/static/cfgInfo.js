@@ -1,3 +1,3 @@
 this.cfgInfo = {
-  baseURL: 'http://172.17.11.236:8088/om/api/'
+  baseURL: 'http://localhost:8088/git/lims/backend/api/index.php/',  
 }

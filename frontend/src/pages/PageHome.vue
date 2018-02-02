@@ -7,25 +7,25 @@
       <ul class="right-btns">
         <li>
           <a @click="logout">
-            <i class="iconfont icon-account"> 管理員</i>
+            <i class="iconfont icon-account"> 管理员 </i>
           </a>
         </li>
         <li>
           <a @click="logout">
-              <i class="iconfont icon-exit"> 退出</i>
+              <i class="iconfont icon-exit"> 退出 </i>
             </a>
         </li>
       </ul>
     </div>
     <ul class="tabs">
-      <li v-for="(tab,tab_index) in tabs">
-        <router-link :to="pre_url+tab.url" @click.native="currentTab = tab_index">{{tab.name}}
-          <button type="text" @click="closeTab(tab_index)" v-if="tab_index!==0">x</button>
+      <li v-for="(tab,tab_index) in tabs" :key="tab.url">
+        <router-link :to="pre_url+tab.url">{{tab.name}}
+          <button type="text" @click.prevent="closeTab(tab_index)" v-if="tab_index!==0">x</button>
         </router-link>
       </li>
     </ul>
     <transition>
-      <keep-alive>
+      <keep-alive :include="includedComponents">
         <router-view></router-view>
       </keep-alive>
     </transition>
@@ -50,34 +50,54 @@ export default {
   data() {
     return {
       menus: [],
-      tabs: [{ url: 'desktop', name: '工作台' }],
       pre_url: '/home/',
-      currentTab: 0
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      let r = to.path.match(/\/home\/(\S+)/)
+      if (r.length > 1) {
+        let tab_url = r[1]
+        this.menus.map(item => {
+          if (item.url == tab_url) {
+            this.$store.commit('addTab', item)
+            return
+          }
+          if (item.items) {
+            item.items.map(subitem => {
+              if (subitem.url == tab_url) {
+                this.$store.commit('addTab', subitem)
+                return
+              }
+            })
+          }
+        })
+
+      }
     }
   },
   computed: {
     ...mapGetters({
       user: 'user',
+      tabs: 'tabs',
+      currentTab: 'currentTab'
     }),
     menuItems() {
       return this.menus
+    },
+    includedComponents() {
+      return this.tabs.map(tab => {
+        return tab.component
+      }).join(',')
     }
   },
   components: {
     ZlMenu
   },
   mounted() {
-    apiBaseInfo.getMenuInfo(menus => {
-      this.menus = menus
+    this.axios.get("/menus").then(response => {
+      this.menus = response.data
     })
-    this.$store.dispatch('getBaseAttrs')
-    this.$store.dispatch('getClientAttrs')
-    this.$store.dispatch('getServiceAttrs')
-    this.$store.dispatch('getProtocolAttrs')
-    this.$store.dispatch('getProductBaseAttrs')
-    this.$store.dispatch('getProductImportAttrs')
-    this.$store.dispatch('getProductCommonAttrs')
-    this.$store.dispatch('getTestItemAttrs')
   },
   methods: {
     logout() {
@@ -87,24 +107,23 @@ export default {
       })
     },
     openTab(obj) {
+      this.$store.commit('addTab', obj)
       let tab_index = this.tabs.findIndex(item => {
         return item.url == obj.url
       })
-      if (tab_index == -1) {
-        this.tabs.push(obj)
-      }
-      this.$router.push({ path: obj.url })
+      this.$router.push({ path: this.pre_url + obj.url })
     },
     closeTab(tab_index) {
-      this.tabs.splice(tab_index, 1)
+      this.$store.commit('removeTab', tab_index)
       if (tab_index == this.currentTab) {
-        this.$router.push({ path: this.pre_url + this.tabs[0].url })
+        this.$router.push({ path: this.pre_url + this.tabs[tab_index - 1].url })
       }
     }
   },
   destroyed() {
     //window.clearInterval(this.timer)
   }
+
 }
 
 </script>

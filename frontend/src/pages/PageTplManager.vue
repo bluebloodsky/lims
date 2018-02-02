@@ -109,6 +109,7 @@ var TempTestItemParam = {
 }
 
 export default {
+  name:'PageTplManager',
   data() {
     return {
       mode: 0,

@@ -6,7 +6,7 @@ import router from './router'
 import store from './store'
 import App from './App'
 import ElementUI from 'element-ui'
-import 'element-theme-default'
+import 'element-ui/lib/theme-chalk/index.css'
 import fullCalendar from 'vue-fullcalendar'
 
 Date.prototype.Format = function(fmt) {

@@ -11,7 +11,7 @@
           <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in fields">
           </el-table-column>
         </el-table>
-      </div>      
+      </div>
       <a>更多>></a>
     </div>
     <div class="box">
@@ -32,7 +32,9 @@ import {
   mapActions
 } from 'vuex'
 import echarts from 'echarts'
+import Qs from 'qs'
 export default {
+  name:'desktop',
   data() {
     return {
       fcEvents: [{
@@ -180,6 +182,7 @@ export default {
   computed: {
     ...mapGetters({
       baseAttrs: 'baseAttrs',
+      tabs: 'tabs'
     }),
     taskTodos_list() {
       return this.task_todo.map(item => {
@@ -200,120 +203,14 @@ export default {
   },
   methods: {
     todoClick(row) {
+      this.$store.commit('addTab', { name: '流程处理', url: 'pro_handle' , component:'PageProHandle' })
       this.$router.push({
         path: '/home/pro_handle',
-        params: {
-          task: row
-        }
+        query:{id:row.id}
       })
     }
   },
-  mounted(){
-    this.chart = echarts.init(document.getElementById('mychart'))
-    var dateList = []
-
-var heatmapData = [];
-var lunarData = [];
-for (var i = 0; i < dateList.length; i++) {
-    heatmapData.push([
-        dateList[i][0],
-        Math.random() * 300
-    ]);
-    lunarData.push([
-        dateList[i][0],
-        1,
-        dateList[i][1],
-        dateList[i][2]
-    ]);
-}
-
-
-var option = {
-    tooltip: {
-        formatter: function (params) {
-            return '降雨量: ' + params.value[1].toFixed(2);
-        }
-    },
-
-    visualMap: {
-        show: false,
-        min: 0,
-        max: 300,
-        calculable: true,
-        seriesIndex: [2],
-        orient: 'horizontal',
-        left: 'center',
-        bottom: 20,
-        inRange: {
-            color: ['#e0ffff', '#006edd'],
-            opacity: 0.3
-        },
-        controller: {
-            inRange: {
-                opacity: 0.5
-            }
-        }
-    },
-
-    calendar: [{
-        left: 'center',
-        top: 'middle',
-        cellSize: [80, 100],
-        yearLabel: {show: false},
-        orient: 'vertical',
-        dayLabel: {
-            firstDay: 1,
-            nameMap: 'cn'
-        },
-        monthLabel: {
-            show: true
-        },
-        range: '2017-03'
-    }],
-
-    series: [{
-        type: 'scatter',
-        coordinateSystem: 'calendar',
-        symbolSize: 1,
-        label: {
-            normal: {
-                show: true,
-                formatter: function (params) {
-                    var d = echarts.number.parseDate(params.value[0]);
-                    return d.getDate() + '\n\n' + params.value[2] + '\n\n';
-                },
-                textStyle: {
-                    color: '#000'
-                }
-            }
-        },
-        data: lunarData
-    }, {
-        type: 'scatter',
-        coordinateSystem: 'calendar',
-        symbolSize: 1,
-        label: {
-            normal: {
-                show: true,
-                formatter: function (params) {
-                    return '\n\n\n' + (params.value[3] || '');
-                },
-                textStyle: {
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: '#a00'
-                }
-            }
-        },
-        data: lunarData
-    }, {
-        name: '降雨量',
-        type: 'heatmap',
-        coordinateSystem: 'calendar',
-        data: heatmapData
-    }]
-};
-    this.chart.setOption(option)
+  mounted() {
   }
 }
 

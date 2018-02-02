@@ -236,6 +236,7 @@ var TempTestItemParam = {
 }
 
 export default {
+  name:'PageOrderRec',
   data() {
     return {
       cur_page: 1,

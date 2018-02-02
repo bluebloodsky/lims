@@ -1,6 +1,8 @@
 <?php
 $app = new Slim\App();
 
+$db_cfg = require_once API. 'config' . DS . 'db.config.php';
+
 foreach (glob(API . 'src' . DS . 'libs' . DS . '*.php') as $filename) {
     require_once $filename;
 }
@@ -13,6 +15,27 @@ foreach (glob(API . 'src' . DS . 'models' . DS . '*.php') as $filename) {
 foreach(glob(API . 'src' . DS . 'routes' . DS . '*.php') as $router) {
     require_once $router;
 }
+
+$asJsonMidd = function ($req, $resp, $next) {
+    if($req->isOptions()){
+        $resp = $resp->withHeader('Access-Control-Allow-Origin', '*');
+        $resp = $resp->withHeader('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Token-Authorization-X');
+        $resp = $resp->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT, DELETE');
+        return $resp;
+    }
+    try{
+        $resp = $next($req, $resp);
+    }catch (Exception $e) {
+        $resp = $resp->withJson(['error'=>$e->getMessage()], 500);
+        error_log("Exception occured: ".$e->getMessage());
+    }
+    $resp = $resp->withHeader('Access-Control-Allow-Origin', '*');
+    $resp = $resp->withHeader('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Token-Authorization-X');
+    $resp = $resp->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT, DELETE');
+    return $resp;
+
+};
+$app->add($asJsonMidd);
 
 /**
  * Run the application

@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import PageHome from '@/pages/PageHome'
-import PageDeskTop from '@/pages/PageDeskTop'
-import PageProRec from '@/pages/PageProRec'
-import PageTplManager from '@/pages/PageTplManager'
-import PageWorkflowManager from '@/pages/PageWorkflowManager'
-import PageProHandle from '@/pages/PageProHandle'
+import PageHome from './pages/PageHome'
+import PageDeskTop from './pages/PageDeskTop'
+import PageOrderRec from './pages/PageOrderRec'
+import PageTplManager from './pages/PageTplManager'
+import PageWorkflowManager from './pages/PageWorkflowManager'
+import PageOrderHandle from './pages/PageOrderHandle'
+import PageAttrConfig from './pages/PageAttrConfig'
 import store from './store'
 
 Vue.use(Router)
@@ -28,35 +29,26 @@ const router = new Router({
       path: 'desktop',
       component: PageDeskTop
     }, {
-      path: 'pro_rec',
-      component: PageProRec
+      path: 'order-rec',
+      component: PageOrderRec
     }, {
-      path: 'tpl_manager',
+      path: 'tpl-manager',
       component: PageTplManager
     }, {
-      path: 'workflow_manager',
+      path: 'workflow-manager',
       component: PageWorkflowManager
-    },{
-      path: 'pro_handle',
-      component: PageProHandle
+    }, {
+      path: 'order-handle',
+      component: PageOrderHandle
+    }, {
+      path: 'attr-config',
+      component: PageAttrConfig
     }]
   }]
 })
-/*
+
 router.beforeEach((to, from, next) => {
-  if (!to.matched.some(r => r.meta.noRequireAuth)) {
-    if (store.state.token) {
-      next();
-    } else {
-      next({
-        path: '/login',
-        query: { redirect: to.fullPath }
-      })
-    }
-  } else {
-    next();
-  }
+  next()
 })
-*/
 
 export default router

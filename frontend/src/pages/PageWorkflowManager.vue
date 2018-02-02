@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="box left-box">
+      
       <div class="h">
         <span>试验站</span>
       </div>
@@ -15,7 +16,7 @@
       </div>
       <div class="b">
         <svg class="flowChart" @mouseup="drop" @mousemove="move" @click="contextmenuPositon=[-9999,-9999]">
-          <ProcessSvg v-for="(item,index) in currentwfc.processes" :item="item" @grab="grab" @rightClick="contextmenu" :selected="processSelIndex==index">
+          <ProcessSvg :key="item.id" v-for="(item,index) in currentwfc.processes" :item="item" @grab="grab" @rightClick="contextmenu" :selected="processSelIndex==index">
           </ProcessSvg>
           <ArrowSvg :item="item" @grab="grabArrow" v-for="(item,index) in currentwfc.arrows" :selected="arrowSelIndex==index"></ArrowSvg>
         </svg>
