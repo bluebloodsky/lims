@@ -1,71 +1,87 @@
 <template>
-  <section class="todoList">
-    <header>
-      <input v-model="newTodo" @keyup.enter="addTodo">
-    </header>
-    <section class="main" v-show="todos.length">
-      <ul class="todo-list">
-        <li v-for="todo in todos" class="todo" :class="{ editing: todo == editedTodo }">
-          <div class="view">
-            <label @dblclick="editTodo(todo)">{{ todo }}</label>
-            <button class="destroy" @click="removeTodo(todo)"></button>
-          </div>
-          <input class="edit" type="text" v-model="todo.title" v-todo-focus="todo == editedTodo" @blur="doneEdit(todo)" @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)">
-        </li>
-      </ul>
-    </section>
+  <section class="wrapper">
+    <input class="new-todo" autofocus autocomplete="off" placeholder="添加一个新值" v-model="newTodo" @keyup.enter.stop="addTodo">
+    <ul class="todo-list">
+      <Todo v-model="todo.text" :key="todo.id" v-for="todo in todos" @deleteTodo="deleteTodo(todo)"></Todo>
+    </ul>
   </section>
 </template>
 <script>
+import Todo from './Todo'
 export default {
   name: 'TodoList',
-  data() {
-    return {
-      todos: [],
-      newTodo: '',
-      beforeEditCache:'',
-      editedTodo: null,
-      visibility: 'all'
+  props: {
+    value: {
+      type: Array,
+      requied: true
     }
   },
-  computed: {
-
+  data() {
+    return {
+      newTodo: '',
+      maxId:0,
+      todos: []
+    }
+  },
+  components: {
+    Todo
+  },
+  watch: {
+    todos: {
+      handler(newVal) {
+        let result = newVal.map(item => {
+          return item.text
+        })
+        this.$emit('input', result)
+      },
+      deep: true
+    }
+  },
+  computed: {},
+  mounted() {
+    if (this.value) {
+      this.todos = this.value.map(val => {
+        return {
+          id: this.maxId++,
+          text: val
+        }
+      })
+    }
   },
   methods: {
-    addTodo: function() {
-      var value = this.newTodo && this.newTodo.trim()
+    addTodo() {
+      let value = this.newTodo && this.newTodo.trim()
       if (!value) {
         return
       }
-      this.todos.push(value)
+      this.todos.push({
+        id: this.maxId++,
+        text: value,
+      })
       this.newTodo = ''
-    },
-    removeTodo: function(todo) {
+    },   
+    deleteTodo(todo) {
       this.todos.splice(this.todos.indexOf(todo), 1)
-    },
-    editTodo: function(todo) {
-      this.beforeEditCache = todo
-      this.editedTodo = todo
-    },
-    doneEdit: function(todo) {
-      if (!this.editedTodo) {
-        return
-      }
-      this.editedTodo = null
-      todo = todo.trim()
-      if (!todo) {
-        this.removeTodo(todo)
-      }
-    },
-    cancelEdit: function(todo) {
-      this.editedTodo = null
-      todo = this.beforeEditCache
-    },
+    }
   }
 }
 
 </script>
 <style scoped>
+.wrapper {
+  border: 1px solid #aaa;
+  padding: 10px;
+}
 
+.new-todo {
+  display: block;
+  padding: 10px;
+}
+
+.todo-list {
+  margin-top: 10px;
+  padding: 0;
+  list-style: none;
+}
 
 </style>

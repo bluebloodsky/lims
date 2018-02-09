@@ -29,7 +29,8 @@ $asJsonMidd = function ($req, $resp, $next) {
         $resp = $resp->withJson(['error'=>$e->getMessage()], 500);
         error_log("Exception occured: ".$e->getMessage());
     }
-    $resp = $resp->withHeader('Access-Control-Allow-Origin', '*');
+    $resp = $resp->withHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+    $resp = $resp->withHeader('Access-Control-Allow-Credentials' , 'true');
     $resp = $resp->withHeader('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Token-Authorization-X');
     $resp = $resp->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT, DELETE');
     return $resp;

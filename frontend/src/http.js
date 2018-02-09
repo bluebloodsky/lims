@@ -5,23 +5,23 @@ console.log(store)
 // axios 配置
 axios.defaults.timeout = 15000
 axios.defaults.baseURL = cfgInfo.baseURL
-
+axios.defaults.withCredentials = true
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
     if (store.state.token) {
-      config.headers.Authorization = `token ${store.state.token}`;
+      config.headers.Authorization = `token ${store.state.token}`
     }
-    return config;
+    return config
   },
   err => {
-    return Promise.reject(err);
-  });
+    return Promise.reject(err)
+  })
 
 // http response 拦截器
 axios.interceptors.response.use(
   response => {
-    return response;
+    return response
   },
   error => {
     if (error.response) {

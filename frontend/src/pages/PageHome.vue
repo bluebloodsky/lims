@@ -7,7 +7,7 @@
       <ul class="right-btns">
         <li>
           <a @click="logout">
-            <i class="iconfont icon-account"> 管理员 </i>
+            <i class="iconfont icon-account"> {{user.name_cn}} </i>
           </a>
         </li>
         <li>
@@ -20,7 +20,7 @@
     <ul class="tabs">
       <li v-for="(tab,tab_index) in tabs" :key="tab.url">
         <router-link :to="pre_url+tab.url">{{tab.name}}
-          <button type="text" @click.prevent="closeTab(tab_index)" v-if="tab_index!==0">x</button>
+          <button class="destroy" @click.prevent="closeTab(tab_index)" v-if="tab_index!==0"><i class="iconfont icon-cancel"></i></button>
         </router-link>
       </li>
     </ul>
@@ -56,7 +56,7 @@ export default {
   watch: {
     '$route' (to, from) {
       let r = to.path.match(/\/home\/(\S+)/)
-      if (r.length > 1) {
+      if (r && r.length > 1) {
         let tab_url = r[1]
         this.menus.map(item => {
           if (item.url == tab_url) {
@@ -186,4 +186,15 @@ a {
   background-color: #fff;
 }
 
+.destroy {
+  margin: auto 0;
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: #cc9a9a;
+}
+
+.destroy:hover {
+  color: #af5b5e;
+}
 </style>

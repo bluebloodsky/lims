@@ -8,16 +8,24 @@ $app->group('/menus', function () {
 
 $app->group('/order-attrs', function () {
     $this->get('', function ($req, $resp, $args) {
-    	$params = $req->getQueryParams();
-        $RET = InfoExtra::GetInstance()->GetOrderAttrs($params['lab']);
+        $RET = InfoExtra::GetInstance()->GetOrderAttrs();
+        return $resp->withJson($RET);
+    });
+    $this->post('', function ($req, $resp, $args) {
+        $data = json_decode($req->getBody() , true);
+        $RET = InfoExtra::GetInstance()->InsertOrUpdateOrderAttrs($data);
         return $resp->withJson($RET);
     });
 });
 
 $app->group('/sample-attrs', function () {
     $this->get('', function ($req, $resp, $args) {
-    	$params = $req->getQueryParams();
-        $RET = InfoExtra::GetInstance()->GetSampleAttrs($params['lab']);
+        $RET = InfoExtra::GetInstance()->GetSampleAttrs();
+        return $resp->withJson($RET);
+    });
+    $this->post('', function ($req, $resp, $args) {
+        $data = json_decode($req->getBody() , true);
+        $RET = InfoExtra::GetInstance()->InsertOrUpdateSampleAttrs($data);
         return $resp->withJson($RET);
     });
 });

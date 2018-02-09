@@ -1,0 +1,33 @@
+language: php
+
+php:
+  - 7.0
+  - 7.1
+
+sudo: false
+
+install: travis_retry composer install --prefer-source
+
+script: composer ci
+
+after_success:
+  - if [[ "`phpenv version-name`" != "7.0" ]]; then exit 0; fi
+  - vendor/bin/phpunit --coverage-clover coverage.clover
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+
+notifications:
+  email:
+    recipients:
+      - jeroendedauw@gmail.com
+    on_success: change
+    on_failure: always
+  irc:
+    channels:
+      - "chat.freenode.net#wikidata-feed"
+    on_success: change
+    on_failure: always
+
+cache:
+  directories:
+    - $HOME/.composer/cache

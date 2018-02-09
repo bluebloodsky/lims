@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>避雷器试验室检测委托协议</h2>
+    <h2>委托协议</h2>
     <div class="nav">
       <ul class="left-info">
         <li class="done"><a @click="cur_page=1">基本信息</a></li>

@@ -598,7 +598,8 @@
             "spreadsheet",
             "xls",
             "xlsx"
-        ]
+        ],
+        "abandoned": "phpoffice/phpspreadsheet"
     },
     {
         "name": "slim/slim",
@@ -1297,6 +1298,68 @@
         "keywords": [
             "fsm",
             "state machine"
+        ]
+    },
+    {
+        "name": "diff/diff",
+        "version": "3.0.0",
+        "version_normalized": "3.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/wmde/Diff.git",
+            "reference": "b37527c9a41a0c54d50213e7dd0eca9004085698"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/wmde/Diff/b37527c9a41a0c54d50213e7dd0eca9004085698.zip",
+            "reference": "b37527c9a41a0c54d50213e7dd0eca9004085698",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.0"
+        },
+        "require-dev": {
+            "ockcyp/covers-validator": "~0.4",
+            "phpunit/phpunit": "~6.0",
+            "squizlabs/php_codesniffer": "~2.3"
+        },
+        "time": "2017-05-10T16:55:12+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "Diff.php"
+            ],
+            "psr-4": {
+                "Diff\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL-2.0+"
+        ],
+        "authors": [
+            {
+                "name": "Jeroen De Dauw",
+                "email": "jeroendedauw@gmail.com",
+                "homepage": "http://jeroendedauw.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "Small standalone library for representing differences between data structures, computing such differences, and applying them as patches",
+        "homepage": "https://github.com/wmde/Diff",
+        "keywords": [
+            "diff",
+            "diffing",
+            "diffop",
+            "patch",
+            "patching",
+            "wikidata"
         ]
     }
 ]

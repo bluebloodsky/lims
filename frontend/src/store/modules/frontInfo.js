@@ -2,19 +2,6 @@ import * as types from '../mutation-types'
 const state = {
   tabs: [{ url: 'desktop', name: '工作台', component:'PageDeskTop'}],
   currentTab : 0,
-  attrTypes:[{
-    type:'input',
-    type_cn:'输入框'
-  },{
-    type:'select',
-    type_cn:'下拉框'
-  },{
-    type:'checkbox',
-    type_cn:'多选框'
-  },{
-    type:'radio',
-    type_cn:'单选'
-  }]
 }
 
 const getters = {
