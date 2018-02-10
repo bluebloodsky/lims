@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="positon:relative">
     <div class="box left-box">
       <div class="h">
         <span>导航</span>
@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="b">
-        <el-form :form="currentRow" label-width="120px" style="text-align:left;padding: 20px">
+        <el-form :form="currentRow" label-width="120px" @submit.prevent>
           <el-form-item label="属性名">
             <el-input v-model="currentRow.name"></el-input>
           </el-form-item>
@@ -73,7 +73,7 @@
       </div>
     </div>
     <el-dialog title="修改记录" :visible.sync="logVisible" draggable>
-      <el-table :data="currentAttrs.logs" border>
+      <el-table :data="currentAttrs.logs" border  style="width: 100%">
         <el-table-column property="logTime" label="日期"></el-table-column>
         <el-table-column property="user" label="操作人"></el-table-column>
         <el-table-column label="内容">
@@ -97,8 +97,8 @@
 </template>
 <script>
 import TodoList from '../components/TodoList'
-import {ATTR_TYPES} from '@/shared/constants'
-import {copyObject,rollbackArray} from '@/shared/util'
+import { ATTR_TYPES } from '@/shared/constants'
+import { copyObject, rollbackArray } from '@/shared/util'
 import {
   mapGetters
 } from 'vuex'
@@ -108,7 +108,7 @@ export default {
   data() {
     return {
       logVisible: false,
-      ATTR_TYPES:[],
+      ATTR_TYPES: [],
       orderClientAttrs: {
         name: "order_client_attrs",
         name_cn: "委托方属性",
@@ -208,6 +208,11 @@ export default {
           this.sampleMainParaAttrs = item
         }
       })
+    }).catch(err => {
+      this.$message({
+        message: err['message'],
+        type: 'error'
+      })
     })
   },
   computed: {
@@ -266,17 +271,20 @@ export default {
             message: response.data['message'],
             type: 'success'
           });
+        }).catch(err => {
+          console.log("err:" + err)
         })
       }
     },
     hideDetail() {
       this.flg_showRightBox = false
     },
-    loadVersion(index){
+    loadVersion(index) {
       this.currentAttrs.attrs = copyObject(this[this.currentAttrsName].attrs)
-      for(let i = 0 ; i < index ; i++){
-          rollbackArray(this.currentAttrs.attrs,this[this.currentAttrsName].logs[i].contents)
+      for (let i = 0; i < index; i++) {
+        rollbackArray(this.currentAttrs.attrs, this[this.currentAttrsName].logs[i].contents)
       }
+      this.logVisible = false
     }
   }
 }

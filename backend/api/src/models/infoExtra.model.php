@@ -42,9 +42,6 @@ class InfoExtra
     {
         $collection = $this->_dbClient->selectCollection($station . '.' . $type . '.attrs');
         $oldData = $collection->findOne(['name' => $data['name']]);
-        if ($data['_id']) {
-            $data['_id'] = new ObjectId($data['_id']['$oid']);
-        }
 
         $arrayOldData = json_decode(json_encode($oldData), true);
         $oldAttrs = [];
@@ -72,6 +69,7 @@ class InfoExtra
         if (!$oldData) {
             $data['_id'] = $collection->insertOne($data)->getInsertedId();
         } else {
+            $data['_id'] = $oldData['_id'];
             $collection->replaceOne(['_id' => $oldData['_id']], $data);
         }
         return ["data" => $data,

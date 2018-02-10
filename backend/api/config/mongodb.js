@@ -141,6 +141,11 @@ db.blq.order.attrs.insertMany([{
         name: 'postcode',
         name_cn: '邮编',
         type: 'input'
+    }],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
     }]
 }, {
     name: 'order_server_attrs',
@@ -185,6 +190,11 @@ db.blq.order.attrs.insertMany([{
         name: 'tax_num',
         name_cn: '税号',
         type: 'input'
+    }],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
     }]
 }, {
     name: 'order_content_attrs',
@@ -226,6 +236,11 @@ db.blq.order.attrs.insertMany([{
         name: 'test_money',
         name_cn: '检测费用',
         type: 'input',
+    }],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
     }]
 }])
 
@@ -272,6 +287,11 @@ db.blq.sample.attrs.insertMany([{
         name: 'product_num',
         name_cn: '样品数量',
         type: 'input'
+    }],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
     }]
 }, {
     name: 'sample_import_para_attrs',
@@ -285,6 +305,11 @@ db.blq.sample.attrs.insertMany([{
         name: 'rat_vol',
         name_cn: '额定电压',
         type: 'input',
+    }],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
     }]
 }, {
     name: 'sample_main_para_attrs',
@@ -397,5 +422,10 @@ db.blq.sample.attrs.insertMany([{
         name: 'pf_wet_ws_vol',
         name_cn: '工频湿耐受电压',
         type: 'input'
+    }],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
     }]
 }])
