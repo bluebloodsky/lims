@@ -26,7 +26,7 @@
     </ul>
     <transition>
       <keep-alive :include="includedComponents">
-        <router-view></router-view>
+        <router-view style="position:absolute; left:0;top:80px;bottom:0; right:0 ; overflow-y:auto"></router-view>
       </keep-alive>
     </transition>
   </div>
@@ -42,6 +42,9 @@ import {
 } from 'vuex'
 
 export default {
+  components: {
+    ZlMenu
+  },
   props: {
     title: {
       type: String
@@ -53,34 +56,38 @@ export default {
       pre_url: '/home/',
     }
   },
-  watch: {
-    '$route' (to, from) {
-      let r = to.path.match(/\/home\/(\S+)/)
-      if (r && r.length > 1) {
-        let tab_url = r[1]
-        this.menus.map(item => {
-          if (item.url == tab_url) {
-            this.$store.commit('addTab', item)
-            return
-          }
-          if (item.items) {
-            item.items.map(subitem => {
-              if (subitem.url == tab_url) {
-                this.$store.commit('addTab', subitem)
-                return
-              }
-            })
-          }
-        })
-
+  mounted() {
+    this.axios.get("/menus").then(response => {
+      this.menus = response.data
+    })
+    let r = this.$route.path.match(/\/home\/(\S+)/)
+    if (r && r.length > 1) {
+      let tab_url = r[1]
+      this.$store.commit('addTab', tab_url)
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.commit('logout')
+      this.$router.push({
+        path: '/login'
+      })
+    },
+    openTab(url) {
+      this.$store.commit('addTab', url)
+      this.$router.push({ path: this.pre_url + url })
+    },
+    closeTab(tab_index) {
+      if (this.$route.path == this.pre_url + this.tabs[tab_index].url) {
+        this.$router.push({ path: this.pre_url + this.tabs[tab_index - 1].url })
       }
+      this.$store.commit('removeTab', tab_index)
     }
   },
   computed: {
     ...mapGetters({
       user: 'user',
       tabs: 'tabs',
-      currentTab: 'currentTab'
     }),
     menuItems() {
       return this.menus
@@ -91,35 +98,8 @@ export default {
       }).join(',')
     }
   },
-  components: {
-    ZlMenu
-  },
-  mounted() {
-    this.axios.get("/menus").then(response => {
-      this.menus = response.data
-    })
-  },
-  methods: {
-    logout() {
-      this.$store.commit('logout')
-      this.$router.push({
-        path: '/login'
-      })
-    },
-    openTab(obj) {
-      this.$store.commit('addTab', obj)
-      let tab_index = this.tabs.findIndex(item => {
-        return item.url == obj.url
-      })
-      this.$router.push({ path: this.pre_url + obj.url })
-    },
-    closeTab(tab_index) {
-      this.$store.commit('removeTab', tab_index)
-      if (tab_index == this.currentTab) {
-        this.$router.push({ path: this.pre_url + this.tabs[tab_index - 1].url })
-      }
-    }
-  },
+
+
   destroyed() {
     //window.clearInterval(this.timer)
   }
@@ -167,7 +147,7 @@ a {
 
 .tabs {
   display: block;
-  height: 32px;
+  height: 30px;
   background-color: #D4D4D4;
 }
 
@@ -197,4 +177,5 @@ a {
 .destroy:hover {
   color: #af5b5e;
 }
+
 </style>

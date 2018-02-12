@@ -3,8 +3,8 @@ import Router from 'vue-router'
 import PageHome from './pages/PageHome'
 import PageDeskTop from './pages/PageDeskTop'
 import PageOrderRec from './pages/PageOrderRec'
-import PageTplManager from './pages/PageTplManager'
-import PageWorkflowManager from './pages/PageWorkflowManager'
+import PageTplConfig from './pages/PageTplConfig'
+import PageWorkflowConfig from './pages/PageWorkflowConfig'
 import PageOrderHandle from './pages/PageOrderHandle'
 import PageAttrConfig from './pages/PageAttrConfig'
 import store from './store'
@@ -32,11 +32,11 @@ const router = new Router({
       path: 'order-rec',
       component: PageOrderRec
     }, {
-      path: 'tpl-manager',
-      component: PageTplManager
+      path: 'tpl-config',
+      component: PageTplConfig
     }, {
-      path: 'workflow-manager',
-      component: PageWorkflowManager
+      path: 'workflow-config',
+      component: PageWorkflowConfig
     }, {
       path: 'order-handle',
       component: PageOrderHandle

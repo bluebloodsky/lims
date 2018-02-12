@@ -18,12 +18,12 @@ export const remove = (arr: Array < any > , item: any) => {
   }
 }
 
-export const rollbackArray = (source: Array, logContents: Array) => {
-  logContents.map(item => {
+export const rollbackMap = (source: Array|Object, logContents: Array) => {
+  logContents.map((item,key) => {
     if (item.type == 'add') {
-      remove(source, item.newvalue)
-    } else if (item.type == 'remove') {
-      source.push(item.oldvalue)
+      source.splice(key,1)
+    } else{
+      source[key] = item.oldvalue
     }
   })
 }

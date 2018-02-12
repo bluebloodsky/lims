@@ -1,7 +1,6 @@
 <template>
   <div>
-    <div class="box left-box">
-      
+    <div class="box left-box">      
       <div class="h">
         <span>试验站</span>
       </div>
@@ -51,6 +50,7 @@ import {
 import ProcessSvg from '@/components/ProcessSvg'
 import ArrowSvg from '@/components/ArrowSvg'
 export default {
+  name:'PageWorkflowConfig',
   data() {
     return {
       contextmenuPositon: [-9999, -9999], //svg组件右键菜单位置

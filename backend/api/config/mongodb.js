@@ -87,17 +87,20 @@ db.menus.insertMany([{
         name: '文件管理',
         url: 'file-manager'
     }, {
+        name: '人事管理',
+        url: 'person-manager'
+    }]
+}, {
+    name: '信息配置',
+    items: [{
         name: '属性配置',
         url: 'attr-config'
     }, {
-        name: '模板管理',
-        url: 'tpl-manager'
+        name: '模板配置',
+        url: 'tpl-config'
     }, {
-        name: '工作流管理',
-        url: 'workflow-manager'
-    }, {
-        name: '人事管理',
-        url: 'person-manager'
+        name: '工作流配置',
+        url: 'workflow-config'
     }]
 }, {
     name: '权限管理',
@@ -423,6 +426,204 @@ db.blq.sample.attrs.insertMany([{
         name_cn: '工频湿耐受电压',
         type: 'input'
     }],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
+    }]
+}])
+
+db.blq.test.items.drop()
+db.blq.test.items.insertMany([{
+    name: 'fhwtwgjc',
+    name_cn: '复合外套外观检查',
+    params: [{
+        name: 'fhwtwgjc',
+        name_cn: '复合外套外观检查',
+        tpl: `总缺陷面积应不大于外套总表面积的0.2%`,
+        attrs: []
+    }],
+    records: [],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
+    }]
+}, {
+    name: 'pdbjjc',
+    name_cn: '爬电比距检查',
+    params: [{
+        name: 'pdbjjc',
+        name_cn: '爬电比距检查',
+        tpl: `爬电比距≥  <slot name='pdbj'></slot>mm/kV`,
+        attrs: [{
+            name: 'pdbj',
+            name_cn: '爬电比距',
+            type: 'input',
+            options: '',
+            readonly: false
+        }]
+    }],
+    records: [],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
+    }]
+}, {
+    name: 'zlckdysy',
+    name_cn: '直流参考电压试验',
+    params: [{
+        name: 'zlckdysy',
+        name_cn: '直流参考电压试验',
+        tpl: `<slot name='min'></slot> ≤U1mA.DC≤ <slot name='max'></slot>`,
+        attrs: [{
+            name: 'min',
+            name_cn: '最小值',
+            type: 'input',
+            options: '',
+            readonly: false
+        }, {
+            name: 'max',
+            name_cn: '最大值',
+            type: 'input',
+            options: '',
+            readonly: false
+        }]
+    }],
+    records: [],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
+    }]
+}, {
+    name: 'cysy',
+    name_cn: '残压试验',
+    params: [{
+        name: 'ldcjcysy',
+        name_cn: '雷电冲击残压试验',
+        tpl: `≤ <slot name="ldcjcy"></slot> kVP`,
+        attrs: [{
+            name: 'ldcjcy',
+            name_cn: '雷电冲击残压',
+            type: 'input',
+            options: '',
+            readonly: true
+        }]
+    }, {
+        name: 'czcjcysy',
+        name_cn: '操作冲击残压试验',
+        tpl: `<div>≤ <slot name="czcjcy"></slot> kVP</div>`,
+        attrs: [{
+            name: 'czcjcy',
+            name_cn: '操作冲击残压',
+            type: 'input',
+            options: '',
+            readonly: false
+        }]
+    }, {
+        name: 'dbcjcysy',
+        name_cn: '陡波冲击残压试验',
+        tpl: `<div>≤ <slot name="dbcjcy"></slot> kVP</div>`,
+        attrs: [{
+            name: 'dbcjcy',
+            name_cn: '陡波冲击残压',
+            type: 'input',
+            options: '',
+            readonly: false
+        }]
+    }],
+    records: [],
+    logs: [{
+        logTime: "1970-01-01 00:00:00",
+        user: "blq_admin",
+        contents: []
+    }]
+}, {
+    name: 'jxfhsy',
+    name_cn: '机械负荷试验',
+    params: [{
+        name: 'bend',
+        name_cn: '弯曲',
+        tpl: `
+  <slot name="bend_select_0"></slot>根据抗弯符合F1
+  <slot name="bend_f1"></slot>N计算
+  <br>
+  <slot name="bend_select_1"></slot>宣称整只抗弯强度应不小于
+  <slot name="bend_min_f"></slot>kN,
+  <slot name="bend_min_s"></slot>s~
+  <slot name="bend_max_s"></slot>s,而不破坏
+  `,
+        attrs: [{
+            name: 'bend_select',
+            name_cn: '弯曲参数选择',
+            type: 'radio',
+            options: ['F1','宣称值'],
+            readonly: false
+        }, {
+            name: 'bend_f1',
+            name_cn: '抗弯负荷',
+            type: 'input',
+            options: '',
+            readonly: false
+        }, {
+            name: 'bend_min_f',
+            name_cn: '宣称最小强度',
+            type: 'input',
+            options: '',
+            readonly: false
+        }, {
+            name: 'bend_min_s',
+            name_cn: '宣称最小秒数',
+            type: 'input',
+            options: '',
+            readonly: false
+        }, {
+            name: 'bend_max_s',
+            name_cn: '宣称最大秒数',
+            type: 'input',
+            options: '',
+            readonly: false
+        }]
+    }, {
+        name: 'stretch',
+        name_cn: '拉伸',
+        tpl: `
+  <slot name="stretch_select_0"></slot>根据15倍避雷器自重计算
+  <br>
+  <slot name="stretch_select_1"></slot>宣称整只拉伸强度应不小于
+  <slot name="stretch_min_f"></slot>kN,
+  <slot name="stretch_min_s"></slot>s~
+  <slot name="stretch_max_s"></slot>s,而不破坏
+        `,
+        attrs: [{
+            name: 'stretch_select',
+            name_cn: '弯曲参数选择',
+            type: 'radio',
+            options: ['15倍','宣称值'],
+            readonly: false
+        }, {
+            name: 'stretch_min_f',
+            name_cn: '宣称最小强度',
+            type: 'input',
+            options: '',
+            readonly: false
+        }, {
+            name: 'stretch_min_s',
+            name_cn: '宣称最小秒数',
+            type: 'input',
+            options: '',
+            readonly: false
+        }, {
+            name: 'stretch_max_s',
+            name_cn: '宣称最大秒数',
+            type: 'input',
+            options: '',
+            readonly: false
+        }]
+    }],
+    records: [],
     logs: [{
         logTime: "1970-01-01 00:00:00",
         user: "blq_admin",

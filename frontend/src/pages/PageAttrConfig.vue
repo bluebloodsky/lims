@@ -54,32 +54,17 @@
         </div>
       </div>
       <div class="b">
-        <el-form :form="currentRow" label-width="120px" @submit.prevent>
-          <el-form-item label="属性名">
-            <el-input v-model="currentRow.name"></el-input>
-          </el-form-item>
-          <el-form-item label="属性描述">
-            <el-input v-model="currentRow.name_cn"></el-input>
-          </el-form-item>
-          <el-form-item label="类型">
-            <el-select v-model="currentRow.type">
-              <el-option :label="attrType.type_cn" :value="attrType.type" v-for="attrType in ATTR_TYPES" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="选项">
-            <TodoList v-model="currentRow.options" />
-          </el-form-item>
-        </el-form>
+        <AttrEdit v-model="currentRow" style="padding:15px;"/>
       </div>
     </div>
-    <el-dialog title="修改记录" :visible.sync="logVisible" draggable>
-      <el-table :data="currentAttrs.logs" border  style="width: 100%">
+    <el-dialog title="修改记录" :visible.sync="logVisible" width="80%" draggable>
+      <el-table :data="currentAttrs.logs" border style="width: 100%">
         <el-table-column property="logTime" label="日期"></el-table-column>
         <el-table-column property="user" label="操作人"></el-table-column>
         <el-table-column label="内容">
           <template scope="scope">
             <ul>
-              <li v-for="content in scope.row.contents">
+              <li v-for="content in scope.row.contents" style="border-bottom:#ccc 1px solid">
                 {{showLog(content)}}
               </li>
             </ul>
@@ -96,19 +81,22 @@
   </div>
 </template>
 <script>
-import TodoList from '../components/TodoList'
-import { ATTR_TYPES } from '@/shared/constants'
-import { copyObject, rollbackArray } from '@/shared/util'
+import AttrEdit from '../components/AttrEdit'
+import { ATTR_FIELDS } from '@/shared/constants'
+import { copyObject, rollbackMap } from '@/shared/util'
 import {
   mapGetters
 } from 'vuex'
 
 export default {
   name: 'PageAttrConfig',
+  components: {
+    AttrEdit
+  },
   data() {
     return {
       logVisible: false,
-      ATTR_TYPES: [],
+      fields:[],
       orderClientAttrs: {
         name: "order_client_attrs",
         name_cn: "委托方属性",
@@ -143,19 +131,6 @@ export default {
       currentAttrsName: 'orderClientAttrs',
       currentRow: [],
       flg_showRightBox: false,
-      fields: [{
-        name: 'name',
-        caption: '属性名'
-      }, {
-        name: 'name_cn',
-        caption: '属性描述'
-      }, {
-        name: 'type',
-        caption: '类型'
-      }, {
-        name: 'options',
-        caption: '选项'
-      }],
       navMenus: [{
         name: 'orderAttrs',
         label: '委托单属性',
@@ -186,7 +161,7 @@ export default {
     }
   },
   mounted() {
-    this.ATTR_TYPES = ATTR_TYPES
+    this.fields = ATTR_FIELDS
     this.axios.get("/order-attrs").then(response => {
       response.data.forEach(item => {
         if (item.name == 'order_client_attrs') {
@@ -214,12 +189,6 @@ export default {
         type: 'error'
       })
     })
-  },
-  computed: {
-
-  },
-  components: {
-    TodoList
   },
   methods: {
     selectMenu(key, keyPath) {
@@ -250,8 +219,10 @@ export default {
     showLog(log) {
       if (log.type == "add") {
         return '添加属性：' + JSON.stringify(log.newvalue)
-      } else if (log.type = "remove") {
+      } else if (log.type == "remove") {
         return '删除属性：' + JSON.stringify(log.oldvalue)
+      } else if (log.type == "change") {
+        return '修改属性：' + JSON.stringify(log.oldvalue) + '=>' + JSON.stringify(log.newvalue)
       }
     },
     submit() {
@@ -282,18 +253,22 @@ export default {
     loadVersion(index) {
       this.currentAttrs.attrs = copyObject(this[this.currentAttrsName].attrs)
       for (let i = 0; i < index; i++) {
-        rollbackArray(this.currentAttrs.attrs, this[this.currentAttrsName].logs[i].contents)
+        rollbackMap(this.currentAttrs.attrs, this[this.currentAttrsName].logs[i].contents)
       }
       this.logVisible = false
     }
-  }
+  },
+  computed: {
+
+  },
+
 }
 
 </script>
 <style scoped>
 .box {
   border: #ccc 1px solid;
-  height: 100vh;
+  height: 100%;
   float: left;
   overflow: auto;
   width: 100%;
@@ -302,7 +277,6 @@ export default {
 .left-box {
   width: 20%;
 }
-
 .middle-box {
   width: 80%;
 }

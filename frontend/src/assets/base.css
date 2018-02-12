@@ -78,15 +78,20 @@ img {
 .h>.right-btn>span,
 .h>.right-btn>button {
   font-size: 16px;
-  margin: 0;
+  margin-top: 8px;
   border: none;
   background-color: transparent;
-  width: 25px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
 }
 
 .b {
-  margin: 5px;
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 25px;
+  bottom: 0;
 }
 
 .right-pad-box {
@@ -102,6 +107,7 @@ img {
 
 .right-pad-box>.h {
   background-color: rgb(238, 245, 246);
+  margin-bottom: 10px;
 }
 
 .right-pad-box>.h>span {

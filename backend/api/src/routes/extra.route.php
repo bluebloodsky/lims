@@ -29,3 +29,15 @@ $app->group('/sample-attrs', function () {
         return $resp->withJson($RET);
     });
 });
+
+$app->group('/test-items', function () {
+    $this->get('', function ($req, $resp, $args) {
+        $RET = InfoExtra::GetInstance()->GetTestitems();
+        return $resp->withJson($RET);
+    });
+    $this->post('', function ($req, $resp, $args) {
+        $data = json_decode($req->getBody() , true);
+        $RET = InfoExtra::GetInstance()->InsertOrUpdateTestitems($data);
+        return $resp->withJson($RET);
+    });
+});

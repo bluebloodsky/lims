@@ -1,11 +1,11 @@
 <template>
   <ul class="first-menu">
     <li v-for="item in datas">
-      <a v-if="item.url" @click="callback(item)">{{item.name}}</a>
+      <a v-if="item.url" @click="callback(item.url)">{{item.name}}</a>
       <span v-else>{{item.name}}</span>
       <ul v-if="item.items" class="second-menu">
         <li v-for="subitem in item.items">
-          <a v-if="subitem.url"  @click="callback(subitem)">{{subitem.name}}</a>
+          <a v-if="subitem.url"  @click="callback(subitem.url)">{{subitem.name}}</a>
         </li>
       </ul>
     </li>
