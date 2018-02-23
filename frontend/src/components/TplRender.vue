@@ -39,8 +39,8 @@ var TempTestItemParam = {
   },
   created() {
     let reg = /\$\{(\S+?)\}/g
-    this.tpl = this.tpl.replace(reg,`<slot name='$1'></slot>`)
-    this.$options.template = '<div>' + this.tpl + '</div>'
+    let real_tpl = this.tpl.replace(reg,`<slot name='$1'></slot>`)
+    this.$options.template = '<div>' + real_tpl + '</div>'
   }
 }
 export default {
@@ -54,7 +54,7 @@ export default {
       requied: true
     }
   },
-  components: { TempTestItemParam },
+  components: { TempTestItemParam },  
 }
 
 </script>
