@@ -7,11 +7,11 @@
       <el-input v-model="value.name_cn"></el-input>
     </el-form-item>
     <el-form-item label="类型">
-      <el-select v-model="value.type" label="类型">
+      <el-select v-model="value.attr_type" label="类型">
         <el-option :label="attrType.type_cn" :value="attrType.type" v-for="attrType in attrTypes" />
       </el-select>
     </el-form-item>
-    <el-form-item label="选项" v-if="value.type=='select'||value.type=='radio'||value.type=='checkbox'">
+    <el-form-item label="选项">
       <TodoList v-model="value.options" />
     </el-form-item>
     <el-form-item label="只读">

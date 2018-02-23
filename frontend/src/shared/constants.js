@@ -27,7 +27,7 @@ export const ATTR_FIELDS = [{
   name: 'name_cn',
   caption: '属性描述'
 }, {
-  name: 'type',
+  name: 'attr_type',
   caption: '类型'
 }, {
   name: 'options',
@@ -39,3 +39,4 @@ export const ATTR_FIELDS = [{
   name: 'default_value',
   caption: '默认值'
 }]
+

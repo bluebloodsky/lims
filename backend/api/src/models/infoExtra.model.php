@@ -38,8 +38,9 @@ class InfoExtra
         return $this->_dbClient->selectCollection($station . '.sample.attrs')->find()->toArray();
     }
 
-    private function getDiff($differ, $diff)
+    private function getDiff($diff)
     {
+        $differ = new Diff\Differ\MapDiffer();
         if ($diff->getType() == 'change') {
             $newvalue = $diff->getNewValue();
             $oldvalue = $diff->getOldValue();
@@ -47,7 +48,7 @@ class InfoExtra
                 $newdiffs = $differ->doDiff($oldvalue, $newvalue);
                 $contents = [];
                 foreach ($newdiffs as $key => $diff) {
-                    $contents[$key] = $this->getDiff($differ, $diff);
+                    $contents[$key] = $this->getDiff($diff);
                 }
                 return $contents;
             }
@@ -71,14 +72,14 @@ class InfoExtra
                 $data['logs'] = $arrayOldData['logs'];
             }
         }
-        $differ = new Diff\Differ\MapDiffer();
+        $differ = new Diff\Differ\ListDiffer();
         $diffs = $differ->doDiff($oldAttrs, $data['attrs']);
         if (!$diffs) {
             return ["message" => "无修改内容"];
         }
         $contents = [];
         foreach ($diffs as $key => $diff) {
-            $contents[$key] = $this->getDiff($differ, $diff);
+            $contents[$key] = $this->getDiff($diff);
         }
 
         array_unshift($data['logs'], [
@@ -125,42 +126,37 @@ class InfoExtra
         $oldData = $collection->findOne(['name' => $data['name']]);
 
         $arrayOldData = json_decode(json_encode($oldData), true);
-        $oldParams = [];
-        $oldRecords = [];
-        $data['logs'] = [];
-        if ($arrayOldData) {
-            if ($arrayOldData['params']) {
-                $oldParams = $arrayOldData['params'];
-            }
-            if ($arrayOldData['records']) {
-                $oldRecords = $arrayOldData['records'];
-            }
-            if ($arrayOldData['logs']) {
-                $data['logs'] = $arrayOldData['logs'];
-            }
-        }
         $differ = new Diff\Differ\MapDiffer();
-        $diffParams = $differ->doDiff($oldParams, $data['params']);
-        $diffRecords = $differ->doDiff($oldRecords, $data['records']);
-        $diffs = [];
-        if ($diffParams) {
-            $diffs["params"] = $diffParams;
+        $types = ['params' , 'records'];
+        $flg_diffs = false;
+        foreach ($types as $type) {
+            $length = count($arrayOldData[$type]);
+            for($i = 0 ; $i < $length;$i++){
+                $diffs =  $differ->doDiff($arrayOldData[$type][$i] , $data[$type][$i]);
+                if($diffs){  
+                    if($diffs['logs']){
+                        unset($diffs['logs']);
+                    }                   
+                    foreach ($diffs as $key => $diff) {                                 
+                        $diffs[$key] = $this->getDiff($diff);
+                    }
+                    if($arrayOldData[$type][$i]['logs']){
+                        $data[$type][$i]['logs'] = $arrayOldData[$type][$i]['logs'];
+                    }else{
+                        $data[$type][$i]['logs'] = [];
+                    }
+                    array_unshift($data[$type][$i]['logs'], [
+                        'logTime' => date_format(new DateTime(), 'Y-m-d H:i:s'),
+                        'user' => $username,
+                        'contents' =>  $diffs,
+                    ]);  
+                    $flg_diffs = true;                  
+                }
+            }                          
         }
-        if ($diffRecords) {
-            $diffs["records"] = $diffRecords;
-        }
-        if ($diffs) {
+        if(!$flg_diffs){
             return ["message" => "无修改内容"];
-        }
-        array_unshift($data['logs'], [
-            'logTime' => date_format(new DateTime(), 'Y-m-d H:i:s'),
-            'user' => $username,
-            'contents' => ["params" => array_map(function ($n) {
-                return $n->toArray();
-            }, $diffParams), "records" => array_map(function ($n) {
-                return $n->toArray();
-            }, $diffRecords)],
-        ]);
+        } 
         if (!$oldData) {
             $data['_id'] = $collection->insertOne($data)->getInsertedId();
         } else {

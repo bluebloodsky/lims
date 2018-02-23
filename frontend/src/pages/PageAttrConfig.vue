@@ -54,7 +54,7 @@
         </div>
       </div>
       <div class="b">
-        <AttrEdit v-model="currentRow" style="padding:15px;"/>
+        <AttrEdit v-model="currentRow" style="padding:15px;" />
       </div>
     </div>
     <el-dialog title="修改记录" :visible.sync="logVisible" width="80%" draggable>
@@ -63,11 +63,9 @@
         <el-table-column property="user" label="操作人"></el-table-column>
         <el-table-column label="内容">
           <template scope="scope">
-            <ul>
-              <li v-for="content in scope.row.contents" style="border-bottom:#ccc 1px solid">
-                {{showLog(content)}}
-              </li>
-            </ul>
+            <div v-for="(content,key) in scope.row.contents" style="border-bottom:#ccc 1px solid" :class="content.type">
+              {{showLog(content)}}
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -83,7 +81,7 @@
 <script>
 import AttrEdit from '../components/AttrEdit'
 import { ATTR_FIELDS } from '@/shared/constants'
-import { copyObject, rollbackMap } from '@/shared/util'
+import { copyObject, rollbackList } from '@/shared/util'
 import {
   mapGetters
 } from 'vuex'
@@ -96,35 +94,35 @@ export default {
   data() {
     return {
       logVisible: false,
-      fields:[],
+      fields: [],
       orderClientAttrs: {
-        name: "order_client_attrs",
-        name_cn: "委托方属性",
+        name: "order_client",
+        name_cn: "委托方",
         attrs: []
       },
       orderServerAttrs: {
-        name: "order_server_attrs",
-        name_cn: "检测方属性",
+        name: "order_server",
+        name_cn: "检测方",
         attrs: []
       },
       orderContentAttrs: {
-        name: "order_content_attrs",
-        name_cn: "委托内容属性",
+        name: "order_content",
+        name_cn: "委托内容",
         attrs: []
       },
       sampleBaseInfoAttrs: {
-        name: "sample_base_info_attrs",
-        name_cn: "试品基本属性",
+        name: "sample_base_info",
+        name_cn: "试品基本参数",
         attrs: []
       },
       sampleImportParaAttrs: {
-        name: "sample_import_para_attrs",
-        name_cn: "试品重要参数属性",
+        name: "sample_import_para",
+        name_cn: "试品重要参数",
         attrs: []
       },
       sampleMainParaAttrs: {
-        name: "sample_main_para_attrs",
-        name_cn: "试品主要技术参数属性",
+        name: "sample_main_para",
+        name_cn: "试品主要技术参数",
         attrs: []
       },
       currentAttrs: {},
@@ -152,10 +150,10 @@ export default {
           label: '试品基本参数'
         }, {
           name: 'sampleImportParaAttrs',
-          label: '试品重要参数属性'
+          label: '试品重要参数'
         }, {
           name: 'sampleMainParaAttrs',
-          label: '试品主要技术参数属性'
+          label: '试品主要技术参数'
         }]
       }]
     }
@@ -164,22 +162,22 @@ export default {
     this.fields = ATTR_FIELDS
     this.axios.get("/order-attrs").then(response => {
       response.data.forEach(item => {
-        if (item.name == 'order_client_attrs') {
+        if (item.name == 'order_client') {
           this.orderClientAttrs = item
-        } else if (item.name == 'order_server_attrs') {
+        } else if (item.name == 'order_server') {
           this.orderServerAttrs = item
-        } else if (item.name == 'order_content_attrs') {
+        } else if (item.name == 'order_content') {
           this.orderContentAttrs = item
         }
       })
       return this.axios.get("/sample-attrs")
     }).then(response => {
       response.data.forEach(item => {
-        if (item.name == 'sample_base_info_attrs') {
+        if (item.name == 'sample_base_info') {
           this.sampleBaseInfoAttrs = item
-        } else if (item.name == 'sample_import_para_attrs') {
+        } else if (item.name == 'sample_import_para') {
           this.sampleImportParaAttrs = item
-        } else if (item.name == 'sample_main_para_attrs') {
+        } else if (item.name == 'sample_main_para') {
           this.sampleMainParaAttrs = item
         }
       })
@@ -218,11 +216,11 @@ export default {
     },
     showLog(log) {
       if (log.type == "add") {
-        return '添加属性：' + JSON.stringify(log.newvalue)
+        return JSON.stringify(log.newvalue)
       } else if (log.type == "remove") {
-        return '删除属性：' + JSON.stringify(log.oldvalue)
+        return JSON.stringify(log.oldvalue)
       } else if (log.type == "change") {
-        return '修改属性：' + JSON.stringify(log.oldvalue) + '=>' + JSON.stringify(log.newvalue)
+        return JSON.stringify(log.oldvalue) + '=>' + JSON.stringify(log.newvalue)
       }
     },
     submit() {
@@ -253,7 +251,7 @@ export default {
     loadVersion(index) {
       this.currentAttrs.attrs = copyObject(this[this.currentAttrsName].attrs)
       for (let i = 0; i < index; i++) {
-        rollbackMap(this.currentAttrs.attrs, this[this.currentAttrsName].logs[i].contents)
+        rollbackList(this.currentAttrs.attrs, this[this.currentAttrsName].logs[i].contents)
       }
       this.logVisible = false
     }
@@ -277,6 +275,7 @@ export default {
 .left-box {
   width: 20%;
 }
+
 .middle-box {
   width: 80%;
 }

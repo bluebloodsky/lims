@@ -3,222 +3,33 @@
     <h2>委托协议</h2>
     <div class="nav">
       <ul class="left-info">
-        <li class="done"><a @click="cur_page=1">基本信息</a></li>
-        <li class="current"><a @click="cur_page=2">试品主要技术参数</a></li>
-        <li><a @click="cur_page=3" disable>试验项目及主要技术参数</a></li>
+        <li :class="{done:donePage>index,current:currentPage==index}" v-for="(page,index) in pages">
+          <a @click="currentPage=index" v-if="donePage>index">{{page}}</a>
+          <span v-else>{{page}}</span>
+        </li>
       </ul>
       <div class="right-btn">
         <button>流程复制</button>
-        <button>下单</button>
-        <button>保存</button>
+        <button v-if="currentPage == 2">下单</button>
+        <button @click="savePage">保存</button>
       </div>
     </div>
     <div class="main-wrapper">
-      <div v-show="cur_page==1">
-        <div class="box" v-if="clientAttrs&&clientAttrs.length">
+      <div v-show="currentPage==0">
+        <div class="box" v-for="orderAttr in orderAttrs">
           <div class="h">
-            <span>委托方</span>
-            <div class="right-btn">
+            <span>{{orderAttr.name_cn}}</span>
+            <div class="right-btn" v-if="orderAttr.name == 'order_client'">
               <button type="text"><i class="iconfont icon-search"></i></button>
             </div>
           </div>
-          <div class="b">
-            <form>
-              <div class="form-item" v-for="attr in clientAttrs">
-                <span>{{attr.desc}}</span>*
-                <div class="right-info">
-                  <input v-model="client[attr.name]" disabled>
-                </div>
-              </div>
-            </form>
+          <div class="b1">
+            <AttrRender :attr="attr" v-model="currentProject['order'][orderAttr.name][attr.name]" v-for="attr in orderAttr.attrs"></AttrRender>
           </div>
         </div>
-        <div class="box" v-if="serviceAttrs&&serviceAttrs.length">
-          <div class="h">
-            <span>检测方</span>
-          </div>
-          <div class="b">
-            <form>
-              <div class="form-item" v-for="attr in serviceAttrs">
-                <span>{{attr.desc}}</span>*
-                <div class="right-info">
-                  <input v-model="service[attr.name]" disabled>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="box" v-if="protocolAttrs&&protocolAttrs.length">
-          <div class="h">
-            <span>协议内容</span>
-          </div>
-          <div class="b">
-            <form>
-              <div class="form-item" v-for="attr in protocolAttrs">
-                <span>{{attr.desc}}</span>
-                <div class="right-info">
-                  <template v-if="attr.type=='checkbox'">
-                    <template v-for="subItem in protocol[attr.name]">
-                      <input type="checkbox" class="checkbox" :value="subItem.value" v-model="subItem.checked">
-                      <span>{{baseAttrs[attr.options][subItem.value]}}</span>
-                    </template>
-                  </template>
-                  <select v-model="protocol[attr.name]" v-else-if="attr.type=='select'">
-                    <option :value="key" v-for="(subItem,key) in baseAttrs[attr.options]">{{subItem}}</option>
-                  </select>
-                  <input v-model="protocol[attr.name]" v-else>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div v-show="cur_page==2">
-        <div class="box" v-if="productBaseAttrs&&productBaseAttrs.length">
-          <div class="h">
-            <span>检测试品基本信息</span>
-          </div>
-          <div class="b">
-            <form>
-              <div class="form-item" v-for="attr in productBaseAttrs">
-                <span>{{attr.desc}}</span>
-                <div class="right-info">
-                  <template v-if="attr.type=='checkbox'">
-                    <template v-for="subItem in product[attr.name]">
-                      <input type="checkbox" class="checkbox" :value="subItem.value" v-model="subItem.checked">
-                      <span>{{baseAttrs[attr.options][subItem.value]}}</span>
-                    </template>
-                  </template>
-                  <select v-model="product[attr.name]" v-else-if="attr.type=='select'">
-                    <option :value="key" v-for="(subItem,key) in baseAttrs[attr.options]">{{subItem}}</option>
-                  </select>
-                  <input v-model="product[attr.name]" v-else-if="attr.type=='input'">
-                  <input v-model="product[attr.name]" type="date" v-else-if="attr.type=='date'">
-                </div>
-              </div>
-              <div class="form-item">
-                <span>出厂编码</span>
-                <div class="right-info">
-                  <input v-model="product_code">
-                </div>
-                <button>+</button>
-              </div>
-              <div v-for="item in product.product_codes" class="form-code-item">
-                <span class="form-code-name">{{item.code}}</span>
-                <span class="form-code-desc">试品铭牌及产品外形照片<a>【上传】</a></span>
-                <span class="form-code-img">
-                <div v-for="img in item.imgs" class="box-img">
-                  <img src="../assets/logo.png"> 
-                  <button>X</button>
-                </div>
-                </span>
-                <button>-</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="box" v-if="productImportAttrs&&productImportAttrs.length">
-          <div class="h">
-            <span>检测试品主要技术参数</span>
-          </div>
-          <div class="b">
-            <form>
-              <div class="form-item" v-for="attr in productImportAttrs">
-                <span>{{attr.desc}}</span>
-                <div class="right-info">
-                  <template v-if="attr.type=='checkbox'">
-                    <template v-for="subItem in product[attr.name]">
-                      <input type="checkbox" class="checkbox" :value="subItem.value" v-model="subItem.checked">
-                      <span>{{baseAttrs[attr.options][subItem.value]}}</span>
-                    </template>
-                  </template>
-                  <select v-model="product[attr.name]" v-else-if="attr.type=='select'">
-                    <option :value="key" v-for="(subItem,key) in baseAttrs[attr.options]">{{subItem}}</option>
-                  </select>
-                  <input v-model="product[attr.name]" v-else-if="attr.type=='input'">
-                  <input v-model="product[attr.name]" type="date" v-else-if="attr.type=='date'">
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="box" v-if="productCommonAttrs&&productCommonAttrs.length">
-          <div class="h">
-            <span>检测试品共性参数信息</span>
-          </div>
-          <div class="b">
-            <form>
-              <div class="form-item" v-for="attr in productCommonAttrs">
-                <span>{{attr.desc}}</span>
-                <div class="right-info">
-                  <template v-if="attr.type=='checkbox'">
-                    <template v-for="subItem in product[attr.name]">
-                      <input type="checkbox" class="checkbox" :value="subItem.value" v-model="subItem.checked">
-                      <span>{{baseAttrs[attr.options][subItem.value]}}</span>
-                    </template>
-                  </template>
-                  <select v-model="product[attr.name]" v-else-if="attr.type=='select'">
-                    <option :value="key" v-for="(subItem,key) in baseAttrs[attr.options]">{{subItem}}</option>
-                  </select>
-                  <input v-model="product[attr.name]" v-else-if="attr.type=='input'">
-                  <input v-model="product[attr.name]" type="date" v-else-if="attr.type=='date'">
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div v-show="cur_page==3">
-        <table border v-if="testItemAttrs&&testItemAttrs.length" style="width: 100%;border: 1px solid #ececec; border-collapse: collapse;text-align:left">
-          <tbody>
-            <tr>
-              <th>序号</th>
-              <th colspan="2">检测项目</th>
-              <th>技术要求</th>
-            </tr>
-            <template v-for="(item,index) in testItems">
-              <template v-if="item.children">
-                <tr v-for="(subItem,subIndex) in item.children">
-                  <td :rowspan="item.children.length" v-if="subIndex===0">{{index+1}}</td>
-                  <td :rowspan="item.children.length" v-if="subIndex===0">
-                    <input type="checkbox" :value="item.id" v-model="item.checked">
-                    <span>{{item.label}}</span>
-                  </td>
-                  <td>{{subItem.label}}</td>
-                  <td>
-                    <TempTestItemParam :item_name="subItem.name" :tpl="subItem.tpl">
-                      <template v-if="subItem.params">
-                        <template v-for="param in subItem.params">
-                          <template v-if="param.type=='radio'">
-                            <input type="radio" v-model="param.value" :name="param.name" :slot="param.name+'_'+opt_key" :value="opt_key" v-for="(option,opt_key) in baseAttrs[param.options]">
-                          </template>
-                          <input :slot="param.name" v-model="param.value" v-else>
-                        </template>
-                      </template>
-                    </TempTestItemParam>
-                  </td>
-                </tr>
-              </template>
-              <!--不带子项目-->
-              <tr v-else>
-                <td>{{index+1}}</td>
-                <td colspan="2">
-                  <input type="checkbox" :value="item.id" v-model="item.checked">
-                  <span>{{item.label}}</span>
-                </td>
-                <td>
-                  <TempTestItemParam :item_name="item.name" :tpl="item.tpl">
-                    <template v-if="item.params">
-                      <input :slot="param.name" v-for="param in item.params" v-model="param.value">
-                    </template>
-                  </TempTestItemParam>
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
       </div>
     </div>
+  </div>
   </div>
 </template>
 <script>
@@ -228,152 +39,49 @@ import {
   mapActions
 } from 'vuex'
 
+import { mixObject } from '@/shared/util'
+import AttrRender from '../components/AttrRender'
 var TempTestItemParam = {
   props: ['item_name', 'tpl'],
-  created(){
+  created() {
     this.$options.template = this.tpl
   }
 }
 
 export default {
-  name:'PageOrderRec',
+  name: 'PageOrderRec',
   data() {
     return {
-      cur_page: 1,
-      product_code: '',
-      client: {
-        name: '国网电力科学研究院武汉南瑞有限责任公司'
-      },
-      service: {
-        address: '湖北省武汉市洪山区珞瑜路143号'
-      },
-      testItems: [],
-      protocol: {
-        client: '1',
-        service: '2',
-        test_type: [{
-          checked: true,
-          value: '1'
-        }, {
-          checked: true,
-          value: '2'
-        }, {
-          checked: true,
-          value: '3'
-        }, {
-          checked: false,
-          value: '4'
-        }],
-        stamp_type: [{
-          checked: true,
-          value: '1'
-        }, {
-          checked: true,
-          value: '2'
-        }, {
-          checked: true,
-          value: '3'
-        }, {
-          checked: true,
-          value: '4'
-        }],
-        report_type: '2'
-      },
-      product: {
-        product_codes: [{
-          code: '111',
-          imgs: ['../assets/test.png', '../assets/logo.png']
-        }, {
-          code: '111',
-          imgs: ['../assets/test.png']
-        }, {
-          code: '111',
-          imgs: ['../assets/logo.png']
-        }]
-      },
-      choose_items: [{
-        id: '2',
-        params: [{
-          name: 'pdbj',
-          value: 12.5
-        }]
-      }, {
-        id: '5',
-        params: [{
-          name: 'bend_select',
-          value: 1
-        }, {
-          name: 'bend_f1',
-          value: 12
-        }, {
-          name: 'stretch_select',
-          value: 2
-        }]
-      }]
+      pages: ['基本信息', '试品主要技术参数', '试验项目及主要技术参数'],
+      currentPage: 0,
+      donePage: 0,
+      currentProject: {},
+      orderAttrs: [],
     }
   },
-  components: { TempTestItemParam },
-  computed: {
-    ...mapGetters({
-      baseAttrs: 'baseAttrs',
-      clientAttrs: 'clientAttrs',
-      serviceAttrs: 'serviceAttrs',
-      protocolAttrs: 'protocolAttrs',
-      productBaseAttrs: 'productBaseAttrs',
-      productImportAttrs: 'productImportAttrs',
-      productCommonAttrs: 'productCommonAttrs',
-      testItemAttrs: 'testItemAttrs'
+  components: { TempTestItemParam, AttrRender },
+  computed: {},
+  mounted() {
+    let l_projectInfo = {
+      order: {
+        order_client: {},
+        order_server: {},
+        order_content: {}
+      }
+    }
+    this.axios.get("/order-attrs").then(response => {
+      this.orderAttrs = response.data
+      this.orderAttrs.map(orderAttr => {
+        orderAttr.attrs.map(attr => {
+          l_projectInfo["order"][orderAttr.name][attr.name] = attr.defualt_value ? attr.defualt_value : ''
+        })
+      })
+      this.currentProject = mixObject(this.currentProject, l_projectInfo)
     })
   },
-  mounted() {
-    this.getTestItems()
-  },
   methods: {
-    getTestItems() {
-      this.testItems = []
-      this.testItemAttrs.map(item => {
-        var choose_item = this.choose_items.find(sub_item => sub_item.id == item.id)
-        var real_item = JSON.parse(JSON.stringify(item))
-        real_item.checked = false
-        if (real_item.params) {
-          real_item.params.map(param => {
-            param.value = ""
-          })
-        }
-        if (real_item.children) {
-          real_item.children.map(subItem => {
-            if (subItem.params) {
-              subItem.params.map(param => {
-                param.value = ""
-              })
-            }
-          })
-        }
-        if (choose_item) {
-          real_item.checked = true
-          if (choose_item.params) {
-            choose_item.params.map(real_param => {
-              if (real_item.params) {
-                real_item.params.map(param => {
-                  if (param.name == real_param.name)
-                    param.value = real_param.value
-                })
-              }
-              if (real_item.children) {
-                real_item.children.map(subItem => {
-                  if (subItem.params) {
-                    subItem.params.map(param => {
-                      if (param.name == real_param.name)
-                        param.value = real_param.value
-                    })
-                  }
-                })
-              }
-            })
-          }
-        }
-        this.testItems.push(real_item)
-      })
+    savePage(){
+      
     }
   }
 }
@@ -429,36 +137,6 @@ export default {
 .main-wrapper {
   margin: 10px 15px;
   border: 1px solid #D4D4D4;
-}
-
-.form-item {
-  width: 45%;
-  position: relative;
-  margin: 5px 10px;
-  text-align: left;
-  display: inline-block;
-}
-
-.form-item>span {
-  width: 150px;
-  display: inline-block;
-  text-align: left;
-}
-
-.right-info {
-  width: 350px;
-  display: inline-block;
-}
-
-.right-info>input,
-.right-info>select {
-  width: 100%;
-  font-size: 14px;
-}
-
-.right-info>.checkbox {
-  width: 15px;
-  height: 15px;
 }
 
 .form-code-item {

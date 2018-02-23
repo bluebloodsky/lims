@@ -135,3 +135,12 @@ img {
 .disabled{  
   background-color: rgb(235, 235, 228);
 }
+
+.add {
+  color: #7CA;
+}
+
+.remove {
+  color: red;
+  text-decoration: line-through;
+}

@@ -33,12 +33,13 @@
         <div class="right-btn">
           <el-button type="text" @click="submit"><i class="iconfont icon-submit"></i></el-button>
           <el-button type="text" @click="mode=1-mode" :class="{'mode-edit': mode==0}"><i class="iconfont icon-edit"></i></el-button>
+          <el-button type="text" @click="logVisible=true"><i class="iconfont icon-log"></i></el-button>
         </div>
       </div>
       <div class="b">
-        <AttrRender :tpl="currentTpl.tpl" :attrs="currentTpl.attrs" v-if="mode==1">
-        </AttrRender>
-        <textarea v-model="currentTpl.tpl" v-else></textarea>
+        <TplRender :tpl="currentTpl.data.tpl" :attrs="currentTpl.data.attrs" v-if="mode==1">
+        </TplRender>
+        <textarea v-model="currentTpl.data.tpl" v-else></textarea>
       </div>
     </div>
     <div class="box bottom-box">
@@ -49,7 +50,7 @@
         </div>
       </div>
       <div class="b">
-        <el-table :data="currentTpl.attrs" border>
+        <el-table :data="currentTpl.data.attrs" border>
           <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in attrFields" :formatter="cellFormatter">
           </el-table-column>
           <el-table-column label="操作" align="center">
@@ -74,6 +75,53 @@
         <AttrEdit v-model="currentRow" style="padding:15px;" />
       </div>
     </div>
+    <el-dialog title="修改记录" :visible.sync="logVisible" width="80%" draggable>
+      <el-table :data="currentTpl.data.logs" border style="width: 100%">
+        <el-table-column property="logTime" label="日期"></el-table-column>
+        <el-table-column property="user" label="操作人"></el-table-column>
+        <el-table-column label="内容">
+          <template scope="scope">
+            <div v-for="(content,key) in scope.row.contents" style="border-bottom:#fff 1px solid">
+              <span v-if="content.type" :class="content.type">
+              【{{key}}】: {{content.oldvalue}}
+              <span v-if="content.type=='change'" style="color:red">
+                ==>                 
+              </span> {{content.newvalue}}
+              </span>
+              <template v-else>
+                【{{key}}】:
+                <div v-for="(subContent,subKey) in content" :class="subContent.type">
+                  【{{subKey}}】: 
+                  <span v-if="content.type" :class="content.type">
+                  {{subContent.oldvalue}}
+                  <span v-if="subContent.type=='change'" style="color:red">
+                   ==>                  
+                  </span> {{subContent.newvalue}}
+                </span>
+                <template v-else>
+                  <div v-for="(grandchildContent,grandchildKey) in subContent" :class="grandchildContent.type">
+                  【{{grandchildKey}}】: 
+                  <span v-if="grandchildContent.type" :class="grandchildContent.type">
+                  {{grandchildContent.oldvalue}}
+                  <span v-if="grandchildContent.type=='change'" style="color:red">
+                   ==>                  
+                  </span> {{grandchildContent.newvalue}}
+                </span>
+              </div>
+                </template>
+                </div>
+              </template>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+          <template scope="scope">
+            <el-button @click.native.prevent="loadVersion(scope.$index)" type="text">加载
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -81,9 +129,9 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import { ATTR_FIELDS } from '@/shared/constants'
+import { ATTR_FIELDS ,ATTR_TYPES} from '@/shared/constants'
 import AttrEdit from '../components/AttrEdit'
-import AttrRender from '../components/AttrRender'
+import TplRender from '../components/TplRender'
 import { copyObject, rollbackArray } from '@/shared/util'
 var TempTestItemParam = {
   props: ['tpl'],
@@ -94,24 +142,25 @@ var TempTestItemParam = {
 
 export default {
   name: 'PageTplConfig',
-  components: { TempTestItemParam, AttrEdit, AttrRender },
+  components: { TempTestItemParam, AttrEdit, TplRender },
   data() {
     return {
       mode: 0,
       flg_showRightBox: false,
-      infos: [],
       currentRow: {},
       testItems: [],
-      currentItem: {
-        tpl: '',
-        attrs: []
+      currentTpl: {
+        order: [],
+        data: {}
       },
-      currentTpl: {},
-      attrFields: []
+      attrFields: [],
+      attrTypes:[],
+      logVisible: false
     }
   },
   mounted() {
     this.attrFields = ATTR_FIELDS
+    this.attrTypes = ATTR_TYPES
     this.axios.get("/test-items").then(response => {
       this.testItems = response.data
     }).catch(e => {
@@ -128,11 +177,15 @@ export default {
       else if (typeof cellValue == 'boolean') {
         return cellValue ? '是' : '否'
       }
+      else if(column.property=='attr_type'){
+        let attr_type = this.attrTypes.find(i=>i.type == cellValue)
+        return attr_type?attr_type.type_cn:cellValue
+      }
       return cellValue
     },
     addAttr() {
       this.currentRow = {}
-      this.currentTpl.attrs.push(this.currentRow)
+      this.currentTpl.data.attrs.push(this.currentRow)
       this.flg_showRightBox = true
     },
     editRow(row) {
@@ -140,18 +193,21 @@ export default {
       this.currentRow = row
     },
     delRow(row) {
-      this.currentTpl.attrs.map((attr, index) => {
+      this.currentTpl.data.attrs.map((attr, index) => {
         if (attr.name == row.name) {
-          this.currentTpl.attrs.splice(index, 1)
+          this.currentTpl.data.attrs.splice(index, 1)
         }
       })
     },
     submit() {
-      this.axios.post("/test-items", JSON.stringify(this.currentItem)).then(response => {
+      let infos = this.currentTpl.order
+      let testItem = copyObject(this.testItems[infos[0]])
+      testItem[infos[1]][infos[2]] = this.currentTpl.data
+      this.axios.post("/test-items", JSON.stringify(testItem)).then(response => {
         if (response.data['data']) {
-          this.currentItem = response.data['data']
+          this.testItems[infos[0]] = response.data['data']
+          this.currentTpl.data = response.data['data'][infos[1]][infos[2]]
         }
-        this.testItems[this.infos[0]] = copyObject(this.currentItem)
         this.$message({
           message: response.data['message'],
           type: 'success'
@@ -162,11 +218,9 @@ export default {
     },
     selectMenu(key) {
       let l_infos = key.split('-')
-      if (this.infos && this.infos[0] != l_infos[0]) {
-        this.currentItem = copyObject(this.testItems[l_infos[0]])
-      }
-      this.currentTpl = this.currentItem[l_infos[1]][l_infos[2]]
-      this.infos = l_infos
+
+      this.currentTpl.data = copyObject(this.testItems[l_infos[0]][l_infos[1]][l_infos[2]])
+      this.currentTpl.order = l_infos
       let oldMod = this.mode
       this.mode = 0
       if (this.mode != oldMod) {
@@ -174,6 +228,18 @@ export default {
           this.mode = oldMod
         }, 0)
       }
+    },
+    showLog(log) {
+      if (log.type == "add") {
+        return JSON.stringify(log.newvalue)
+      } else if (log.type == "remove") {
+        return JSON.stringify(log.oldvalue)
+      } else if (log.type == "change") {
+        return JSON.stringify(log.oldvalue) + '=>' + JSON.stringify(log.newvalue)
+      }
+    },
+    loadVersion(index) {
+      this.logVisible = false
     }
   }
 }
