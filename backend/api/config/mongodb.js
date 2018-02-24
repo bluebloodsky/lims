@@ -1,5 +1,5 @@
 db = connect("localhost:27017/lims")
-db.dropDatabase()
+//db.dropDatabase()
 /*试验室*/
 db.depts.drop()
 db.depts.insertMany([{

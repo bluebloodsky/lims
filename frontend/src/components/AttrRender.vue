@@ -3,13 +3,15 @@
     <span>{{attr.name_cn}}</span>
     <span v-if="attr.required">*</span>
     <div class="right-info">
-      <input v-if="attr.attr_type=='input'" :disabled="attr.readonly" v-model="realValue">
-      <select v-else-if="attr.attr_type=='select'" v-model="realValue">
+      <input :type="attr.attr_type" :disabled="attr.readonly" v-model="realValue" v-if="attr.attr_type=='input'">
+      <el-date-picker v-model="realValue" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" v-else-if="attr.attr_type=='date'">
+      </el-date-picker>
+      <select v-model="realValue" v-else-if="attr.attr_type=='select'">
         <option :value="opt" v-for="opt in attr.options">{{opt}}</option>
       </select>
       <template v-else-if="attr.attr_type=='checkbox'">
-        <template v-for="item in realValue">
-          <input type="checkbox" class="checkbox" :value="item.value" v-model="item.checked"> {{item.value}}
+        <template v-for="(opt,opt_index) in attr.options">
+          <input type="checkbox" :id="opt_index" class="checkbox" :value="opt" v-model="realValue"> {{opt}}
         </template>
       </template>
     </div>
@@ -31,18 +33,8 @@ export default {
     }
   },
   mounted() {
-    if (this.attr.attr_type == 'checkbox') {
-      this.realValue = []
-      this.attr.options.map(opt => {
-        let item = {
-          value: opt,
-          checked: false
-        }
-        if (this.value.includes(opt)) {
-          item.checked = true
-        }
-        this.realValue.push(item)
-      })
+    if (this.attr.attr_type == "checkbox") {
+      this.realValue = this.value ? this.value.split(",") : []
     } else {
       this.realValue = this.value
     }
@@ -50,17 +42,7 @@ export default {
   watch: {
     realValue: {
       handler(newVal) {
-        if (this.attr.attr_type == 'checkbox') {
-          let result = []
-          newVal.map(item => {
-            if (item.checked) {
-              result.push(item.value)
-            }
-          })
-          this.$emit('input', result)
-        } else {
-          this.$emit('input', newVal)
-        }
+        this.$emit('input', newVal)
       },
       deep: true
     }

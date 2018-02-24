@@ -2,6 +2,9 @@ export const ATTR_TYPES = [{
   type: 'input',
   type_cn: '输入框'
 }, {
+  type: 'date',
+  type_cn: '日期'
+}, {
   type: 'select',
   type_cn: '下拉框'
 }, {

@@ -33,7 +33,7 @@
       </div>
       <div class="b">
         <el-table :data="currentAttrs.attrs" border>
-          <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in fields" :formatter="cellFormatter">
+          <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in attrFields" :formatter="cellFormatter">
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template scope="scope">
@@ -80,7 +80,7 @@
 </template>
 <script>
 import AttrEdit from '../components/AttrEdit'
-import { ATTR_FIELDS } from '@/shared/constants'
+import { ATTR_FIELDS ,ATTR_TYPES} from '@/shared/constants'
 import { copyObject, rollbackList } from '@/shared/util'
 import {
   mapGetters
@@ -94,7 +94,8 @@ export default {
   data() {
     return {
       logVisible: false,
-      fields: [],
+      attrFields: [],
+      attrTypes:[],
       orderClientAttrs: {
         name: "order_client",
         name_cn: "委托方",
@@ -159,7 +160,8 @@ export default {
     }
   },
   mounted() {
-    this.fields = ATTR_FIELDS
+    this.attrFields = ATTR_FIELDS
+    this.attrTypes = ATTR_TYPES
     this.axios.get("/order-attrs").then(response => {
       response.data.forEach(item => {
         if (item.name == 'order_client') {
@@ -196,6 +198,13 @@ export default {
     cellFormatter(row, column, cellValue) {
       if (Array.isArray(cellValue))
         return cellValue.join('/')
+      else if (typeof cellValue == 'boolean') {
+        return cellValue ? '是' : '否'
+      }
+      else if(column.property=='attr_type'){
+        let attr_type = this.attrTypes.find(i=>i.type == cellValue)
+        return attr_type?attr_type.type_cn:cellValue
+      }
       return cellValue
     },
     addAttr() {

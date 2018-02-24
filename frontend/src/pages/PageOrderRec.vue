@@ -24,9 +24,45 @@
             </div>
           </div>
           <div class="b1">
-            <AttrRender :attr="attr" v-model="currentProject['order'][orderAttr.name][attr.name]" v-for="attr in orderAttr.attrs"></AttrRender>
+            <AttrRender :attr="attr" v-model="currentProject['order_info'][orderAttr.name][attr.name]" v-for="attr in orderAttr.attrs"></AttrRender>
           </div>
         </div>
+      </div>
+      <div v-show="currentPage==1">
+        <div class="box" v-for="sampleAttr in sampleAttrs">
+          <div class="h">
+            <span>{{sampleAttr.name_cn}}</span>
+          </div>
+          <div class="b1">
+            <AttrRender :attr="attr" v-model="currentProject['sample_info'][sampleAttr.name][attr.name]" v-for="attr in sampleAttr.attrs"></AttrRender>
+          </div>
+        </div>
+      </div>
+      <div v-show="currentPage==2">
+        <table border style="width: 100%;border: 1px solid #ececec; border-collapse: collapse;text-align:left">
+          <tbody>
+            <tr>
+              <th>序号</th>
+              <th colspan="2">检测项目</th>
+              <th>技术要求</th>
+            </tr>
+            <template v-for="(testItem,itemIndex) in testItems">
+              <tr v-for="(param,paramIndex) in testItem.params">
+                <td :rowspan="testItem.params.length" v-if="paramIndex == 0">{{itemIndex+1}}</td>
+                <td :rowspan="testItem.params.length" v-if="paramIndex == 0" :colspan="testItem.params.length==1?2:1">
+                  <input type="checkbox" :value="testItem.name" v-model="testInfo[testItem.name].checked">
+                  <span>{{testItem.name_cn}}</span>
+                </td>
+                <td v-if="testItem.params.length !=1">
+                  <span>{{param.name_cn}}</span>
+                </td>
+                <td>
+                  <TplRender :attrs="param.attrs" :tpl="param.tpl" v-model="testInfo[testItem.name]['params'][param.name]"></TplRender>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -41,12 +77,7 @@ import {
 
 import { mixObject } from '@/shared/util'
 import AttrRender from '../components/AttrRender'
-var TempTestItemParam = {
-  props: ['item_name', 'tpl'],
-  created() {
-    this.$options.template = this.tpl
-  }
-}
+import TplRender from '../components/TplRender'
 
 export default {
   name: 'PageOrderRec',
@@ -54,34 +85,82 @@ export default {
     return {
       pages: ['基本信息', '试品主要技术参数', '试验项目及主要技术参数'],
       currentPage: 0,
-      donePage: 0,
+      donePage: 1,
       currentProject: {},
       orderAttrs: [],
+      sampleAttrs: [],
+      testItems: [],
+      testInfo: {},
     }
   },
-  components: { TempTestItemParam, AttrRender },
+  components: { AttrRender, TplRender },
   computed: {},
   mounted() {
-    let l_projectInfo = {
-      order: {
-        order_client: {},
-        order_server: {},
-        order_content: {}
-      }
-    }
     this.axios.get("/order-attrs").then(response => {
+      let l_projectInfo = {
+        order_info: {
+          order_client: {},
+          order_server: {},
+          order_content: {}
+        }
+      }
       this.orderAttrs = response.data
       this.orderAttrs.map(orderAttr => {
         orderAttr.attrs.map(attr => {
-          l_projectInfo["order"][orderAttr.name][attr.name] = attr.defualt_value ? attr.defualt_value : ''
+          l_projectInfo["order_info"][orderAttr.name][attr.name] = attr.default_value ? attr.default_value : ''
         })
       })
       this.currentProject = mixObject(this.currentProject, l_projectInfo)
+    }).catch(e => {
+      this.$message({
+        message: e['message'],
+        type: 'error'
+      })
     })
   },
   methods: {
-    savePage(){
-      
+    savePage() {
+      if (this.currentPage == 0) {
+        /*this.axios.post("/projects/order",JSON.stringify(this.currentProject)).then(response=>{
+
+        })*/
+        this.axios.get("/sample-attrs").then(response => {
+          let l_projectInfo = {
+            sample_info: {
+              sample_base_info: {},
+              sample_import_para: {},
+              sample_main_para: {}
+            }
+          }
+          this.sampleAttrs = response.data
+          this.sampleAttrs.map(sampleAttr => {
+            sampleAttr.attrs.map(attr => {
+              l_projectInfo["sample_info"][sampleAttr.name][attr.name] = attr.default_value ? attr.default_value : ''
+            })
+          })
+          this.currentProject = mixObject(this.currentProject, l_projectInfo)
+          this.currentPage = 1
+          this.donePage = 2
+        })
+      } else if (this.currentPage == 1) {
+        this.axios.get("/test-items").then(response => {
+          this.testItems = response.data
+          this.currentPage = 2
+          this.donePage = 3
+          this.testItems.map(testItem => {
+            this.$set(this.testInfo, testItem.name, {
+              "checked": false,
+              "params": {}
+            })
+            testItem.params.map(param => {
+              this.testInfo[testItem.name]["params"][param.name] = {}
+              param.attrs.map(attr => {
+                this.testInfo[testItem.name]["params"][param.name][attr.name] = attr.default_value ? attr.default_value : ''
+              })
+            })
+          })
+        })
+      }
     }
   }
 }
