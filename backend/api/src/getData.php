@@ -18,7 +18,8 @@ foreach(glob(API . 'src' . DS . 'routes' . DS . '*.php') as $router) {
 
 $asJsonMidd = function ($req, $resp, $next) {
     if($req->isOptions()){
-        $resp = $resp->withHeader('Access-Control-Allow-Origin', '*');
+        $resp = $resp->withHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+        $resp = $resp->withHeader('Access-Control-Allow-Credentials' , 'true');
         $resp = $resp->withHeader('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Token-Authorization-X');
         $resp = $resp->withHeader('Access-Control-Allow-Methods', 'GET,POST,PUT, DELETE');
         return $resp;

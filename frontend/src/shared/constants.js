@@ -13,6 +13,9 @@ export const ATTR_TYPES = [{
 }, {
   type: 'radio',
   type_cn: '单选'
+}, {
+  type: 'pictureTable',
+  type_cn: '图片列表'
 }]
 
 export const TABS_LIST = [

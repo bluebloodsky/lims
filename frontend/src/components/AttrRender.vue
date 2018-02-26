@@ -14,12 +14,17 @@
           <input type="checkbox" :id="opt_index" class="checkbox" :value="opt" v-model="realValue"> {{opt}}
         </template>
       </template>
+      <PictureList v-model="realValue" v-else-if="attr.attr_type=='pictureTable'"></PictureList>
     </div>
   </div>
 </template>
 <script>
+import PictureList from './PictureList'
 export default {
-  name: 'AttrRender',
+  name: 'AttrRender',  
+  components: {
+    PictureList
+  },
   data() {
     return { realValue: '' }
   },
@@ -35,6 +40,8 @@ export default {
   mounted() {
     if (this.attr.attr_type == "checkbox") {
       this.realValue = this.value ? this.value.split(",") : []
+    } else if (this.attr.attr_type == "pictureTable") {
+      this.realValue = this.value && Array.isArray(this.value) ? this.value : []
     } else {
       this.realValue = this.value
     }
@@ -52,7 +59,6 @@ export default {
 </script>
 <style scoped>
 .form-item {
-  width: 45%;
   position: relative;
   margin: 5px 10px;
   text-align: left;
@@ -70,8 +76,8 @@ span {
   display: inline-block;
 }
 
-.right-info>input,
-.right-info>select {
+input,
+select {
   width: 100%;
   font-size: 14px;
 }
