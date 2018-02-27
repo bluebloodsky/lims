@@ -18,7 +18,7 @@ export const remove = (arr: Array < any > , item: any) => {
   }
 }
 
-export const rollbackMap = (source: Object | Array, logContents: Object| Array) => {
+export const rollbackMap = (source: Object | Array, logContents: Object | Array) => {
   for (let [k, v] of Object.entries(logContents)) {
     if (v.type == 'add') {
       if (Array.isArray(source)) {
@@ -34,22 +34,24 @@ export const rollbackMap = (source: Object | Array, logContents: Object| Array) 
   }
 }
 
-export const rollbackList = (source: Array , logContents:Array) =>{
-  logContents.map(log =>{
-    if(log.type == 'add'){
-      remove(source , log.newvalue)
-    }else if(log.type == 'remove'){
+export const rollbackList = (source: Array, logContents: Array) => {
+  logContents.map(log => {
+    if (log.type == 'add') {
+      remove(source, log.newvalue)
+    } else if (log.type == 'remove') {
       source.push(log.oldvalue)
     }
-  })  
+  })
 }
 
-export const mixObject = (_to:Object,_from:Object) =>{
-  for(const key in _from){
-    if(!_to[key]){
-      _to[key] = copyObject(_from[key])
-    }else if(typeof _from[key] === 'object'){
-      mixObject(_to[key] , _from[key])
+export const mixObject = (_to: Object, _from: Object) => {
+  for (const key in _from) {
+    if (_to.hasOwnProperty(key)) {
+      if (typeof _from[key] === 'object') {
+        mixObject(_to[key], _from[key])
+      } else {
+        _to[key] = _from[key]
+      }
     }
   }
   return _to

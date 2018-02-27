@@ -27,4 +27,11 @@ $app->group('/files', function () {
             ->withHeader('Content-Disposition', "attachment; filename=$filename")
             ->withBody($stream); // all stream contents will be sent to the response
     });
+    $this->delete('/{urls}',function($req, $resp, $args){
+        $urls = preg_split("/,/", $args['urls']);
+        foreach ($urls as $url) {
+            unlink("D:/files/" . $url);
+        }
+        return ["ret"=>"success"];
+    });
 });

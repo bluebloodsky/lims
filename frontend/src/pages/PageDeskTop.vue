@@ -27,190 +27,47 @@
   </div>
 </template>
 <script>
-import {
-  mapGetters,
-  mapActions
-} from 'vuex'
-import echarts from 'echarts'
-import Qs from 'qs'
+
 export default {
   name:'desktop',
   data() {
     return {
-      fcEvents: [{
-        title: '局放试验',
-        start: '2017-08-25',
-        end: '2017-08-27'
-      }],
+      pre_url: '/home/',
       fields: [{
-        name: 'task_code',
-        caption: '任务编号'
+        name: 'order_info.order_client.name',
+        caption: '客户名称'
       }, {
-        name: 'del_code',
+        name: 'order_info.order_content.order_code',
         caption: '委托单编号'
       }, {
-        name: 'task_type_cn',
-        caption: '任务类型'
+        name: 'sample_info.sample_base_info.product_name',
+        caption: '试品名称'
       }, {
-        name: 'task_step_cn',
+        name: 'status',
         caption: '当前环节'
       }],
-      task_todo: [{
-        id: 1,
-        task_code: '21',
-        del_code: '22',
-        task_type: '1',
-        task_step: '1'
-      }, {
-        id: 2,
-        task_code: '51',
-        del_code: '22',
-        task_type: '1',
-        task_step: '2'
-      }, {
-        id: 3,
-        task_code: '31',
-        del_code: '22',
-        task_type: '1',
-        task_step: '3'
-      }, {
-        id: 4,
-        task_code: '41',
-        del_code: '22',
-        task_type: '1',
-        task_step: '4'
-      }, {
-        id: 5,
-        task_code: '11',
-        del_code: '22',
-        task_type: '1',
-        task_step: '5'
-      }, {
-        id: 6,
-        task_code: '11',
-        del_code: '22',
-        task_type: '2',
-        task_step: '6'
-      }, {
-        id: 7,
-        task_code: '11',
-        del_code: '22',
-        task_type: '2',
-        task_step: '7'
-      }, {
-        id: 8,
-        task_code: '11',
-        del_code: '22',
-        task_type: '2',
-        task_step: '8'
-      }, {
-        id: 9,
-        task_code: '11',
-        del_code: '22',
-        task_type: '2',
-        task_step: '9'
-      }, {
-        id: 10,
-        task_code: '11',
-        del_code: '22',
-        task_type: '1',
-        task_step: '1'
-      }],
-      task_dones: [{
-        id: 1,
-        task_code: '21',
-        del_code: '22',
-        task_type: '1',
-        task_step: '1'
-      }, {
-        id: 2,
-        task_code: '51',
-        del_code: '22',
-        task_type: '1',
-        task_step: '2'
-      }, {
-        id: 3,
-        task_code: '31',
-        del_code: '22',
-        task_type: '1',
-        task_step: '3'
-      }, {
-        id: 4,
-        task_code: '41',
-        del_code: '22',
-        task_type: '1',
-        task_step: '4'
-      }, {
-        id: 5,
-        task_code: '11',
-        del_code: '22',
-        task_type: '1',
-        task_step: '5'
-      }, {
-        id: 6,
-        task_code: '11',
-        del_code: '22',
-        task_type: '2',
-        task_step: '6'
-      }, {
-        id: 7,
-        task_code: '11',
-        del_code: '22',
-        task_type: '2',
-        task_step: '7'
-      }, {
-        id: 8,
-        task_code: '11',
-        del_code: '22',
-        task_type: '2',
-        task_step: '8'
-      }, {
-        id: 9,
-        task_code: '11',
-        del_code: '22',
-        task_type: '2',
-        task_step: '9'
-      }, {
-        id: 10,
-        task_code: '11',
-        del_code: '22',
-        task_type: '1',
-        task_step: '1'
-      }]
+      taskTodos: []
     }
   },
   computed: {
-    ...mapGetters({
-      baseAttrs: 'baseAttrs',
-      tabs: 'tabs'
-    }),
     taskTodos_list() {
-      return this.task_todo.map(item => {
-        var item_list = JSON.parse(JSON.stringify(item))
-        item_list.task_type_cn = this.baseAttrs.task_type[item.task_type]
-        item_list.task_step_cn = this.baseAttrs.task_step[item.task_step]
-        return item_list
-      })
-    },
-    taskDones_list() {
-      return this.task_dones.map(item => {
-        var item_list = JSON.parse(JSON.stringify(item))
-        item_list.task_type_cn = this.baseAttrs.task_type[item.task_type]
-        item_list.task_step_cn = this.baseAttrs.task_step[item.task_step]
-        return item_list
+      return this.taskTodos.map(item => {
+        var todoItem = JSON.parse(JSON.stringify(item))
+        return todoItem
       })
     }
   },
   methods: {
     todoClick(row) {
-      this.$store.commit('addTab', { name: '流程处理', url: 'pro_handle' , component:'PageProHandle' })
-      this.$router.push({
-        path: '/home/pro_handle',
-        query:{id:row.id}
-      })
+      let url = "order-rec"
+      this.$store.commit('addTab', url)      
+      this.$router.push({ path: this.pre_url + url + "?id=" + row['_id']['$oid']})   
     }
   },
   mounted() {
+    this.axios.get("/projects").then(response=>{
+      this.taskTodos = response.data;
+    })
   }
 }
 

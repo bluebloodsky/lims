@@ -14,7 +14,6 @@ const mutations = {
     if (_index == -1) {
       let tab_info = TABS_LIST.find(tab => tab.url == url)
       state.tabs.push(tab_info)
-      _index = state.tabs.length -1
     }
   },
   removeTab(state, tab_index) {
