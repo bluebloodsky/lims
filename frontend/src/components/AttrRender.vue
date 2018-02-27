@@ -1,8 +1,8 @@
 <template>
   <div class="form-item" :class="{wrapper:attr.attr_type=='pictureTable'}">
     <div class="left-desc">
-    <span>{{attr.name_cn}}</span>
-    <span v-if="attr.required">*</span>
+      <span>{{attr.name_cn}}</span>
+      <span v-if="attr.required">*</span>
     </div>
     <div class="right-info">
       <input :type="attr.attr_type" :disabled="attr.readonly" v-model="realValue" v-if="attr.attr_type=='input'">
@@ -23,12 +23,9 @@
 <script>
 import PictureList from './PictureList'
 export default {
-  name: 'AttrRender',  
+  name: 'AttrRender',
   components: {
     PictureList
-  },
-  data() {
-    return { realValue: '' }
   },
   props: {
     attr: {
@@ -38,23 +35,25 @@ export default {
     value: {
       required: true
     }
-  },
-  mounted() {
-    if (this.attr.attr_type == "checkbox") {
-      this.realValue = this.value ? this.value.split(",") : []
-    } else if (this.attr.attr_type == "pictureTable") {
-      this.realValue = this.value && Array.isArray(this.value) ? this.value : []
-    } else {
-      this.realValue = this.value
+  }, 
+  computed: {
+    realValue: {
+      get() {
+        if (this.attr.attr_type == "checkbox") {
+          return this.value ? Array.isArray(this.value) ? this.value : this.value.split(",") : []
+        } else if (this.attr.attr_type == "pictureTable") {
+          return this.value && Array.isArray(this.value) ? this.value : []
+        } else {
+          return this.value
+        }
+      },
+      set(val){
+        this.$emit('input', val)
+      }
     }
   },
   watch: {
-    realValue: {
-      handler(newVal) {
-        this.$emit('input', newVal)
-      },
-      deep: true
-    }
+   
   }
 }
 
@@ -67,9 +66,11 @@ export default {
   display: inline-block;
   width: 500px;
 }
-.wrapper{
+
+.wrapper {
   width: 1000px;
 }
+
 .left-desc {
   width: 150px;
   display: inline-block;

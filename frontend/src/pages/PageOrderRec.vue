@@ -100,43 +100,60 @@ export default {
   },
   computed: {},
   mounted() {
-    this.axios.get("/order-attrs").then(response => {
-      this.orderAttrs = response.data
-      this.orderAttrs.map(orderAttr => {
-        this.$set(this.orderInfo, orderAttr.name, {})
-        orderAttr.attrs.map(attr => {
-          this.$set(this.orderInfo[orderAttr.name], attr.name, attr.default_value ? attr.default_value : '')
-        })
+    if (this.$route.query.id) {
+      this.axios.get("/projects/" + this.$route.query.id).then(response => {
+        this.currentProject = response.data
+        this.loadAttrInfo("order-attrs", "orderAttrs", "orderInfo", "order_info")
+        this.loadAttrInfo("sample-attrs", "sampleAttrs", "sampleInfo", "sample_info")
+        this.loadTestItemInfo()
+        this.donePage = 3
       })
-      if (this.$route.query.id) {
-        this.axios.get("/projects/" + this.$route.query.id).then(response => {
-          this.currentProject = response.data
-          this.$set(this.orderInfo["order_client"],"name" , "2")
-        })
-      }
-    }).catch(e => {
-      this.$message({
-        message: e['message'],
-        type: 'error'
-      })
-    })
+    }else{
+       this.loadAttrInfo("order-attrs", "orderAttrs", "orderInfo", "order_info")
+    }
   },
   methods: {
+    /*url:从后台获取属性集合路径，
+     *attrCollection:存储属性集合变量
+     *infoName:绑定页面属性值变量
+     *dbInfoName:数据库中存储属性变量
+     */
+    loadAttrInfo(url, attrCollection, infoName, dbInfoName) {
+      this.axios.get(url).then(response => {
+        this[attrCollection] = response.data
+        this[attrCollection].map(item => {
+          this.$set(this[infoName], item.name, {})
+          item["attrs"].map(attr => {
+            this.$set(this[infoName][item.name], attr.name, attr.default_value ? attr.default_value : '')
+          })
+        })
+        mixObject(this[infoName], this.currentProject[dbInfoName])
+      })
+    },
+    loadTestItemInfo() {
+      this.axios.get("test-items").then(response => {
+        this.testItems = response.data
+        this.testItems.map(item => {
+          this.$set(this.testInfo, item.name, {
+            "checked": this.currentProject['test_info']?this.currentProject['test_info'].hasOwnProperty(item.name):false,
+            "params": {}
+          })
+          item["params"].map(param => {
+            this.testInfo[item.name]["params"][param.name] = {}
+            param.attrs.map(attr => {
+              this.testInfo[item.name]["params"][param.name][attr.name] = attr.default_value ? attr.default_value : ''
+            })
+          })
+        })
+        mixObject(this.testInfo, this.currentProject['test_info'])
+      })
+    },
     savePage() {
       if (this.currentPage == 0) {
         this.currentProject['order_info'] = copyObject(this.orderInfo)
         this.axios.post("/projects/order", JSON.stringify(this.currentProject)).then(response => {
           this.currentProject = response.data['data']
-          return this.axios.get("/sample-attrs")
-        }).then(response => {
-          this.sampleAttrs = response.data
-          this.sampleAttrs.map(sampleAttr => {
-            this.$set(this.sampleInfo, sampleAttr.name, {})
-            sampleAttr.attrs.map(attr => {
-              this.sampleInfo[sampleAttr.name][attr.name] = attr.default_value ? attr.default_value : ''
-            })
-          })
-          this.sampleInfo = mixObject(this.sampleInfo, this.currentProject["sample_info"])
+          this.loadAttrInfo("sample-attrs", "sampleAttrs", "sampleInfo", "sample_info")
           this.currentPage = 1
           if (this.donePage < 2) {
             this.donePage = 2
@@ -146,24 +163,7 @@ export default {
         this.currentProject["sample_info"] = copyObject(this.sampleInfo)
         this.axios.post("/projects/sample", JSON.stringify(this.currentProject)).then(response => {
           this.currentProject = response.data['data']
-          return this.axios.get("/test-items")
-        }).then(response => {
-          this.testItems = response.data
-          this.testItems.map(testItem => {
-            this.$set(this.testInfo, testItem.name, {
-              "checked": false,
-              "params": {}
-            })
-            testItem.params.map(param => {
-              this.testInfo[testItem.name]["params"][param.name] = {}
-              param.attrs.map(attr => {
-                this.testInfo[testItem.name]["params"][param.name][attr.name] = attr.default_value ? attr.default_value : ''
-              })
-            })
-          })
-
-          this.testInfo = mixObject(this.testInfo, this.currentProject['test_info'])
-
+          this.loadTestItemInfo()
           this.currentPage = 2
           if (this.donePage < 3) {
             this.donePage = 3

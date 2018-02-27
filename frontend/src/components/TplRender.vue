@@ -59,8 +59,7 @@ export default {
       type: String,
       requied: true
     },
-    value: {
-      type: Object
+    value: {   
     }
   },
   data() {

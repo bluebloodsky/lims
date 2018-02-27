@@ -47,8 +47,8 @@ export const rollbackList = (source: Array, logContents: Array) => {
 export const mixObject = (_to: Object, _from: Object) => {
   for (const key in _from) {
     if (_to.hasOwnProperty(key)) {
-      if (typeof _from[key] === 'object') {
-        mixObject(_to[key], _from[key])
+      if (typeof _from[key] === 'object' && !Array.isArray(_from[key])) {
+        _to[key] = mixObject(_to[key], _from[key])
       } else {
         _to[key] = _from[key]
       }
