@@ -24,7 +24,7 @@
             </div>
           </div>
           <div class="b1">
-            <AttrRender :attr="attr" v-model="currentProject['order_info'][orderAttr.name][attr.name]" v-for="attr in orderAttr.attrs"></AttrRender>
+            <AttrRender :attr="attr" v-model="orderInfo[orderAttr.name][attr.name]" v-for="attr in orderAttr.attrs"></AttrRender>
           </div>
         </div>
       </div>
@@ -34,7 +34,7 @@
             <span>{{sampleAttr.name_cn}}</span>
           </div>
           <div class="b1">
-            <AttrRender :attr="attr" v-model="currentProject['sample_info'][sampleAttr.name][attr.name]" v-for="attr in sampleAttr.attrs"></AttrRender>
+            <AttrRender :attr="attr" v-model="sampleInfo[sampleAttr.name][attr.name]" v-for="attr in sampleAttr.attrs"></AttrRender>
           </div>
         </div>
       </div>
@@ -75,42 +75,45 @@ import {
   mapActions
 } from 'vuex'
 
-import { mixObject } from '@/shared/util'
+import { mixObject, copyObject } from '@/shared/util'
 import AttrRender from '../components/AttrRender'
 import TplRender from '../components/TplRender'
 
 export default {
   name: 'PageOrderRec',
+  components: { AttrRender, TplRender },
   data() {
     return {
       pages: ['基本信息', '试品主要技术参数', '试验项目及主要技术参数'],
       currentPage: 0,
       donePage: 1,
       currentProject: {},
+
       orderAttrs: [],
       sampleAttrs: [],
       testItems: [],
+
+      orderInfo: {},
+      sampleInfo: {},
       testInfo: {},
     }
   },
-  components: { AttrRender, TplRender },
   computed: {},
   mounted() {
     this.axios.get("/order-attrs").then(response => {
-      let l_projectInfo = {
-        order_info: {
-          order_client: {},
-          order_server: {},
-          order_content: {}
-        }
-      }
       this.orderAttrs = response.data
       this.orderAttrs.map(orderAttr => {
+        this.$set(this.orderInfo, orderAttr.name, {})
         orderAttr.attrs.map(attr => {
-          l_projectInfo["order_info"][orderAttr.name][attr.name] = attr.default_value ? attr.default_value : ''
+          this.$set(this.orderInfo[orderAttr.name], attr.name, attr.default_value ? attr.default_value : '')
         })
       })
-      this.currentProject = mixObject(this.currentProject, l_projectInfo)
+      if (this.$route.query.id) {
+        this.axios.get("/projects/" + this.$route.query.id).then(response => {
+          this.currentProject = response.data
+          this.$set(this.orderInfo["order_client"],"name" , "2")
+        })
+      }
     }).catch(e => {
       this.$message({
         message: e['message'],
@@ -121,32 +124,31 @@ export default {
   methods: {
     savePage() {
       if (this.currentPage == 0) {
-        /*this.axios.post("/projects/order",JSON.stringify(this.currentProject)).then(response=>{
-
-        })*/
-        this.axios.get("/sample-attrs").then(response => {
-          let l_projectInfo = {
-            sample_info: {
-              sample_base_info: {},
-              sample_import_para: {},
-              sample_main_para: {}
-            }
-          }
+        this.currentProject['order_info'] = copyObject(this.orderInfo)
+        this.axios.post("/projects/order", JSON.stringify(this.currentProject)).then(response => {
+          this.currentProject = response.data['data']
+          return this.axios.get("/sample-attrs")
+        }).then(response => {
           this.sampleAttrs = response.data
           this.sampleAttrs.map(sampleAttr => {
+            this.$set(this.sampleInfo, sampleAttr.name, {})
             sampleAttr.attrs.map(attr => {
-              l_projectInfo["sample_info"][sampleAttr.name][attr.name] = attr.default_value ? attr.default_value : ''
+              this.sampleInfo[sampleAttr.name][attr.name] = attr.default_value ? attr.default_value : ''
             })
           })
-          this.currentProject = mixObject(this.currentProject, l_projectInfo)
+          this.sampleInfo = mixObject(this.sampleInfo, this.currentProject["sample_info"])
           this.currentPage = 1
-          this.donePage = 2
+          if (this.donePage < 2) {
+            this.donePage = 2
+          }
         })
       } else if (this.currentPage == 1) {
-        this.axios.get("/test-items").then(response => {
+        this.currentProject["sample_info"] = copyObject(this.sampleInfo)
+        this.axios.post("/projects/sample", JSON.stringify(this.currentProject)).then(response => {
+          this.currentProject = response.data['data']
+          return this.axios.get("/test-items")
+        }).then(response => {
           this.testItems = response.data
-          this.currentPage = 2
-          this.donePage = 3
           this.testItems.map(testItem => {
             this.$set(this.testInfo, testItem.name, {
               "checked": false,
@@ -159,6 +161,30 @@ export default {
               })
             })
           })
+
+          this.testInfo = mixObject(this.testInfo, this.currentProject['test_info'])
+
+          this.currentPage = 2
+          if (this.donePage < 3) {
+            this.donePage = 3
+          }
+        })
+      } else if (this.currentPage == 2) {
+        this.currentProject["test_info"] = {}
+        for (const key in this.testInfo) {
+          if (this.testInfo[key].checked) {
+            this.currentProject["test_info"][key] = {
+              "params": copyObject(this.testInfo[key]["params"])
+            }
+          }
+        }
+
+        this.axios.post("/projects/test-params", JSON.stringify(this.currentProject)).then(response => {
+          this.currentProject = response.data['data']
+          this.$message({
+            message: response.data['message'],
+            type: 'success'
+          });
         })
       }
     }

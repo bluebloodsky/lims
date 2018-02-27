@@ -54,13 +54,14 @@ export default {
       }
       this.todos.push({
         text: txt,
-        files: [{ name: 'food.jpeg', url: '0e0fdc55f6946560f0fe144df0783e4a.jpg' }]
+        files: []
       })
       this.newTodo = ''
     },
     deleteTodo(index) {
       if (this.todos[index]["files"]) {
-
+        let urls = this.todos[index]["files"].map(file => file.url)
+        this.axios.delete(this.cfgInfo.baseURL + 'files/' + urls.concat(","))
       }
       this.todos.splice(index, 1)
     },
@@ -68,7 +69,7 @@ export default {
 }
 
 </script>
-<style>
+<style scoped>
 .destroy {
   font-size: 30px;
   border: none;
@@ -78,13 +79,6 @@ export default {
 
 .destroy:hover {
   color: #af5b5e;
-}
-
-.el-upload-list--picture-card .el-upload-list__item,
-.el-upload--picture-card {
-  width: 80px;
-  height: 80px;
-  line-height: 80px;
 }
 
 </style>

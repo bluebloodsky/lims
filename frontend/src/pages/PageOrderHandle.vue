@@ -18,7 +18,7 @@ export default {
     }
   },
   mounted() {
-    this.currentTask = this.$route.query.id 
+    this.currentTask = this.$route.query.id
   }
 }
 

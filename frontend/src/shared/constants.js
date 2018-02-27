@@ -19,11 +19,11 @@ export const ATTR_TYPES = [{
 }]
 
 export const TABS_LIST = [
-  { url: 'tpl-config', name: '模板配置', component: 'PageTplConfig' },
   { url: 'desktop', name: '工作台', component: 'PageDeskTop' },
   { url: 'attr-config', name: '属性配置', component: 'PageAttrConfig' },
   { url: 'workflow-config', name: '工作流配置', component: 'PageWorkflowConfig' },
-  { url: 'order-rec', name: '业务受理', component: 'PageOrderRec' },
+  { url: 'order-rec', name: '业务受理', component: 'PageOrderRec' },  
+  { url: 'tpl-config', name: '模板配置', component: 'PageTplConfig' },
 ]
 
 export const ATTR_FIELDS = [{

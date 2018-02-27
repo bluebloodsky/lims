@@ -20,16 +20,14 @@ export default {
   data() {
     return {
       dialogImageUrl: '',
-      dialogVisible: false,
-      fileList: [],
-      realValue: []
+      dialogVisible: false
     };
   },
   methods: {
     handleRemove(file, fileList) {
-      let fileInfo = file.response ? {name:file.response.name,url:file.response.url} : { name: file.name, url: file.url }
       //todo:从后台删除文件
-      remove(this.realValue, fileInfo)
+      this.axios.delete(file.url)
+      this.realValue.splice(file.index, 1)
       this.$emit('input', this.realValue)
     },
     handlePictureCardPreview(file) {
@@ -44,19 +42,34 @@ export default {
       this.$emit('input', this.realValue)
     }
   },
+  computed: {
+    realValue() {
+      return this.value.map(file => {
+        return { name: file.name, url: file.url }
+      })
+    },
+    fileList() {
+      return this.realValue.map((file, index) => {
+        return {
+          index: index,
+          name: file.name,
+          // url: file.url
+          url: this.cfgInfo.baseURL + 'files/' + file.url
+        }
+      })
+    }
+  },
   mounted() {
-    this.value.map(file => {
-      this.fileList.push({
-        name: file.name,
-        // url: file.url
-        url: this.cfgInfo.baseURL + 'files/' + file.url
-      })
-      this.realValue.push({
-        name: file.name,
-        url: file.url
-      })
-    })
+
   }
 }
-
 </script>
+<style scoped>
+.el-upload-list--picture-card > .el-upload-list__item,
+.el-upload--picture-card {
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+}
+
+</style>
