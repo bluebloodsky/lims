@@ -161,7 +161,7 @@ export default {
   mounted() {
     this.attrFields = ATTR_FIELDS
     this.attrTypes = ATTR_TYPES
-    this.axios.get("/test-items").then(response => {
+    this.axios.get("test-items").then(response => {
       this.testItems = response.data
     }).catch(e => {
 
@@ -203,7 +203,7 @@ export default {
       let infos = this.currentTpl.order
       let testItem = copyObject(this.testItems[infos[0]])
       testItem[infos[1]][infos[2]] = this.currentTpl.data
-      this.axios.post("/test-items", JSON.stringify(testItem)).then(response => {
+      this.axios.post("test-items", JSON.stringify(testItem)).then(response => {
         if (response.data['data']) {
           this.testItems[infos[0]] = response.data['data']
           this.currentTpl.data = response.data['data'][infos[1]][infos[2]]

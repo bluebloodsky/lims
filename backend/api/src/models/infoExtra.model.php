@@ -1,5 +1,5 @@
 <?php
-
+use MongoDB\BSON\ObjectId;
 class InfoExtra
 {
     private $_dbClient;
@@ -36,7 +36,24 @@ class InfoExtra
         $station = 'blq';
         return $this->_dbClient->selectCollection($station . '.sample.attrs')->find()->toArray();
     }
-
+    public function GetWorkflows(){
+        $station = 'blq';
+        return $this->_dbClient->selectCollection($station . '.workflows')->find()->toArray();
+    }
+    public function updateWorkflows($data){
+        $station = 'blq';
+        $collection = $this->_dbClient->selectCollection($station . '.workflows');
+        $collection->drop();
+        $steps = [];
+        foreach ($data as $step) {
+            /*if($step["_id"]){
+                unset($step["_id"]);
+            }*/
+            $step["_id"] = new ObjectId($step["_id"]["$oid"]);            
+            array_push($steps, $step);
+        }
+        return  $collection->insertMany($steps);
+    }
     private function getDiff($diff)
     {
         $differ = new Diff\Differ\MapDiffer();

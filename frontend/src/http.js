@@ -28,8 +28,13 @@ axios.interceptors.response.use(
       switch (error.response.status) {
         case 401:
           // 401 清除token信息并跳转到登录页面
-          store.commit('logout');
+          store.commit('logout')
+          break
+
       }
+    }
+    if (error.response) {
+      return Promise.reject(error.response.data) //后台回复错误
     }
     return Promise.reject(error)
   });

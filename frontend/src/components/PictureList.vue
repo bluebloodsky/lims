@@ -61,7 +61,7 @@ export default {
     deleteTodo(index) {
       if (this.todos[index]["files"]) {
         let urls = this.todos[index]["files"].map(file => file.url)
-        this.axios.delete(this.cfgInfo.baseURL + 'files/' + urls.concat(","))
+        this.axios.delete('files/' + urls.concat(","))
       }
       this.todos.splice(index, 1)
     },

@@ -10,7 +10,7 @@
       </ul>
       <div class="right-btn">
         <button>流程复制</button>
-        <button v-if="currentPage == 2">下单</button>
+        <button v-if="currentPage == 2" @click="submitProject">下单</button>
         <button @click="savePage">保存</button>
       </div>
     </div>
@@ -82,6 +82,11 @@ import TplRender from '../components/TplRender'
 export default {
   name: 'PageOrderRec',
   components: { AttrRender, TplRender },
+  props: {
+    closeCurrentTab: {
+      type: Function
+    }
+  },
   data() {
     return {
       pages: ['基本信息', '试品主要技术参数', '试验项目及主要技术参数'],
@@ -98,18 +103,22 @@ export default {
       testInfo: {},
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters({
+      tabs: 'tabs',
+    })
+  },
   mounted() {
     if (this.$route.query.id) {
-      this.axios.get("/projects/" + this.$route.query.id).then(response => {
+      this.axios.get("projects/" + this.$route.query.id).then(response => {
         this.currentProject = response.data
         this.loadAttrInfo("order-attrs", "orderAttrs", "orderInfo", "order_info")
         this.loadAttrInfo("sample-attrs", "sampleAttrs", "sampleInfo", "sample_info")
         this.loadTestItemInfo()
         this.donePage = 3
       })
-    }else{
-       this.loadAttrInfo("order-attrs", "orderAttrs", "orderInfo", "order_info")
+    } else {
+      this.loadAttrInfo("order-attrs", "orderAttrs", "orderInfo", "order_info")
     }
   },
   methods: {
@@ -130,12 +139,17 @@ export default {
         mixObject(this[infoName], this.currentProject[dbInfoName])
       })
     },
+    submitProject() {
+      this.axios.post("projects/step-submit/" + this.currentProject["_id"]["$oid"]).then(response => {
+        this.closeCurrentTab()
+      })
+    },
     loadTestItemInfo() {
       this.axios.get("test-items").then(response => {
         this.testItems = response.data
         this.testItems.map(item => {
           this.$set(this.testInfo, item.name, {
-            "checked": this.currentProject['test_info']?this.currentProject['test_info'].hasOwnProperty(item.name):false,
+            "checked": this.currentProject['test_info'] ? this.currentProject['test_info'].hasOwnProperty(item.name) : false,
             "params": {}
           })
           item["params"].map(param => {
@@ -151,7 +165,7 @@ export default {
     savePage() {
       if (this.currentPage == 0) {
         this.currentProject['order_info'] = copyObject(this.orderInfo)
-        this.axios.post("/projects/order", JSON.stringify(this.currentProject)).then(response => {
+        this.axios.post("projects/order", JSON.stringify(this.currentProject)).then(response => {
           this.currentProject = response.data['data']
           this.loadAttrInfo("sample-attrs", "sampleAttrs", "sampleInfo", "sample_info")
           this.currentPage = 1
@@ -161,7 +175,7 @@ export default {
         })
       } else if (this.currentPage == 1) {
         this.currentProject["sample_info"] = copyObject(this.sampleInfo)
-        this.axios.post("/projects/sample", JSON.stringify(this.currentProject)).then(response => {
+        this.axios.post("projects/sample", JSON.stringify(this.currentProject)).then(response => {
           this.currentProject = response.data['data']
           this.loadTestItemInfo()
           this.currentPage = 2
@@ -179,7 +193,7 @@ export default {
           }
         }
 
-        this.axios.post("/projects/test-params", JSON.stringify(this.currentProject)).then(response => {
+        this.axios.post("projects/test-params", JSON.stringify(this.currentProject)).then(response => {
           this.currentProject = response.data['data']
           this.$message({
             message: response.data['message'],

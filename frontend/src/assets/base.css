@@ -62,7 +62,7 @@ img {
 .h>a {
   float: right;
   display: inline-block;
-  padding: 0 10px; 
+  padding: 0 10px;
 }
 
 .h .iconfont {
@@ -132,7 +132,7 @@ img {
   font-weight: bold;
 }
 
-.disabled{  
+.disabled {
   background-color: rgb(235, 235, 228);
 }
 
@@ -144,3 +144,24 @@ img {
   color: red;
   text-decoration: line-through;
 }
+
+.tabs {
+  display: block;
+  height: 30px;
+  background-color: #D4D4D4;
+}
+
+.tabs>li {
+  float: left;
+  margin: 0 4px -1px 0;
+  padding: 0;
+}
+
+.tabs>li>a {
+  padding: 5px;
+  line-height: 33px;
+}
+.tabs>li>a.active {
+  background-color: #fff;
+}
+

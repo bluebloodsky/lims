@@ -1,6 +1,6 @@
 <?php
 
-function GetDiff($arrayOldData, $arrayNewData)
+function GetMapDiff($arrayOldData, $arrayNewData)
 {
     $differ = new Diff\Differ\MapDiffer();
     $result = [];

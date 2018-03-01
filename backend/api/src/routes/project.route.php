@@ -15,12 +15,16 @@ $app->group('/projects', function () {
         $RET = Project::GetInstance()->InsertOrUpdateData($data,"params");
         return $resp->withJson($RET);
     });
+    $this->post('/step-submit/{id}', function ($req, $resp, $args) {
+        $RET = Project::GetInstance()->StepSubmit($args['id']);
+        return $resp->withJson($RET);
+    });
     $this->get('',function ($req, $resp, $args) {
-        $RET = Project::GetInstance()->findAll();
+        $RET = Project::GetInstance()->FindTodos();
         return $resp->withJson($RET);
     });
     $this->get('/{id}',function ($req, $resp, $args) {
-        $RET = Project::GetInstance()->findById($args['id']);
+        $RET = Project::GetInstance()->FindById($args['id']);
         return $resp->withJson($RET);
     });
 });

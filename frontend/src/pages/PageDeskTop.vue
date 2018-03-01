@@ -29,7 +29,7 @@
 <script>
 
 export default {
-  name:'desktop',
+  name:'PageDeskTop',
   data() {
     return {
       pre_url: '/home/',
@@ -43,7 +43,7 @@ export default {
         name: 'sample_info.sample_base_info.product_name',
         caption: '试品名称'
       }, {
-        name: 'status',
+        name: 'step.alias',
         caption: '当前环节'
       }],
       taskTodos: []
@@ -59,13 +59,13 @@ export default {
   },
   methods: {
     todoClick(row) {
-      let url = "order-rec"
+      let url = "process-handle"
       this.$store.commit('addTab', url)      
       this.$router.push({ path: this.pre_url + url + "?id=" + row['_id']['$oid']})   
     }
   },
   mounted() {
-    this.axios.get("/projects").then(response=>{
+    this.axios.get("projects").then(response=>{
       this.taskTodos = response.data;
     })
   }

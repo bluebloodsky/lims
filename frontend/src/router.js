@@ -5,7 +5,7 @@ import PageDeskTop from './pages/PageDeskTop'
 import PageOrderRec from './pages/PageOrderRec'
 import PageTplConfig from './pages/PageTplConfig'
 import PageWorkflowConfig from './pages/PageWorkflowConfig'
-import PageOrderHandle from './pages/PageOrderHandle'
+import PageProcessHandle from './pages/PageProcessHandle'
 import PageAttrConfig from './pages/PageAttrConfig'
 import store from './store'
 
@@ -24,6 +24,7 @@ const router = new Router({
     redirect: '/home'
   }, {
     path: '/home',
+    redirect: '/home/desktop',
     component: PageHome,
     children: [{
       path: 'desktop',
@@ -38,8 +39,8 @@ const router = new Router({
       path: 'workflow-config',
       component: PageWorkflowConfig
     }, {
-      path: 'order-handle',
-      component: PageOrderHandle
+      path: 'process-handle',
+      component: PageProcessHandle
     }, {
       path: 'attr-config',
       component: PageAttrConfig

@@ -41,3 +41,15 @@ $app->group('/test-items', function () {
         return $resp->withJson($RET);
     });
 });
+
+$app->group('/workflows', function () {
+    $this->get('', function ($req, $resp, $args) {
+        $RET = InfoExtra::GetInstance()->GetWorkflows();
+        return $resp->withJson($RET);
+    });
+    $this->post('', function ($req, $resp, $args) {
+        $data = json_decode($req->getBody() , true);
+        $RET = InfoExtra::GetInstance()->updateWorkflows($data);
+        return $resp->withJson($RET);
+    });
+});

@@ -26,7 +26,7 @@
     </ul>
     <transition>
       <keep-alive :include="includedComponents">
-        <router-view style="position:absolute; left:0;top:80px;bottom:0; right:0 ; overflow-y:auto"></router-view>
+        <router-view style="position:absolute; left:0;top:80px;bottom:0; right:0 ; overflow-y:auto" :closeCurrentTab="closeCurrentTab"></router-view>
       </keep-alive>
     </transition>
   </div>
@@ -57,8 +57,13 @@ export default {
     }
   },
   mounted() {
-    this.axios.get("/menus").then(response => {
+    this.axios.get("menus").then(response => {
       this.menus = response.data
+    }).catch(err => {
+      this.$message({
+        message: err['error'],
+        type: 'error'
+      })
     })
     let r = this.$route.path.match(/\/home\/(\S+)/)
     if (r && r.length > 1) {
@@ -82,6 +87,14 @@ export default {
         this.$router.push({ path: this.pre_url + this.tabs[tab_index - 1].url })
       }
       this.$store.commit('removeTab', tab_index)
+    },
+    closeCurrentTab() {
+      this.$router.push({ path: this.pre_url + this.tabs[0].url })
+      for (let tab_index = 0; tab_index < this.tabs.length; tab_index++) {
+        if (this.$route.path == this.pre_url + this.tabs[tab_index].url) {
+          this.$store.commit('removeTab', tab_index)
+        }
+      }
     }
   },
   computed: {
@@ -143,23 +156,6 @@ export default {
 
 a {
   color: #01301E;
-}
-
-.tabs {
-  display: block;
-  height: 30px;
-  background-color: #D4D4D4;
-}
-
-.tabs>li {
-  float: left;
-  margin: 0 4px -1px 0;
-  padding: 0;
-}
-
-.tabs a {
-  padding: 5px;
-  line-height: 33px;
 }
 
 .router-link-active {

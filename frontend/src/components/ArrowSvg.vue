@@ -1,7 +1,7 @@
 <template>
   <g @mousedown.prevent="mousedown">
-    <polygon :points="d_sel" :stroke="selected?'#22C':'transparent'" stroke-dasharray="5,5" fill="transparent"></polygon>
-    <path :d="d"></path>
+    <polygon :points="d_sel" :stroke="selected?'#22C':'transparent'" stroke-dasharray="5,5" fill="transparent" ></polygon>
+    <path :d="d" :fill="item.rollBackFlg?'red':'green'"></path>
   </g>
 </template>
 <script>
@@ -31,8 +31,8 @@ export default {
   },
   computed: {
     d_sel() {
-      var startPoint = this.item.startPoint,
-        endPoint = this.item.endPoint
+      var startPoint = [this.item.points[0],this.item.points[1]] ,
+        endPoint = [this.item.points[2],this.item.points[3]]
       var angle = Math.atan((endPoint[1] - startPoint[1]) / (endPoint[0] - startPoint[0]))
       var lineXdiff = (this.lineWidth + 10) / 2 * Math.sin(angle)
       var lineYdiff = (this.lineWidth + 10) / 2 * Math.cos(angle)
@@ -43,18 +43,10 @@ export default {
       points[3] = [endPoint[0] - lineXdiff, endPoint[1] + lineYdiff]
 
       return points
-      /*
-      var path = "M" + points[3][0] + " " + points[3][1] + " "
-      points.map(point => {
-        path += "L" + point[0] + " " + point[1] + " "
-      })
-      path += "Z"
-      return path
-      */
     },
     d() {
-      var startPoint = this.item.startPoint,
-        endPoint = this.item.endPoint
+      var startPoint = [this.item.points[0],this.item.points[1]] ,
+        endPoint = [this.item.points[2],this.item.points[3]]
 
       var coefficientX = (startPoint[0] - endPoint[0] > 0) ? -1 : 1
 

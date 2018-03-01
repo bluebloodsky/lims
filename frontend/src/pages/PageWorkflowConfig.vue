@@ -1,27 +1,20 @@
 <template>
   <div>
-    <div class="box left-box">      
+    <div class="box main-box">
       <div class="h">
-        <span>试验站</span>
-      </div>
-      <div class="b">
-        <el-tree :data="stations" highlight-current :props="treeProps" @node-click="changeItem">
-        </el-tree>      
-      </div>
-    </div>
-    <div class="box middle-box">
-      <div class="h h1">
         <span>流程图</span>
+        <div class="right-btn">
+          <el-button type="text" @click="submit"><i class="iconfont icon-submit"></i></el-button>
+        </div>
       </div>
       <div class="b">
         <svg class="flowChart" @mouseup="drop" @mousemove="move" @click="contextmenuPositon=[-9999,-9999]">
-          <ProcessSvg :key="item.id" v-for="(item,index) in currentwfc.processes" :item="item" @grab="grab" @rightClick="contextmenu" :selected="processSelIndex==index">
-          </ProcessSvg>
-          <ArrowSvg :item="item" @grab="grabArrow" v-for="(item,index) in currentwfc.arrows" :selected="arrowSelIndex==index"></ArrowSvg>
+          <StepSvg :key="item.id" v-for="(item,index) in mySteps" :item="item" @grab="grab" @rightClick="contextmenu" @dblclick="editStep" :selected="stepSelIndex==index">
+          </StepSvg>
+          <ArrowSvg :item="item" @grab="grabArrow" v-for="(item,index) in arrows" :selected="arrowSelIndex==index"></ArrowSvg>
         </svg>
         <ul :style="{left:contextmenuPositon[0] + 'px',top:contextmenuPositon[1] + 'px'}" class="contextmenu" @contextmenu.prevent>
-          <li><a>编辑</a></li>
-          <li><a @click="delProcess">删除</a></li>
+          <li><a @click="editStep">编辑</a></li>
         </ul>
       </div>
     </div>
@@ -30,220 +23,264 @@
         <span>工作流组件</span>
       </div>
       <div class="b">
-        <div class="func">
+        <el-button-group>
           <el-button :class="{choose:eventStatus==1}" @click="eventStatus = 1">对象</el-button>
-          <el-button :class="{choose:eventStatus==2}" @click="eventStatus = 2">连接</el-button>
-        </div>
+          <el-button :class="{choose:eventStatus==2}" @click="eventStatus = 2">正向连接</el-button>
+          <el-button :class="{choose:eventStatus==3}" @click="eventStatus = 3">回退连接</el-button>
+        </el-button-group>
         <svg class="wfcs" @mouseup="drop">
-          <ProcessSvg :item="item" @grab="grab" v-for="item in wfcs"></ProcessSvg>
+          <StepSvg :item="item" @grab="grab" v-for="item in wfcs"></StepSvg>
         </svg>
       </div>
     </div>
+    <el-dialog title="属性查看" :visible.sync="dialogVisible">
+      <el-form label-width="120px" onsubmit="return false;">
+        <el-form-item label="名称">
+          <el-input v-model="selectStep.name" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input v-model="selectStep.name_cn" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="别名">
+          <el-input v-model="selectStep.alias"></el-input>
+        </el-form-item>
+        <el-form-item label="下级环节">
+          <el-input :value="getStepAliasByIds(selectStep.nextSteps)" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="回退环节">
+          <el-input :value="getStepAliasByIds(selectStep.rollbackSteps)" disabled></el-input>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script>
-import {
-  mapGetters,
-  mapActions
-} from 'vuex'
-
-import ProcessSvg from '@/components/ProcessSvg'
+import { WORKFLOW_STEPS } from '@/shared/constants'
+import { copyObject, remove } from '@/shared/util'
+import StepSvg from '@/components/StepSvg'
 import ArrowSvg from '@/components/ArrowSvg'
 export default {
-  name:'PageWorkflowConfig',
+  name: 'PageWorkflowConfig',
+  components: { StepSvg, ArrowSvg },
   data() {
     return {
       contextmenuPositon: [-9999, -9999], //svg组件右键菜单位置
       cursePoint: [], //记录svg鼠标点击位置
-      currentStation: {}, //当前站
-      currentwfc: {}, //当前业务流程图
-      eventStatus: 1, //事件状态, 1选中 ,2连接
-      moveFlg: false, //处于移动状态
-      processSelIndex: -1, //选中组件      
+      size: [200, 40], //定义组件大小
+      eventStatus: 1, //事件状态, 1对象 ,2正向连接,3:回退连接
+      moveFlg: false, //处于移动状态标识
+      stepSelIndex: -1, //选中组件      
       arrowSelIndex: -1, //选中箭头
-      newProcess: null,
-      wfcs: [{
-        id: null,
-        processId: 1,
-        label: '开始',
-        point: [10, 20]
-      }, {
-        id: null,
-        processId: 2,
-        label: '业务受理',
-        point: [10, 80]
-      }, {
-        id: null,
-        processId: 3,
-        label: '审核',
-        point: [10, 140]
-      }, {
-        id: null,
-        processId: 4,
-        label: '任务分配',
-        point: [10, 200]
-      }, {
-        id: null,
-        processId: 5,
-        label: '原始录入',
-        point: [10, 260]
-      }, {
-        id: null,
-        processId: 6,
-        label: '报告编辑',
-        point: [10, 320]
-      }, {
-        id: null,
-        processId: 7,
-        label: '归档',
-        point: [10, 380]
-      }],
-      treeProps: {
-        children: 'children',
-        label: 'label',
-        point: [10, 20]
-      },
-      stations: [{
-        name: 'station1',
-        label: '试验站1',
-        processes: [{
-          id: 1,
-          processId: 1,
-          label: '开始',
-          parentIds: [],
-          point: [10, 20]
-        }, {
-          id: 2,
-          processId: 2,
-          label: '业务受理',
-          parentIds: [1],
-          point: [10, 100]
-        }]
-      }, {
-        name: 'station2',
-        label: '试验站2',
-        processes: []
-      }, {
-        name: 'station3',
-        label: '试验站3',
-        processes: []
-      }]
+      newStep: null,
+      wfcs: [], //程序定义的流程集合
+      mySteps: [],
+      dialogVisible: false
     }
   },
   mounted() {
+    this.wfcs = WORKFLOW_STEPS
+    this.axios.get('workflows').then(response => {
+      this.mySteps = response.data
+    }).catch(err => {
+      this.$message({
+        message: err['error'],
+        type: 'error'
+      })
+    })
+
     window.onkeydown = e => {
       if (e.code == 'Delete') {
-        if (this.processSelIndex != -1) {
-          this.delProcess()
-          this.processSelIndex = -1
+        if (this.stepSelIndex != -1) {
+          let delStepId = this.mySteps[this.stepSelIndex].id
+          this.mySteps.splice(this.stepSelIndex, 1)
+          this.mySteps.map(step => {
+            remove(step.nextSteps, delStepId)
+            remove(step.rollbackSteps, delStepId)
+          })
+          this.stepSelIndex = -1
         } else if (this.arrowSelIndex != -1) {
-          let selArrow = this.currentwfc.arrows[this.arrowSelIndex]
-          let wfc = this.currentwfc.processes.find(item => selArrow.id == item.id)
-          let parentIdIndex = wfc.parentIds.indexOf(selArrow.parentId)
-          wfc.parentIds.splice(parentIdIndex, 1)
-          this.calcArrows()
+          let selArrow = this.arrows[this.arrowSelIndex]
+          let step = this.mySteps.find(item => selArrow.id == item.id)
+          if (selArrow.rollBackFlg) {
+            remove(step.rollbackSteps, selArrow.nextId)
+          } else {
+            remove(step.nextSteps, selArrow.nextId)
+          }
           this.arrowSelIndex = -1
         }
       }
     }
   },
-  components: { ProcessSvg, ArrowSvg },
+  computed: {
+    arrows() {
+      let arrows = []
+      this.mySteps.map(step => {
+        step.nextSteps.map(nextStepId => {
+          let nexStep = this.mySteps.find(item => item.id == nextStepId)
+          if (nexStep) {
+            arrows.push({
+              id: step.id,
+              nextId: nextStepId,
+              points: this.getArrowPoints(step.point, nexStep.point, false),
+              rollBackFlg: false
+            })
+          }
+        })
 
-  methods: {
-    changeItem(data, node) {
-      if (node && !node.isLeaf)
-        return
-      this.currentStation = data
-      this.processSelIndex = -1
-      this.arrowSelIndex = -1
-      this.currentwfc = {
-        processes: JSON.parse(JSON.stringify(data.processes)),
-        arrows: []
-      }
-      this.calcArrows()
+        step.rollbackSteps.map(nextStepId => {
+          let nexStep = this.mySteps.find(item => item.id == nextStepId)
+          if (nexStep) {
+            arrows.push({
+              id: step.id,
+              nextId: nextStepId,
+              points: this.getArrowPoints(step.point, nexStep.point, true),
+              rollBackFlg: true
+            })
+          }
+        })
+
+      })
+
+      return arrows
     },
-    calcArrows() {
-      this.currentwfc.arrows = []
-      this.currentwfc.processes.map(item => {
-        if (item.parentIds) {
-          item.parentIds.map((parentId, index) => {
-            let parentItem = this.currentwfc.processes.find(wfc => wfc.id == parentId)
-            if (parentItem) {
-              let startPoint, endPoint
-              if (parentItem.point[1] + 38 < item.point[1]) {
-                startPoint = [parentItem.point[0] + 75, parentItem.point[1] + 38]
-                endPoint = [item.point[0] + 75, item.point[1]]
-              } else if (parentItem.point[1] - 38 > item.point[1]) {
-                startPoint = [parentItem.point[0] + 75, parentItem.point[1]]
-                endPoint = [item.point[0] + 75, item.point[1] + 38]
-              } else if (parentItem.point[0] + 150 < item.point[0]) {
-                startPoint = [parentItem.point[0] + 150, parentItem.point[1] + 19]
-                endPoint = [item.point[0], item.point[1] + 19]
-              } else if (parentItem.point[0] - 150 > item.point[0]) {
-                startPoint = [parentItem.point[0], parentItem.point[1] + 19]
-                endPoint = [item.point[0] + 150, item.point[1] + 19]
-              } else {
-                startPoint = [parentItem.point[0], parentItem.point[1]]
-                endPoint = [item.point[0], item.point[1]]
-              }
-
-              this.currentwfc.arrows.push({
-                startPoint: startPoint,
-                endPoint: endPoint,
-                id: item.id,
-                parentId: parentId
-              })
-            } else {
-              item.parentIds.splice(index, 1)
-            }
-          })
+    selectStep: {
+      get() {
+        return this.mySteps[this.stepSelIndex] ? this.mySteps[this.stepSelIndex] : {}
+      },
+      set(val) {
+        this.mySteps[this.stepSelIndex] = val
+      }
+    },
+  },
+  methods: {
+    submit() {
+      let loseKeySteps = []
+      this.wfcs.map(wtf => {
+        if (wtf.key_link && !this.mySteps.find(step => step.name == wtf.name)) {
+          loseKeySteps.push(wtf.name_cn)
         }
       })
+      if (loseKeySteps.length > 0) {
+        this.$message({
+          message: '缺失关键环节[' + loseKeySteps + ']',
+          type: 'info'
+        })
+        return
+      }
+      this.axios.post('workflows', JSON.stringify(this.mySteps)).then(response => {
+        this.$message({
+          message: '更新成功',
+          type: 'success'
+        })
+      }).catch(err => {
+        this.$message({
+          message: err['error'],
+          type: 'error'
+        })
+      })
+    },
+    editStep() {
+      this.contextmenuPositon = [-9999, -9999]
+      if (this.eventStatus == 1)
+        this.dialogVisible = true
+    },
+    getStepAliasByIds(ids) {
+      return ids ? this.mySteps.filter(step => ids.includes(step.id)).map(step => step.alias).join() : ''
+    },
+    getArrowPoints(startPoint, endPoint, rollBackFlg) {
+      if (startPoint[1] + this.size[1] < endPoint[1]) {
+        if (rollBackFlg) {
+          return [startPoint[0] + this.size[0] / 2 - 10, startPoint[1] + this.size[1],
+            endPoint[0] + this.size[0] / 2 - 10, endPoint[1]
+          ]
+        } else {
+          return [startPoint[0] + this.size[0] / 2 + 10, startPoint[1] + this.size[1],
+            endPoint[0] + this.size[0] / 2 + 10, endPoint[1]
+          ]
+        }
+      } else if (startPoint[1] - this.size[1] > endPoint[1]) {
+        if (rollBackFlg) {
+          return [startPoint[0] + this.size[0] / 2 - 10, startPoint[1], endPoint[0] + this.size[0] / 2 - 10, endPoint[1] + this.size[1]]
+        } else {
+          return [startPoint[0] + this.size[0] / 2 + 10, startPoint[1], endPoint[0] + this.size[0] / 2 + 10, endPoint[1] + this.size[1]]
+        }
+      } else if (startPoint[0] + this.size[0] < endPoint[0]) {
+        if (rollBackFlg) {
+          return [startPoint[0] + this.size[0], startPoint[1] + this.size[1] / 2 - 10, endPoint[0], endPoint[1] + this.size[1] / 2 - 10]
+        } else {
+          return [startPoint[0] + this.size[0], startPoint[1] + this.size[1] / 2 + 10, endPoint[0], endPoint[1] + this.size[1] / 2 + 10]
+        }
+      } else if (startPoint[0] - this.size[0] > endPoint[0]) {
+        if (rollBackFlg) {
+          return [startPoint[0], startPoint[1] + this.size[1] / 2 - 10, endPoint[0] + this.size[0], endPoint[1] + +this.size[1] / 2 - 10]
+        } else {
+          return [startPoint[0], startPoint[1] + this.size[1] / 2 + 10, endPoint[0] + this.size[0], endPoint[1] + +this.size[1] / 2 + 10]
+        }
+      } else {
+        if (rollBackFlg) {
+          return [startPoint[0], startPoint[1] + this.size[1] / 2 - 10, endPoint[0] + this.size[0], endPoint[1] + +this.size[1] / 2 - 10]
+        } else {
+          return [startPoint[0], startPoint[1] + this.size[1] / 2 + 10, endPoint[0] + this.size[0], endPoint[1] + +this.size[1] / 2 + 10]
+        }
+      }
     },
     contextmenu(e, item) {
       this.contextmenuPositon = [e.layerX, e.layerY]
     },
     grabArrow(e, item) {
-      this.processSelIndex = -1
-      this.currentwfc.arrows.forEach((subItem, index) => {
-        if (subItem.id == item.id && subItem.parentId == item.parentId) {
+      this.stepSelIndex = -1
+      this.arrows.forEach((arrow, index) => {
+        if (arrow.id == item.id && arrow.nextId == item.nextId) {
           this.arrowSelIndex = index
+          return
         }
       })
     },
+
     grab(e, item) {
       if (this.arrowSelIndex != -1) { //当前为箭头
         this.arrowSelIndex = -1
       }
-      if (item.id) { //已有svg
-        let processIndex, processItem
-        this.currentwfc.processes.forEach((subItem, index) => {
-          if (subItem.id == item.id) {
-            processIndex = index
-            processItem = subItem
+      if (item.id) { //该环节已存在
+        let clickStepIndex, clickStep
+        this.mySteps.forEach((stepItem, index) => {
+          if (stepItem.id == item.id) {
+            clickStepIndex = index
+            clickStep = stepItem
           }
         })
-        if (this.eventStatus == 2) { //连接状态
-          if (this.processSelIndex != -1) {
-            if (this.processSelIndex != processIndex) { //进行连接
-              let parentitem = this.currentwfc.processes[this.processSelIndex]
-              if (processItem.parentIds.indexOf(parentitem.id) == -1 &&
-                parentitem.parentIds.indexOf(processItem.id) == -1
+        if (this.eventStatus == 2 || this.eventStatus == 3) { //连接状态
+          if (this.stepSelIndex != -1) {
+            if (this.stepSelIndex != clickStepIndex) { //进行连接
+              let startStep = this.mySteps[this.stepSelIndex]
+              if (this.eventStatus == 2 &&
+                startStep.nextSteps.indexOf(clickStep.id) == -1 &&
+                clickStep.nextSteps.indexOf(startStep.id) == -1
               ) {
-                processItem.parentIds.push(parentitem.id)
-                this.calcArrows()
+                startStep.nextSteps.push(clickStep.id)
+              } else if (this.eventStatus == 3 &&
+                startStep.rollbackSteps.indexOf(clickStep.id) == -1 &&
+                clickStep.rollbackSteps.indexOf(startStep.id) == -1
+              ) {
+                startStep.rollbackSteps.push(clickStep.id)
               }
             } else {
-              this.processSelIndex = -1;
+              this.stepSelIndex = -1;
               return
             }
           }
         }
-        this.processSelIndex = processIndex
-      } else { //新建
-        this.processSelIndex = -1;
-        this.newProcess = item
-        this.newProcess.parentIds = []
+        this.stepSelIndex = clickStepIndex
+      } else if (item.key_link &&
+        this.mySteps.find(step => step.name == item.name)) { //关键环节已存在
+        this.$message({
+          message: item.name_cn + "为关键环节，只能添加一次",
+          type: 'info'
+        })
+        return
+      } else { //新建 
+        this.stepSelIndex = -1;
+        this.newStep = item
       }
       if (this.eventStatus == 1) {
         this.cursePoint = [e.layerX, e.layerY]
@@ -251,42 +288,39 @@ export default {
       }
     },
     drop(e) {
-      if (this.processSelIndex == -1) {
-        this.newProcess = null
+      if (this.stepSelIndex == -1) {
+        this.newStep = null
         return
       }
       if (this.moveFlg) {
-        this.calcArrows()
         this.moveFlg = false
       }
     },
-    delProcess() {
-      if (this.processSelIndex != -1) {
-        this.currentwfc.processes.splice(this.processSelIndex, 1)
-        this.contextmenuPositon = [-9999, -9999]
-        this.calcArrows()
-        this.processSelIndex = -1
-      }
-    },
     move(e) {
-      if (this.processSelIndex == -1 && !this.newProcess) {
+      if (this.stepSelIndex == -1 && !this.newStep) {
         return
       }
       if (this.moveFlg) {
         let newCursePoint = [e.layerX, e.layerY]
-        if (this.processSelIndex == -1) {
-          if (this.currentwfc.processes.length) {
-            this.newProcess.id = this.currentwfc.processes[this.currentwfc.processes.length - 1].id + 1
+        if (this.stepSelIndex == -1) {
+          let hasSameStepNum = this.mySteps.filter(step => step.name == this.newStep.name).length
+          if (hasSameStepNum) {
+            this.newStep.id = this.newStep.name + '_' + hasSameStepNum
+            this.newStep.alias = this.newStep.name_cn + '_' + hasSameStepNum
           } else {
-            this.newProcess.id = 1
+            this.newStep.id = this.newStep.name
+            this.newStep.alias = this.newStep.name_cn
           }
-          this.newProcess.point = [newCursePoint[0] - 50, newCursePoint[1] - 20]
-          this.currentwfc.processes.push(JSON.parse(JSON.stringify(this.newProcess)))
-          this.newProcess = null
-          this.processSelIndex = this.currentwfc.processes.length - 1
+          this.newStep.point = [newCursePoint[0] - 50, newCursePoint[1] - 20]
+          this.newStep.nextSteps = []
+          this.newStep.rollbackSteps = []
+
+          this.mySteps.push(copyObject(this.newStep))
+          this.newStep = null
+          this.stepSelIndex = this.mySteps.length - 1
         } else {
-          let currentProcess = this.currentwfc.processes[this.processSelIndex]
-          currentProcess.point = [currentProcess.point[0] + newCursePoint[0] - this.cursePoint[0], currentProcess.point[1] + newCursePoint[1] - this.cursePoint[1]]
+          let currentStep = this.mySteps[this.stepSelIndex]
+          currentStep.point = [currentStep.point[0] + newCursePoint[0] - this.cursePoint[0], currentStep.point[1] + newCursePoint[1] - this.cursePoint[1]]
         }
         this.cursePoint = newCursePoint
       }
@@ -298,42 +332,30 @@ export default {
 <style scoped>
 .box {
   border: #ccc 1px solid;
-}
-
-.left-box {
-  width: 20%;
-  height: 100vh;
+  height: 100%;
   float: left;
   overflow: auto;
+  width: 100%;
 }
 
-.middle-box {
-  width: 60%;
-  height: 100vh;
-  float: left;
+.main-box {
+  width: 80%;
 }
 
 .right-box {
   width: 20%;
-  height: 100vh;
-  float: left;
-  overflow: auto;
-}
-
-.h1 {
-  background-color: #ccc;
 }
 
 .flowChart {
   position: relative;
   width: 99%;
-  height: 95vh;
+  height: 99%;
 }
 
 .wfcs {
   position: relative;
   width: 99%;
-  height: 80vh;
+  height: 80%;
 }
 
 .contextmenu {

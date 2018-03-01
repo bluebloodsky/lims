@@ -1,5 +1,5 @@
 <template>
-  <div style="positon:relative">
+  <div>
     <div class="box left-box">
       <div class="h">
         <span>导航</span>
@@ -162,7 +162,7 @@ export default {
   mounted() {
     this.attrFields = ATTR_FIELDS
     this.attrTypes = ATTR_TYPES
-    this.axios.get("/order-attrs").then(response => {
+    this.axios.get("order-attrs").then(response => {
       response.data.forEach(item => {
         if (item.name == 'order_client') {
           this.orderClientAttrs = item
@@ -172,7 +172,7 @@ export default {
           this.orderContentAttrs = item
         }
       })
-      return this.axios.get("/sample-attrs")
+      return this.axios.get("sample-attrs")
     }).then(response => {
       response.data.forEach(item => {
         if (item.name == 'sample_base_info') {
@@ -185,7 +185,7 @@ export default {
       })
     }).catch(err => {
       this.$message({
-        message: err['message'],
+        message: err['error'],
         type: 'error'
       })
     })
