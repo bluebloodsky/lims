@@ -89,12 +89,12 @@ export default {
       this.$store.commit('removeTab', tab_index)
     },
     closeCurrentTab() {
-      this.$router.push({ path: this.pre_url + this.tabs[0].url })
       for (let tab_index = 0; tab_index < this.tabs.length; tab_index++) {
         if (this.$route.path == this.pre_url + this.tabs[tab_index].url) {
           this.$store.commit('removeTab', tab_index)
         }
       }
+      this.$router.push({ path: this.pre_url + this.tabs[0].url })
     }
   },
   computed: {

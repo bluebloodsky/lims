@@ -10,7 +10,7 @@
       </ul>
       <div class="right-btn">
         <button>流程复制</button>
-        <button v-if="currentPage == 2" @click="submitProject">下单</button>
+        <button v-if="currentPage == 2 && !currentProject.doneSteps" @click="submitProject">下单</button>
         <button @click="savePage">保存</button>
       </div>
     </div>

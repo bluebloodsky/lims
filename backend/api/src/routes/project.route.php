@@ -19,6 +19,10 @@ $app->group('/projects', function () {
         $RET = Project::GetInstance()->StepSubmit($args['id']);
         return $resp->withJson($RET);
     });
+     $this->post('/step-rollback/{id}', function ($req, $resp, $args) {
+        $RET = Project::GetInstance()->StepRollback($args['id']);
+        return $resp->withJson($RET);
+    });
     $this->get('',function ($req, $resp, $args) {
         $RET = Project::GetInstance()->FindTodos();
         return $resp->withJson($RET);

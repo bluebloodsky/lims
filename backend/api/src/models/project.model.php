@@ -57,7 +57,18 @@ class Project
         $username = 'blq_admin';
         $collection = $this->_dbClient->selectCollection($station . '.projects');
         $objId = new ObjectId($id);
-        return $collection->findOne(["_id"=>$objId]);
+        $project = $collection->findOne(["_id"=>$objId]);
+
+        $workflows = InfoExtra::GetInstance()->GetWorkflows();
+
+        if($project["step"]){                
+            foreach ($workflows as $workflow) {
+                if($workflow["id"] == $project["step"]){
+                    $project["step"] = $workflow;
+                }
+            }
+        }
+        return $project;
     }
 
     public function StepSubmit($id){
@@ -66,14 +77,13 @@ class Project
         $collection = $this->_dbClient->selectCollection($station . '.projects');
         $objId = new ObjectId($id);
         $project = $collection->findOne(["_id"=>$objId]);
+        $modify =  ["doneSteps" => $project["doneSteps"] ? json_decode(json_encode($project["doneSteps"]), true) :[] ,
+                   "step" => $project["step"]];  
 
-        if(!$project["doneSteps"]){
-            $project["doneSteps"] = [];
-        }        
         $workflows = InfoExtra::GetInstance()->GetWorkflows();
         foreach ($workflows as $workflow) {
-            if($workflow["id"] == $project["step"]){
-                array_push($project["doneSteps"], [
+            if($workflow["id"] == $modify["step"]){
+                array_push($modify["doneSteps"], [
                     "id" => $workflow["id"] ,
                     "alias" => $workflow["alias"] ,
                     "status" => "移交",
@@ -81,12 +91,38 @@ class Project
                     "user" => $username,
                     "handleAt" => date_format(new DateTime(), 'Y-m-d H:i:s')
                 ]);
-                $project["step"] = $workflow["nextSteps"][0];
+                $modify["step"] = $workflow["nextSteps"][0];
                 break;
             }
         }        
-        $collection->replaceOne(['_id' => $project["_id"]], $project);
-        return [];
+        return $collection->updateOne(['_id' => $objId], ['$set' =>$modify]);
+    }
+
+    public function StepRollback($id){
+        $station = 'blq';
+        $username = 'blq_admin';
+        $collection = $this->_dbClient->selectCollection($station . '.projects');
+        $objId = new ObjectId($id);
+        $project = $collection->findOne(["_id"=>$objId]);
+        $modify =  ["doneSteps" => $project["doneSteps"] ? json_decode(json_encode($project["doneSteps"]), true) :[] ,
+                   "step" => $project["step"]];  
+
+        $workflows = InfoExtra::GetInstance()->GetWorkflows();
+        foreach ($workflows as $workflow) {
+            if($workflow["id"] == $modify["step"]){
+                array_push($modify["doneSteps"], [
+                    "id" => $workflow["id"] ,
+                    "alias" => $workflow["alias"] ,
+                    "status" => "回退",
+                    "suggestion"=>"",
+                    "user" => $username,
+                    "handleAt" => date_format(new DateTime(), 'Y-m-d H:i:s')
+                ]);
+                $modify["step"] = $workflow["rollbackSteps"][0];
+                break;
+            }
+        }        
+        return $collection->updateOne(['_id' => $objId], ['$set' =>$modify]);
     }
 
     public function InsertOrUpdateData($data,$type)
@@ -105,11 +141,13 @@ class Project
         $data['step'] = 'ORDER_RECEIVE';
         if (!$objId) {
             $data['createAt'] = $data['modifyAt'];
-            $data['_id'] = $collection->insertOne($data)->getInsertedId();    
+            $objId = $collection->insertOne($data)->getInsertedId(); 
         } else {
-            $data['_id'] = $objId;
-            $collection->replaceOne(['_id' => $objId], $data);
+            unset($data['_id']);
+            $collection->updateOne(['_id' => $objId], ['$set'=>$data]);
         }
+
+        $data['_id'] = $objId;
         return ["data" => $data,
             "message" => "更新成功"];
 
