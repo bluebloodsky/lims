@@ -57,15 +57,13 @@
         <AttrEdit v-model="currentRow" style="padding:15px;" />
       </div>
     </div>
-    <el-dialog title="修改记录" :visible.sync="logVisible" width="80%" draggable>
+    <el-dialog title="修改记录" :visible.sync="logVisible" width="80%">
       <el-table :data="currentAttrs.logs" border style="width: 100%">
         <el-table-column property="logTime" label="日期"></el-table-column>
         <el-table-column property="user" label="操作人"></el-table-column>
         <el-table-column label="内容">
           <template scope="scope">
-            <div v-for="(content,key) in scope.row.contents" style="border-bottom:#ccc 1px solid" :class="content.type">
-              {{showLog(content)}}
-            </div>
+            <LogContents :contents="scope.row.contents"></LogContents>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -80,22 +78,24 @@
 </template>
 <script>
 import AttrEdit from '../components/AttrEdit'
-import { ATTR_FIELDS ,ATTR_TYPES} from '@/shared/constants'
-import { copyObject, rollbackList } from '@/shared/util'
+import { ATTR_FIELDS, ATTR_TYPES } from '@/shared/constants'
+import { copyObject, rollbackMap } from '@/shared/util'
 import {
   mapGetters
 } from 'vuex'
 
+import LogContents from '../components/LogContents'
 export default {
   name: 'PageAttrConfig',
   components: {
-    AttrEdit
+    AttrEdit,
+    LogContents
   },
   data() {
     return {
       logVisible: false,
       attrFields: [],
-      attrTypes:[],
+      attrTypes: [],
       orderClientAttrs: {
         name: "order_client",
         name_cn: "委托方",
@@ -200,10 +200,9 @@ export default {
         return cellValue.join('/')
       else if (typeof cellValue == 'boolean') {
         return cellValue ? '是' : '否'
-      }
-      else if(column.property=='attr_type'){
-        let attr_type = this.attrTypes.find(i=>i.type == cellValue)
-        return attr_type?attr_type.type_cn:cellValue
+      } else if (column.property == 'attr_type') {
+        let attr_type = this.attrTypes.find(i => i.type == cellValue)
+        return attr_type ? attr_type.type_cn : cellValue
       }
       return cellValue
     },
@@ -222,15 +221,6 @@ export default {
           this.currentAttrs.attrs.splice(index, 1)
         }
       })
-    },
-    showLog(log) {
-      if (log.type == "add") {
-        return JSON.stringify(log.newvalue)
-      } else if (log.type == "remove") {
-        return JSON.stringify(log.oldvalue)
-      } else if (log.type == "change") {
-        return JSON.stringify(log.oldvalue) + '=>' + JSON.stringify(log.newvalue)
-      }
     },
     submit() {
       let url = null
@@ -260,7 +250,7 @@ export default {
     loadVersion(index) {
       this.currentAttrs.attrs = copyObject(this[this.currentAttrsName].attrs)
       for (let i = 0; i < index; i++) {
-        rollbackList(this.currentAttrs.attrs, this[this.currentAttrsName].logs[i].contents)
+        rollbackMap(this.currentAttrs.attrs, this[this.currentAttrsName].logs[i].contents)
       }
       this.logVisible = false
     }

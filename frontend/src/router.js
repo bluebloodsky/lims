@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import PageHome from './pages/PageHome'
 import PageDeskTop from './pages/PageDeskTop'
 import PageOrderRec from './pages/PageOrderRec'
+import PageTestItemConfig from './pages/PageTestItemConfig'
 import PageTplConfig from './pages/PageTplConfig'
 import PageWorkflowConfig from './pages/PageWorkflowConfig'
 import PageProcessHandle from './pages/PageProcessHandle'
@@ -23,15 +24,20 @@ const router = new Router({
     path: '/',
     redirect: '/home'
   }, {
+    name:'home',
     path: '/home',
     redirect: '/home/desktop',
     component: PageHome,
     children: [{
+      name:'desktop',
       path: 'desktop',
       component: PageDeskTop
     }, {
       path: 'order-rec',
       component: PageOrderRec
+    }, {
+      path: 'test-item-config',
+      component: PageTestItemConfig
     }, {
       path: 'tpl-config',
       component: PageTplConfig

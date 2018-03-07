@@ -3,7 +3,7 @@
     <div class="top">
       <img src="../assets/logo2.png">
       <h2>{{title}}</h2>
-      <ZlMenu :datas="menuItems" style="margin-top:8px" :callback="openTab"></ZlMenu>
+      <PaddleMenu :datas="menuItems" style="margin-top:8px" :callback="openTab"></PaddleMenu>
       <ul class="right-btns">
         <li>
           <a @click="logout">
@@ -32,7 +32,7 @@
   </div>
 </template>
 <script>
-import ZlMenu from '@/components/Menu'
+import PaddleMenu from '@/components/PaddleMenu'
 import apiBaseInfo from '@/api/baseInfo'
 import {
   Loading
@@ -43,7 +43,7 @@ import {
 
 export default {
   components: {
-    ZlMenu
+    PaddleMenu
   },
   props: {
     title: {

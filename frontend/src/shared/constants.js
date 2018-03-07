@@ -20,6 +20,7 @@ export const ATTR_TYPES = [{
 
 export const TABS_LIST = [
   { url: 'desktop', name: '工作台' },
+  { url: 'test-item-config', name: '试验项配置', component: 'PageTestItemConfig' },
   { url: 'attr-config', name: '属性配置', component: 'PageAttrConfig' },
   { url: 'workflow-config', name: '工作流配置', component: 'PageWorkflowConfig' },
   { url: 'order-rec', name: '业务受理', component: 'PageOrderRec' },

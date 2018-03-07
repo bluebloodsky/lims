@@ -10,11 +10,13 @@ function GetMapDiff($arrayOldData, $arrayNewData)
             $newValue = $diff->getNewValue();
             $oldValue = $diff->getOldValue();
             if (is_array($newValue) && is_array($oldValue)) {
-                $result[$key] = GetDiff($oldValue, $newValue);
+                $result[$key] = GetMapDiff($oldValue, $newValue);
             } else {
-                $result[$key] = $diff;
+                $result[$key] = $diff->toArray();
             }
+        }else{
+            $result[$key] = $diff->toArray();
         }
-        $result[$key] = $diff;
     }
+    return $result;
 }

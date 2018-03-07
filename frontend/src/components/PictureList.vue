@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="wrapper">
     <input class="new-todo" autofocus autocomplete="off" placeholder="" v-model="newTodo" @keyup.enter.stop="addTodo">
     <table border style="width: 100%;border: 1px solid #ececec; border-collapse: collapse;text-align:left">
       <tr v-for="(todo,index) in todos">

@@ -76,42 +76,12 @@
       </div>
     </div>
     <el-dialog title="修改记录" :visible.sync="logVisible" width="80%" draggable>
-      <el-table :data="currentTpl.data.logs" border style="width: 100%">
+      <el-table :data="logs" border style="width: 100%">
         <el-table-column property="logTime" label="日期"></el-table-column>
         <el-table-column property="user" label="操作人"></el-table-column>
         <el-table-column label="内容">
           <template scope="scope">
-            <div v-for="(content,key) in scope.row.contents" style="border-bottom:#fff 1px solid">
-              <span v-if="content.type" :class="content.type">
-              【{{key}}】: {{content.oldvalue}}
-              <span v-if="content.type=='change'" style="color:red">
-                ==>                 
-              </span> {{content.newvalue}}
-              </span>
-              <template v-else>
-                【{{key}}】:
-                <div v-for="(subContent,subKey) in content" :class="subContent.type">
-                  【{{subKey}}】: 
-                  <span v-if="content.type" :class="content.type">
-                  {{subContent.oldvalue}}
-                  <span v-if="subContent.type=='change'" style="color:red">
-                   ==>                  
-                  </span> {{subContent.newvalue}}
-                </span>
-                <template v-else>
-                  <div v-for="(grandchildContent,grandchildKey) in subContent" :class="grandchildContent.type">
-                  【{{grandchildKey}}】: 
-                  <span v-if="grandchildContent.type" :class="grandchildContent.type">
-                  {{grandchildContent.oldvalue}}
-                  <span v-if="grandchildContent.type=='change'" style="color:red">
-                   ==>                  
-                  </span> {{grandchildContent.newvalue}}
-                </span>
-              </div>
-                </template>
-                </div>
-              </template>
-            </div>
+            <LogContents :contents="scope.row.contents"></LogContents>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -129,10 +99,11 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import { ATTR_FIELDS ,ATTR_TYPES} from '@/shared/constants'
+import { ATTR_FIELDS, ATTR_TYPES } from '@/shared/constants'
 import AttrEdit from '../components/AttrEdit'
 import TplRender from '../components/TplRender'
-import { copyObject, rollbackArray } from '@/shared/util'
+import LogContents from '../components/LogContents'
+import { copyObject, rollbackMap } from '@/shared/util'
 var TempTestItemParam = {
   props: ['tpl'],
   created() {
@@ -142,7 +113,7 @@ var TempTestItemParam = {
 
 export default {
   name: 'PageTplConfig',
-  components: { TempTestItemParam, AttrEdit, TplRender },
+  components: { TempTestItemParam, AttrEdit, TplRender, LogContents },
   data() {
     return {
       mode: 0,
@@ -154,8 +125,32 @@ export default {
         data: {}
       },
       attrFields: [],
-      attrTypes:[],
+      attrTypes: [],
       logVisible: false
+    }
+  },
+  computed: {
+    logs() {
+      let result = []
+      let order = this.currentTpl.order
+      if (order && order.length) {
+        let all_logs = this.testItems[order[0]].logs
+        if (all_logs && all_logs.length) {
+          all_logs.map(log => {
+            if (log.contents &&
+              log.contents[order[1]] &&
+              log.contents[order[1]][order[2]]) {
+              result.push({
+                logTime: log.logTime,
+                user: log.user,
+                contents: log.contents[order[1]][order[2]]
+              })
+            }
+          })
+          result.push(all_logs[all_logs.length - 1])
+        }
+      }
+      return result
     }
   },
   mounted() {
@@ -164,7 +159,10 @@ export default {
     this.axios.get("test-items").then(response => {
       this.testItems = response.data
     }).catch(e => {
-
+      this.$message({
+        message: err['error'],
+        type: 'error'
+      })
     })
   },
   methods: {
@@ -176,10 +174,9 @@ export default {
         return cellValue.join('/')
       else if (typeof cellValue == 'boolean') {
         return cellValue ? '是' : '否'
-      }
-      else if(column.property=='attr_type'){
-        let attr_type = this.attrTypes.find(i=>i.type == cellValue)
-        return attr_type?attr_type.type_cn:cellValue
+      } else if (column.property == 'attr_type') {
+        let attr_type = this.attrTypes.find(i => i.type == cellValue)
+        return attr_type ? attr_type.type_cn : cellValue
       }
       return cellValue
     },
@@ -205,7 +202,7 @@ export default {
       testItem[infos[1]][infos[2]] = this.currentTpl.data
       this.axios.post("test-items", JSON.stringify(testItem)).then(response => {
         if (response.data['data']) {
-          this.testItems[infos[0]] = response.data['data']
+          this.$set(this.testItems, infos[0], response.data['data'])
           this.currentTpl.data = response.data['data'][infos[1]][infos[2]]
         }
         this.$message({
@@ -229,17 +226,16 @@ export default {
         }, 0)
       }
     },
-    showLog(log) {
-      if (log.type == "add") {
-        return JSON.stringify(log.newvalue)
-      } else if (log.type == "remove") {
-        return JSON.stringify(log.oldvalue)
-      } else if (log.type == "change") {
-        return JSON.stringify(log.oldvalue) + '=>' + JSON.stringify(log.newvalue)
-      }
-    },
     loadVersion(index) {
       this.logVisible = false
+      let l_infos = this.currentTpl.order
+      let data = copyObject(this.testItems[l_infos[0]][l_infos[1]][l_infos[2]])
+      for (let i = 0; i < index; i++) {
+        rollbackMap(data, this.logs[i].contents)
+      }
+      this.currentTpl.data = data
+      this.logVisible = false
+
     }
   }
 }

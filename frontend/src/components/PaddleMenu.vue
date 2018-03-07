@@ -5,7 +5,7 @@
       <span v-else>{{item.name}}</span>
       <ul v-if="item.items" class="second-menu">
         <li v-for="subitem in item.items">
-          <a v-if="subitem.url"  @click="callback(subitem.url)">{{subitem.name}}</a>
+          <a v-if="subitem.url" @click="callback(subitem.url)">{{subitem.name}}</a>
         </li>
       </ul>
     </li>
@@ -17,14 +17,12 @@ export default {
     datas: {
       type: Array
     },
-    callback:{
-      type :Function
+    callback: {
+      type: Function
     }
   },
-  created() {    
-  },
-  methods: {
-  }
+  created() {},
+  methods: {}
 }
 
 </script>

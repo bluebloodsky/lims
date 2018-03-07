@@ -31,4 +31,8 @@ $app->group('/projects', function () {
         $RET = Project::GetInstance()->FindById($args['id']);
         return $resp->withJson($RET);
     });
+    $this->get('/report/{id}',function($req, $resp, $args) {
+        $project = Project::GetInstance()->FindById($args['id']);
+        Report::exportTest($project);        
+    });
 });
