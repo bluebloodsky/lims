@@ -1,5 +1,5 @@
 <template>
-  <TempTestItemParam :tpl="tpl">
+  <TplBox :tpl="tpl">
     <template v-for="attr in attrs">
       <input :slot="attr.name" v-model="realValue[attr.name]" :disabled="attr.readonly" v-if="attr.attr_type=='input'">
       <select :slot="attr.name" :disabled="attr.readonly" v-model="realValue[attr.name]" v-else-if="attr.attr_type=='select'">
@@ -10,17 +10,19 @@
       <template v-else-if="attr.attr_type=='radio'||attr.attr_type=='checkbox'">
         <template v-for="(opt,opt_index) in attr.options">
           <input :slot="attr.name+'_'+opt_index" :disabled="attr.readonly" type="radio" :id="opt_index" :name="attr.name" :value="opt" v-model="realValue[attr.name]" v-if="attr.attr_type=='radio'">
-          <input :slot="attr.name+'_'+opt_index" :disabled="attr.readonly" type="checkbox" :id="opt_index" :name="attr.name" :value="opt"  v-model="realValue[attr.name]" v-else>
+          <input :slot="attr.name+'_'+opt_index" :disabled="attr.readonly" type="checkbox" :id="opt_index" :name="attr.name" :value="opt" v-model="realValue[attr.name]" v-else>
         </template>
       </template>
-      <table :slot="attr.name" v-if="attr.attr_type=='table'" :disabled="attr.readonly" class="dataintable" border="1">
-        <tbody>
+      <table :slot="attr.name" v-if="attr.attr_type=='table'" :disabled="attr.readonly">
+        <thead>
           <tr>
             <th v-for="col in attr.cols">{{col.label}}</th>
             <th>
               <button>+</button>
             </th>
           </tr>
+        </thead>
+        <tbody>          
           <tr v-for="row in [1,2,3]">
             <td v-for="col in param.cols">
               <input type="" name="" :disabled="col.readonly" :class="{disabled:col.readonly}">
@@ -32,24 +34,13 @@
         </tbody>
       </table>
     </template>
-  </TempTestItemParam>
+  </TplBox>
 </template>
 <script>
-var TempTestItemParam = {
-  props: {
-    tpl: {
-      type: String,
-      requied: true
-    }
-  },
-  created() {
-    let reg = /\$\{(\S+?)\}/g
-    let real_tpl = this.tpl.replace(reg, `<slot name='$1'></slot>`)
-    this.$options.template = '<div>' + real_tpl + '</div>'
-  }
-}
+import TplBox from './TplBox'
+
 export default {
-  components: { TempTestItemParam },
+  components: { TplBox },
   props: {
     attrs: {
       type: Array,
@@ -59,8 +50,7 @@ export default {
       type: String,
       requied: true
     },
-    value: {   
-    }
+    value: {}
   },
   data() {
     return {
@@ -75,7 +65,7 @@ export default {
       } else if (attr.attr_type == 'checkbox') {
         l_value = this.value && this.value[attr.name] ? this.value[attr.name].split(",") : []
       }
-      this.$set(this.realValue , attr.name , l_value)
+      this.$set(this.realValue, attr.name, l_value)
     })
   },
   watch: {
@@ -89,3 +79,6 @@ export default {
 }
 
 </script>
+<style scoped>
+
+</style>

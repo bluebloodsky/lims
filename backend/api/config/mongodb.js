@@ -120,9 +120,7 @@ db.menus.insertMany([{
 }])
 
 db.blq.order.attrs.drop()
-db.blq.order.attrs.insert({
-    version: '1.0.0',
-    items:[{
+db.blq.order.attrs.insertMany([{
     name: 'order_client',
     name_cn: '委托方',
     attrs: [{
@@ -254,12 +252,10 @@ db.blq.order.attrs.insert({
         user: "blq_admin",
         contents: []
     }]
-}]})
+}])
 
 db.blq.sample.attrs.drop()
-db.blq.sample.attrs.insert({
-    version: '1.0.0',
-    items: [{
+db.blq.sample.attrs.insertMany([{
         name: 'sample_base_info',
         name_cn: '试品基本信息',
         attrs: [{
@@ -442,13 +438,10 @@ db.blq.sample.attrs.insert({
             user: "blq_admin",
             contents: []
         }]
-    }]
-})
+    }])
 
 db.blq.test.items.drop()
-db.blq.test.items.insert({
-    version: '1.0.0',
-    items: [{
+db.blq.test.items.insertMany([{
         name: 'fhwtwgjc',
         name_cn: '复合外套外观检查',
         params: [{
@@ -643,5 +636,4 @@ db.blq.test.items.insert({
             user: "blq_admin",
             contents: []
         }]
-    }]
-})
+    }])

@@ -27,21 +27,25 @@ class InfoExtra
 
     public function GetOrderAttrs()
     {
-        $station = 'blq';
+        global $userInfo;
+        $station = $userInfo['station'];
         return $this->_dbClient->selectCollection($station . '.order.attrs')->find()->toArray();
     }
 
     public function GetSampleAttrs()
     {
-        $station = 'blq';
+        global $userInfo;
+        $station = $userInfo['station'];
         return $this->_dbClient->selectCollection($station . '.sample.attrs')->find()->toArray();
     }
     public function GetWorkflows(){
-        $station = 'blq';
+        global $userInfo;
+        $station = $userInfo['station'];
         return $this->_dbClient->selectCollection($station . '.workflows')->find()->toArray();
     }
     public function updateWorkflows($data){
-        $station = 'blq';
+       global $userInfo;
+        $station = $userInfo['station'];
         $collection = $this->_dbClient->selectCollection($station . '.workflows');
         $collection->drop();
         $steps = [];
@@ -86,28 +90,32 @@ class InfoExtra
 
     public function InsertOrUpdateOrderAttrs($data)
     {
-        $station = 'blq';
-        $username = 'blq_admin';
+        global $userInfo;
+        $station = $userInfo['station'];
+        $username = $userInfo['username'];
         return $this->InsertOrUpdateAttrs($station, $username, 'order', $data);
     }
 
     public function InsertOrUpdateSampleAttrs($data)
     {
-        $station = 'blq';
-        $username = 'blq_admin';
+        global $userInfo;
+        $station = $userInfo['station'];
+        $username = $userInfo['username'];
         return $this->InsertOrUpdateAttrs($station, $username, 'sample', $data);
     }
 
     public function GetTestitems()
     {
-        $station = 'blq';
+        global $userInfo;
+        $station = $userInfo['station'];
         return $this->_dbClient->selectCollection($station . '.test.items')->find()->toArray();
     }
 
     public function InsertOrUpdateTestitems($data)
     {
-        $station = 'blq';
-        $username = 'blq_admin';
+        global $userInfo;
+        $station = $userInfo['station'];
+        $username = $userInfo['username'];
 
         $collection = $this->_dbClient->selectCollection($station . '.test.items');
         $oldData = $collection->findOne(['name' => $data['name']]);
@@ -140,4 +148,22 @@ class InfoExtra
         return ["data" => $data,
             "message" => "更新成功"];
     }
+
+    public function UpdateAllTestitems($data){
+        global $userInfo;
+        $station = $userInfo['station'];
+        $username = $userInfo['username'];        
+        $collection = $this->_dbClient->selectCollection($station . '.test.items');
+        $pros = [];
+        foreach ($data as $project) {
+            # code...
+            if($project["_id"]){
+                $project["_id"] = new ObjectId($project['_id']['$oid']);
+            }
+            array_push($pros , $project);
+        }
+        $collection->drop();
+        return  $collection->insertMany($pros);
+    }
+
 }

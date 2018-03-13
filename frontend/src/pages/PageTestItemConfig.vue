@@ -104,21 +104,25 @@ export default {
       this.flg_showRightBox = false
     },
     addItem() {
+      this.currentRow = {
+        name: '',
+        name_cn: ''
+      }
       this.testItems.push(this.currentRow)
       this.flg_showRightBox = true
     },
     submit() {
       this.axios.post("test-items", JSON.stringify(this.testItems)).then(response => {
-          if (response.data['data']) {
-            this.testItems = response.data['data']
-          }
-          this.$message({
-            message: response.data['message'],
-            type: 'success'
-          });
-        }).catch(err => {
-          console.log("err:" + err)
-        })
+        if (response.data['data']) {
+          this.testItems = response.data['data']
+        }
+        this.$message({
+          message: response.data['message'],
+          type: 'success'
+        });
+      }).catch(err => {
+        console.log("err:" + err)
+      })
     }
   }
 
@@ -126,4 +130,6 @@ export default {
 
 </script>
 <style scoped>
+
+
 </style>

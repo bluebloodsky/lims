@@ -39,13 +39,15 @@
         </div>
       </div>
       <div v-show="currentPage==2">
-        <table border style="width: 100%;border: 1px solid #ececec; border-collapse: collapse;text-align:left">
-          <tbody>
+        <table>
+          <thead>
             <tr>
               <th>序号</th>
               <th colspan="2">检测项目</th>
               <th>技术要求</th>
             </tr>
+          </thead>
+          <tbody>
             <template v-for="(testItem,itemIndex) in testItems">
               <tr v-for="(param,paramIndex) in testItem.params">
                 <td :rowspan="testItem.params.length" v-if="paramIndex == 0">{{itemIndex+1}}</td>
@@ -314,6 +316,17 @@ export default {
   text-align: center;
   border: none;
   background-color: transparent;
+}
+
+table {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+}
+
+td,
+th {
+  border: 1px solid #ccc;
 }
 
 </style>

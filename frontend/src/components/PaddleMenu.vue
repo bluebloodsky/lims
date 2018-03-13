@@ -3,7 +3,7 @@
     <li v-for="item in datas">
       <a v-if="item.url" @click="callback(item.url)">{{item.name}}</a>
       <span v-else>{{item.name}}</span>
-      <ul v-if="item.items" class="second-menu">
+      <ul v-if="item.items">
         <li v-for="subitem in item.items">
           <a v-if="subitem.url" @click="callback(subitem.url)">{{subitem.name}}</a>
         </li>
@@ -27,21 +27,19 @@ export default {
 
 </script>
 <style scoped>
-.first-menu {
-  height: 33px;
-  float: left;
+.first-menu{
+  height: 32px;
 }
-
 .first-menu>li {
   position: relative;
   float: left;
-  width: 121px;
+  width: 120px;
   overflow: hidden;
 }
 
 .first-menu>li>a,
 .first-menu>li>span {
-  width: 120px;
+  width: 118px;
   border-right: 1px solid #ccc;
 }
 
@@ -71,8 +69,8 @@ export default {
 .first-menu>li>a,
 .first-menu>li>span,
 .first-menu>li:hover>ul>li>a {
-  height: 33px;
-  line-height: 33px;
+  height: 32px;
+  line-height: 32px;
   text-align: center;
   display: block;
   color: #fff;
@@ -80,7 +78,7 @@ export default {
 
 .first-menu>li:hover,
 .first-menu>li:hover>ul>li:hover {
-  background-color: #00acc1;
+  background-color: #0cc;
 }
 
 </style>

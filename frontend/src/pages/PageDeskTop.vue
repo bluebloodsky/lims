@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="box">
+    <div class="box float-box">
       <div class="h">
         <span>待办业务</span>
       </div>
@@ -14,7 +14,7 @@
       </div>
       <a>更多>></a>
     </div>
-    <div class="box">
+    <div class="box float-box">
       <div class="h">
         <span>我的日程</span>
       </div>
@@ -73,12 +73,11 @@ export default {
 
 </script>
 <style scoped>
-.box {
-  position: relative;
-  width: 48%;
+.float-box {
+  width: 47%;
   height: 600px;
   margin: 1%;
-  float: left;
+  display: inline-block;
   border: solid 1px #D4D4D4;
 }
 

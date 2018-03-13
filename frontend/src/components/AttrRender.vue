@@ -5,17 +5,17 @@
       <span v-if="attr.required">*</span>
     </div>
     <div class="right-info">
-      <input :type="attr.attr_type" :disabled="attr.readonly" v-model="realValue" v-if="attr.attr_type=='input'">
+      <input :disabled="attr.readonly" v-model="realValue" v-if="attr.attr_type=='input'">
       <el-date-picker v-model="realValue" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" v-else-if="attr.attr_type=='date'">
       </el-date-picker>
       <select v-model="realValue" v-else-if="attr.attr_type=='select'">
         <option :value="opt" v-for="opt in attr.options">{{opt}}</option>
       </select>
-      <template v-else-if="attr.attr_type=='checkbox'">
-        <template v-for="(opt,opt_index) in attr.options">
-          <input type="checkbox" :id="opt_index" class="checkbox" :value="opt" v-model="realValue"> {{opt}}
-        </template>
-      </template>
+      <ul v-else-if="attr.attr_type=='checkbox'">
+        <li v-for="(opt,opt_index) in attr.options">
+          <input type="checkbox" :id="opt_index" :value="opt" v-model="realValue"> {{opt}}
+        </li>
+      </ul>
       <PictureList v-model="realValue" v-else-if="attr.attr_type=='pictureTable'"></PictureList>
     </div>
   </div>
@@ -35,7 +35,7 @@ export default {
     value: {
       required: true
     }
-  }, 
+  },
   computed: {
     realValue: {
       get() {
@@ -47,13 +47,13 @@ export default {
           return this.value
         }
       },
-      set(val){
+      set(val) {
         this.$emit('input', val)
       }
     }
   },
   watch: {
-   
+
   }
 }
 
@@ -72,12 +72,16 @@ export default {
 }
 
 .left-desc {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   width: 150px;
-  display: inline-block;
+  /*Flex布局*/
   text-align: left;
 }
 
 .right-info {
+  margin-left: 150px;
   min-width: 300px;
   max-width: 800px;
   display: inline-block;
@@ -89,9 +93,9 @@ select {
   font-size: 14px;
 }
 
-.right-info>.checkbox {
+input[type=checkbox],
+input[type=radio] {
   width: 15px;
   height: 15px;
 }
-
 </style>

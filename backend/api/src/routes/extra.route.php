@@ -37,7 +37,13 @@ $app->group('/test-items', function () {
     });
     $this->post('', function ($req, $resp, $args) {
         $data = json_decode($req->getBody() , true);
-        $RET = InfoExtra::GetInstance()->InsertOrUpdateTestitems($data);
+        $RET = [];
+        //索引数组，即多个对象,用于试验项整体增删，基本名称修改，无日志
+        if(array_keys($data) == range(0, count($data)-1)){ 
+             $RET = InfoExtra::GetInstance()->UpdateAllTestitems($data);
+        }else{       // 关联数组，即单个对象，用于试验项单个配置     
+            $RET = InfoExtra::GetInstance()->InsertOrUpdateTestitems($data);
+        }
         return $resp->withJson($RET);
     });
 });

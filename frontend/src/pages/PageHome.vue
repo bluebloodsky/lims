@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="top">
-      <img src="../assets/logo2.png">
-      <h2>{{title}}</h2>
-      <PaddleMenu :datas="menuItems" style="margin-top:8px" :callback="openTab"></PaddleMenu>
+      <a id="logo" href="#"><img src="../assets/logo2.png"></a>
+      <h1>{{title}}</h1>
+      <PaddleMenu :datas="menuItems" :callback="openTab"></PaddleMenu>
       <ul class="right-btns">
         <li>
           <a @click="logout">
@@ -26,7 +26,7 @@
     </ul>
     <transition>
       <keep-alive :include="includedComponents">
-        <router-view style="position:absolute; left:0;top:80px;bottom:0; right:0 ; overflow-y:auto" :closeCurrentTab="closeCurrentTab"></router-view>
+        <router-view :closeCurrentTab="closeCurrentTab" style="position:absolute;top:90px;bottom:0;left:0;width:100%"></router-view>
       </keep-alive>
     </transition>
   </div>
@@ -122,44 +122,60 @@ export default {
 </script>
 <style scoped>
 .top {
-  background-color: #0097a7;
+  position: relative;
+  background-color: #699;
   color: white;
-  line-height: 50px;
-  height: 50px;
   padding: 0;
   margin: 0;
+  width: 100%;
 }
 
-.top>img {
-  float: left;
+#logo {
   margin: 10px 10px;
+  height: 30px;
+  width: 110px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+#logo>img {
   height: 30px;
 }
 
-.top h2 {
-  margin: 0 10px;
-  float: left;
+.top>h1{
+  display: inline-block;
+  font-size: 26px;
+  line-height: 50px;
+  vertical-align: top;
+  margin:0;
 }
-
-.right-btns {
-  float: right;
+.top>ul{
+  margin:0;
+  display: inline-block;
+  vertical-align: 50%;
 }
-
 .top>ul>li {
   float: left;
   margin-right: 20px;
+}
+
+ul.right-btns {
+  position: absolute;
+  top: 0;
+  left: auto;
+  right: 5px;
+  bottom: auto;
+  height: 50px;
+  line-height: 50px;
 }
 
 .top a {
   color: white
 }
 
-a {
-  color: #01301E;
-}
-
-.router-link-active {
-  background-color: #fff;
+a.router-link-active {
+  background-color: #fff;  
+  color: #666;
 }
 
 .destroy {

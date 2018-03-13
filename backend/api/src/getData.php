@@ -16,6 +16,10 @@ foreach(glob(API . 'src' . DS . 'routes' . DS . '*.php') as $router) {
     require_once $router;
 }
 
+/*应该根据token获取操作用户信息,现无权限管理，暂时默认 blq/emc*/
+$userInfo = ["station" => "emc" ,
+            "username" => "emc_admin"];
+
 $asJsonMidd = function ($req, $resp, $next) {
     if($req->isOptions()){
         $resp = $resp->withHeader('Access-Control-Allow-Origin', 'http://localhost:8080');

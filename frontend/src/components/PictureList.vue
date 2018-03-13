@@ -1,14 +1,14 @@
 <template>
   <section class="wrapper">
     <input class="new-todo" autofocus autocomplete="off" placeholder="" v-model="newTodo" @keyup.enter.stop="addTodo">
-    <table border style="width: 100%;border: 1px solid #ececec; border-collapse: collapse;text-align:left">
+    <table>
       <tr v-for="(todo,index) in todos">
         <td>{{todo.text}}</td>
         <td>
           <PictureCard v-model="todo.files"></PictureCard>
         </td>
         <td>
-          <button class="destroy" @click="deleteTodo(index)">×</button>
+          <button class="destroy" @click="deleteTodo(index)"></button>
         </td>
       </tr>
     </table>
@@ -81,4 +81,19 @@ export default {
   color: #af5b5e;
 }
 
+.destroy:before{
+  content:'×'
+}
+table {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  text-align: center;
+  margin-top: 2px;
+}
+
+td,
+th {
+  border: 1px solid #ccc;
+}
 </style>

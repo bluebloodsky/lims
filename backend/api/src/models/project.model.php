@@ -24,8 +24,9 @@ class Project
 
     public function FindTodos($limit=10,$skip=0) //查询待办业务
     {
-    	$station = 'blq';
-        $username = 'blq_admin';
+    	global $userInfo;
+        $station = $userInfo['station'];
+        $username = $userInfo['username'];
         $collection = $this->_dbClient->selectCollection($station . '.projects');
         $options["projection"] = [
             "order_info.order_client.name" => 1,
@@ -53,8 +54,9 @@ class Project
 
     public function FindById($id)
     {
-        $station = 'blq';
-        $username = 'blq_admin';
+        global $userInfo;
+        $station = $userInfo['station'];
+        $username = $userInfo['username'];
         $collection = $this->_dbClient->selectCollection($station . '.projects');
         $objId = new ObjectId($id);
         $project = $collection->findOne(["_id"=>$objId]);
@@ -72,8 +74,9 @@ class Project
     }
 
     public function StepSubmit($id){
-        $station = 'blq';
-        $username = 'blq_admin';
+        global $userInfo;
+        $station = $userInfo['station'];
+        $username = $userInfo['username'];
         $collection = $this->_dbClient->selectCollection($station . '.projects');
         $objId = new ObjectId($id);
         $project = $collection->findOne(["_id"=>$objId]);
@@ -99,8 +102,9 @@ class Project
     }
 
     public function StepRollback($id){
-        $station = 'blq';
-        $username = 'blq_admin';
+        global $userInfo;
+        $station = $userInfo['station'];
+        $username = $userInfo['username'];
         $collection = $this->_dbClient->selectCollection($station . '.projects');
         $objId = new ObjectId($id);
         $project = $collection->findOne(["_id"=>$objId]);
@@ -124,11 +128,11 @@ class Project
         }        
         return $collection->updateOne(['_id' => $objId], ['$set' =>$modify]);
     }
-
     public function InsertOrUpdateData($data,$type)
     {
-        $station = 'blq';
-        $username = 'blq_admin';
+        global $userInfo;
+        $station = $userInfo['station'];
+        $username = $userInfo['username'];
         $collection = $this->_dbClient->selectCollection($station . '.projects');
 
         $arrayOldData = [];

@@ -19,15 +19,15 @@ export const remove = (arr: Array < any > , item: any) => {
 }
 
 export const rollbackMap = (source: Object | Array, logContents: Object | Array) => {
-  for (let [k, v] of Object.entries(logContents)) {
-    if (v.type == 'add') {
+  for ( let k in logContents){
+    if (logContents[k].type == 'add') {
       if (Array.isArray(source)) {
         source.splice(k, 1)
       } else {
         delete source[k]
       }
-    } else if (v.type == 'remove' || v.type == 'change') {
-      source[k] = v.oldvalue
+    } else if (logContents[k].type == 'remove' || logContents[k].type == 'change') {
+      source[k] = logContents[k].oldvalue
     } else {
       rollbackMap(source[k], logContents[k])
     }

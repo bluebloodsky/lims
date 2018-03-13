@@ -10,17 +10,16 @@
             <template slot="title">
               <span>{{menu.name_cn}}</span>
             </template>
-            <el-menu-item-group>
+            <el-menu-item-group v-if="menu.params">
               <template slot="title">项目参数模板</template>
               <el-menu-item :index="menu_index+'-params-'+ param_index" v-for="(param,param_index) in menu.params">
                 <span>{{param.name_cn}}</span>
               </el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group>
+             <el-menu-item-group v-if="menu.records">
               <template slot="title">原始记录模板</template>
-              <el-menu-item :index="menu_index+'-records-'+ record_index" v-for="(record,
-              record_index) in menu.records">
-                <span></span>
+              <el-menu-item :index="menu_index+'-records-'+ record_index" v-for="(record,record_index) in menu.records">
+                <span>{{record.name_cn}}</span>
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -147,13 +146,13 @@ export default {
               })
             }
           })
-          result.push(all_logs[all_logs.length - 1])
+          result.push({})
         }
       }
       return result
     }
   },
-  mounted() {
+  created() {
     this.attrFields = ATTR_FIELDS
     this.attrTypes = ATTR_TYPES
     this.axios.get("test-items").then(response => {
@@ -217,13 +216,18 @@ export default {
       let l_infos = key.split('-')
 
       this.currentTpl.data = copyObject(this.testItems[l_infos[0]][l_infos[1]][l_infos[2]])
+      if(!this.currentTpl.data["attrs"]){
+        this.$set(this.currentTpl.data,"attrs" , [])
+      }
+      if(!this.currentTpl.data["tpl"]){
+        this.$set(this.currentTpl.data,"tpl" , '')
+      }
       this.currentTpl.order = l_infos
-      let oldMod = this.mode
-      this.mode = 0
-      if (this.mode != oldMod) {
-        setTimeout(() => {
-          this.mode = oldMod
-        }, 0)
+      if (this.mode == 1) {
+        this.mode = 0
+        this.$nextTick(()=>{
+          this.mode = 1
+        })
       }
     },
     loadVersion(index) {
@@ -235,7 +239,6 @@ export default {
       }
       this.currentTpl.data = data
       this.logVisible = false
-
     }
   }
 }
