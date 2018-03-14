@@ -1,9 +1,12 @@
 <template>
   <div>
-    <div class="top">
+    <header>
       <a id="logo" href="#"><img src="../assets/logo2.png"></a>
       <h1>{{title}}</h1>
-      <PaddleMenu :datas="menuItems" :callback="openTab"></PaddleMenu>
+      <nav>
+        <a class="menu-button"><img src="../assets/menu.png"></a>
+        <PaddleMenu :datas="menuItems" :callback="openTab"></PaddleMenu>
+      </nav>
       <ul class="right-btns">
         <li>
           <a @click="logout">
@@ -16,14 +19,14 @@
             </a>
         </li>
       </ul>
-    </div>
-    <ul class="tabs">
-      <li v-for="(tab,tab_index) in tabs" :key="tab.url">
-        <router-link :to="pre_url+tab.url">{{tab.name}}
-          <button class="destroy" @click.prevent="closeTab(tab_index)" v-if="tab_index!==0"><i class="iconfont icon-cancel"></i></button>
-        </router-link>
-      </li>
-    </ul>
+      <ul class="tabs">
+        <li v-for="(tab,tab_index) in tabs" :key="tab.url">
+          <router-link :to="pre_url+tab.url">{{tab.name}}
+            <button class="destroy" @click.prevent="closeTab(tab_index)" v-if="tab_index!==0"><i class="iconfont icon-cancel"></i></button>
+          </router-link>
+        </li>
+      </ul>
+    </header>
     <transition>
       <keep-alive :include="includedComponents">
         <router-view :closeCurrentTab="closeCurrentTab" style="position:absolute;top:90px;bottom:0;left:0;width:100%"></router-view>
@@ -121,18 +124,18 @@ export default {
 
 </script>
 <style scoped>
-.top {
-  position: relative;
+header {
+  position: fixed;
+  z-index: 9999;
+  width: 100%;
   background-color: #699;
   color: white;
-  padding: 0;
-  margin: 0;
-  width: 100%;
 }
 
 #logo {
-  margin: 10px 10px;
-  height: 30px;
+  height: 50px;
+  line-height: 50px;
+  margin: 0 10px;
   width: 110px;
   overflow: hidden;
   display: inline-block;
@@ -140,33 +143,36 @@ export default {
 
 #logo>img {
   height: 30px;
+  margin: 10px 0;
 }
 
-.top>h1{
+header>h1 {
+  color: #699;
+  text-shadow: 1px 1px 1px #fff, -1px -1px 1px #fff;
   display: inline-block;
   font-size: 26px;
   line-height: 50px;
   vertical-align: top;
-  margin:0;
+  margin: 0;
 }
-.top>ul{
-  margin:0;
+
+nav {
   display: inline-block;
+  height: 32px;
   vertical-align: 50%;
-}
-.top>ul>li {
-  float: left;
-  margin-right: 20px;
 }
 
 ul.right-btns {
   position: absolute;
-  top: 0;
+  background-color: #699;
+  top: 15px;
+  right: 20px;
   left: auto;
-  right: 5px;
-  bottom: auto;
-  height: 50px;
-  line-height: 50px;
+}
+
+.right-btns>li {
+  float: left;
+  margin-right: 10px;
 }
 
 .top a {
@@ -174,7 +180,7 @@ ul.right-btns {
 }
 
 a.router-link-active {
-  background-color: #fff;  
+  background-color: #fff;
   color: #666;
 }
 
@@ -189,5 +195,45 @@ a.router-link-active {
 .destroy:hover {
   color: #af5b5e;
 }
+
+.menu-button {
+  display: none;
+  height: 50px;
+  line-height: 50px;
+  width: 50px;
+  text-align: center;
+}
+
+@media screen and (max-width: 1200px ){
+  header>h1 {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  header>h1 {
+    display: inline-block;
+  }
+  nav {
+    float: left;
+    width: 50px;
+  }
+  nav > ul{
+    display: none;
+  }
+  .menu-button {
+    display: inline-block;
+  }
+  nav:hover > ul {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 600px ){
+  header>h1 {
+    display: none;
+  }
+}
+
 
 </style>

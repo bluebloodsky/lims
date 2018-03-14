@@ -26,6 +26,7 @@ export const TABS_LIST = [
   { url: 'order-rec', name: '业务受理', component: 'PageOrderRec' },
   { url: 'tpl-config', name: '模板配置', component: 'PageTplConfig' },  
   { url: 'process-handle', name: '流程处理', component: 'PageProcessHandle' },
+  { url: 'order-todo', name: '待办业务', component: 'PageOrderTodo' },
 ]
 
 export const ATTR_FIELDS = [{

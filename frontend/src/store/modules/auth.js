@@ -3,8 +3,7 @@ import auth from '../../api/auth'
 const state = {
   user: {
     name:'blq_admin',
-    name_cn:'避雷器管理员',
-    dept: 'blq',
+    name_cn:'管理员',
   },
   token: null
 }

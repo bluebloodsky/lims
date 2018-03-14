@@ -1,5 +1,5 @@
 <template>
-  <section class="wrapper">
+  <section>
     <input class="new-todo" autofocus autocomplete="off" placeholder="" v-model="newTodo" @keyup.enter.stop="addTodo">
     <table>
       <tr v-for="(todo,index) in todos">
@@ -90,6 +90,7 @@ table {
   border-collapse: collapse;
   text-align: center;
   margin-top: 2px;
+  overflow: auto;
 }
 
 td,

@@ -12,11 +12,11 @@
       </div>
       <div class="b">
         <ul class="tabs">
-          <li>
-            <a :class="{active:activeTab==tabIndex}" @click="activeTab=tabIndex" v-for="(tabName,tabIndex) in tabPages">{{tabName}}</a>
+          <li  v-for="(tabName,tabIndex) in tabPages">
+            <a :class="{active:activeTab==tabIndex}" @click="activeTab=tabIndex">{{tabName}}</a>
           </li>
         </ul>
-        <div style="position:absolute;top:30px;bottom:0;left:0;right:0;overflow:auto;">
+        <div>
           <el-table :data="steps" border v-show="activeTab == 0">
             <el-table-column type="index" align="center">
             </el-table-column>
@@ -115,13 +115,6 @@ export default {
 
 </script>
 <style scoped>
-.box {
-  border: #ccc 1px solid;
-  height: 100%;
-  float: left;
-  overflow: auto;
-  width: 100%;
-}
 
 .top-box {
   height: 60%;

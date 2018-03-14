@@ -27,20 +27,17 @@ export default {
 
 </script>
 <style scoped>
-.first-menu{
+.first-menu {
   height: 32px;
 }
+
 .first-menu>li {
   position: relative;
   float: left;
   width: 120px;
   overflow: hidden;
-}
-
-.first-menu>li>a,
-.first-menu>li>span {
-  width: 118px;
   border-right: 1px solid #ccc;
+  background-color: #699;
 }
 
 .first-menu>li>ul {
@@ -51,14 +48,14 @@ export default {
 .first-menu>li:hover>ul {
   display: block;
   position: relative;
-  float: left;
   left: 0;
   border: 1px solid #ccc;
   z-index: 9999;
 }
 
 .first-menu>li:hover>ul>li {
-  background: #0097a7;
+  background: #699;
+  color: #fff;
 }
 
 .first-menu>li:hover>ul>li>a {
@@ -73,12 +70,32 @@ export default {
   line-height: 32px;
   text-align: center;
   display: block;
-  color: #fff;
 }
 
 .first-menu>li:hover,
 .first-menu>li:hover>ul>li:hover {
-  background-color: #0cc;
+  color: #699;
+  background-color: #eee;
+}
+
+@media screen and (max-width: 1000px) {
+  .first-menu {
+    height: auto;
+    width: auto;
+    border: 1px solid #ccc;
+  }
+  .first-menu>li {
+    float: none;
+    border-bottom: 1px solid #ccc;
+    border-right: none;
+    overflow: visible;
+  }
+  .first-menu>li:hover>ul {
+    position: absolute;
+    left: 120px;
+    width: 120px;
+    top: 0;
+  }
 }
 
 </style>

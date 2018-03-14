@@ -8,6 +8,7 @@ import PageTplConfig from './pages/PageTplConfig'
 import PageWorkflowConfig from './pages/PageWorkflowConfig'
 import PageProcessHandle from './pages/PageProcessHandle'
 import PageAttrConfig from './pages/PageAttrConfig'
+import PageOrderTodo from './pages/PageOrderTodo'
 import store from './store'
 
 Vue.use(Router)
@@ -35,6 +36,9 @@ const router = new Router({
     }, {
       path: 'order-rec',
       component: PageOrderRec
+    }, {
+      path: 'order-todo',
+      component: PageOrderTodo
     }, {
       path: 'test-item-config',
       component: PageTestItemConfig

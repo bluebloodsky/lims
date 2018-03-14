@@ -1,5 +1,5 @@
 <template>
-  <div class="form-item" :class="{wrapper:attr.attr_type=='pictureTable'}">
+  <div class="form-item" :class="{table:attr.attr_type=='pictureTable'}">
     <div class="left-desc">
       <span>{{attr.name_cn}}</span>
       <span v-if="attr.required">*</span>
@@ -67,8 +67,8 @@ export default {
   width: 500px;
 }
 
-.wrapper {
-  width: 1000px;
+.table {
+  width: 100%;
 }
 
 .left-desc {
@@ -81,9 +81,10 @@ export default {
 }
 
 .right-info {
+
   margin-left: 150px;
   min-width: 300px;
-  max-width: 800px;
+  max-width: 1000px;
   display: inline-block;
 }
 

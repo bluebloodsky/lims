@@ -1,35 +1,38 @@
 <template>
   <div>
-    <div class="box float-box">
-      <div class="h">
-        <span>待办业务</span>
+    <div class="out-box">
+      <div class="box">
+        <div class="h">
+          <span>待办业务</span>
+        </div>
+        <div class="b">
+          <el-table :data="taskTodos_list" border @row-click="todoClick">
+            <el-table-column type="index" width="60">
+            </el-table-column>
+            <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in fields">
+            </el-table-column>
+          </el-table>
+        </div>
+        <a class="more">更多>></a>
       </div>
-      <div class="b">
-        <el-table :data="taskTodos_list" border @row-click="todoClick">
-          <el-table-column type="index" width="60">
-          </el-table-column>
-          <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in fields">
-          </el-table-column>
-        </el-table>
-      </div>
-      <a>更多>></a>
     </div>
-    <div class="box float-box">
-      <div class="h">
-        <span>我的日程</span>
-      </div>
-      <div class="b" id="mychart">
-        <!--
+    <div class="out-box">
+      <div class="box">
+        <div class="h">
+          <span>我的日程</span>
+        </div>
+        <div class="b" id="mychart">
+          <!--
        <full-calendar :events="fcEvents" :locale="de"></full-calendar>
      -->
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-
 export default {
-  name:'PageDeskTop',
+  name: 'PageDeskTop',
   data() {
     return {
       pre_url: '/home/',
@@ -60,12 +63,12 @@ export default {
   methods: {
     todoClick(row) {
       let url = "process-handle"
-      this.$store.commit('addTab', url)      
-      this.$router.push({ path: this.pre_url + url + "?id=" + row['_id']['$oid']})   
+      this.$store.commit('addTab', url)
+      this.$router.push({ path: this.pre_url + url + "?id=" + row['_id']['$oid'] })
     }
   },
   mounted() {
-    this.axios.get("projects").then(response=>{
+    this.axios.get("projects").then(response => {
       this.taskTodos = response.data;
     })
   }
@@ -73,18 +76,27 @@ export default {
 
 </script>
 <style scoped>
-.float-box {
-  width: 47%;
+.out-box{
+  float: left;
+  width: 50%;
   height: 600px;
-  margin: 1%;
-  display: inline-block;
+}
+.box {
+  width: 96%;
+  height: 100%;
+  margin: 0 auto;
   border: solid 1px #D4D4D4;
 }
 
-a {
+.more {
   position: absolute;
   bottom: 10px;
   right: 10px;
 }
 
+@media screen and (max-width: 1000px){
+  .out-box{
+    width: 100%;
+  }
+}
 </style>
