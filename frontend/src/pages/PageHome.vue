@@ -148,10 +148,11 @@ header {
 
 header>h1 {
   color: #699;
-  text-shadow: 1px 1px 1px #fff, -1px -1px 1px #fff;
+  text-shadow: 1px 1px 1px #00000088, -1px -1px 1px #ffffff88;
   display: inline-block;
   font-size: 26px;
   line-height: 50px;
+  height: 50px;
   vertical-align: top;
   margin: 0;
 }
@@ -184,6 +185,18 @@ a.router-link-active {
   color: #666;
 }
 
+a.router-link-active:before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  top: -1px;
+  background-color: #033;
+  width: 100%;
+  height: 2px;
+}
+
 .destroy {
   margin: auto 0;
   border: none;
@@ -204,7 +217,7 @@ a.router-link-active {
   text-align: center;
 }
 
-@media screen and (max-width: 1200px ){
+@media screen and (max-width: 1200px) {
   header>h1 {
     display: none;
   }
@@ -218,22 +231,23 @@ a.router-link-active {
     float: left;
     width: 50px;
   }
-  nav > ul{
+  nav>ul {
     display: none;
   }
   .menu-button {
     display: inline-block;
   }
-  nav:hover > ul {
+  nav:hover>ul {
     display: block;
+    position: relative;
+    z-index: 9999;
   }
 }
 
-@media screen and (max-width: 600px ){
+@media screen and (max-width: 600px) {
   header>h1 {
     display: none;
   }
 }
-
 
 </style>

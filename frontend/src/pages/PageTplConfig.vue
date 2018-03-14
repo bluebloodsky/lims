@@ -63,7 +63,7 @@
         </el-table>
       </div>
     </div>
-    <div class="right-pad-box" v-if="flg_showRightBox" style="left:70%">
+    <div class="right-pad-box"  :class="{ showbox:flg_showRightBox}">
       <div class="h">
         <span>属性编辑</span>
         <div class="right-btn">
@@ -301,4 +301,7 @@ td input {
   background-color: rgb(235, 235, 228);
 }
 
+.showbox{
+  left: 70%;
+}
 </style>

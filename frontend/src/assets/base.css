@@ -1,3 +1,8 @@
+
+* {
+  padding: 0;
+  margin: 0;
+}
 #app {
   font: normal 16px "微软雅黑", "Arial", "Verdana", "sans-serif";
   -webkit-font-smoothing: antialiased;
@@ -24,12 +29,6 @@ h2 {
   text-align: center;
 }
 
-body,
-ul,
-li {
-  padding: 0;
-  margin: 0;
-}
 
 img {
   border: none;
@@ -95,20 +94,26 @@ img {
   top: 0;
   bottom: 0;
   right: 0;
-  left: 70%;
+  left: 100%;
   background-color: #fff;
-  box-shadow: 0px 0 2px rgba(0, 0, 0, 0.8);
+
+  box-sizing: border-box;
+  -moz-box-sizing: border-box; /* Firefox */
+  -webkit-box-sizing: border-box;/* Safari */
+  border: 1px solid #ccc;
   z-index: 99;
+  transition: left 0.6s ease 0s;
+  overflow-x: hidden;
 }
 
 .right-pad-box>.h {
-  background-color: rgb(238, 245, 246);
-  margin-bottom: 10px;
+  background-color: #cff;
 }
 
 .right-pad-box>.h>span {
   left: 20px;
 }
+
 
 .desc-item-box {
   text-align: left;
@@ -148,7 +153,8 @@ ul.tabs {
   width: 100%;
 }
 
-.tabs li {
+.tabs li {  
+  position: relative;
   float: left;
   padding: 0;
 }

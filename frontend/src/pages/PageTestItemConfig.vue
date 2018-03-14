@@ -23,7 +23,7 @@
         </el-table>
       </div>
     </div>
-    <div class="right-pad-box" v-if="flg_showRightBox" style="left:60%">
+    <div class="right-pad-box" :class="{ showbox:flg_showRightBox}">
       <div class="h">
         <span>试验项目编辑</span>
         <div class="right-btn">
@@ -131,5 +131,8 @@ export default {
 </script>
 <style scoped>
 
+.showbox{
+  left: 70%;
+}
 
 </style>

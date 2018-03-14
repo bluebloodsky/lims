@@ -37,7 +37,6 @@ export default {
   width: 120px;
   overflow: hidden;
   border-right: 1px solid #ccc;
-  background-color: #699;
 }
 
 .first-menu>li>ul {
@@ -53,9 +52,11 @@ export default {
   z-index: 9999;
 }
 
+.first-menu>li,
 .first-menu>li:hover>ul>li {
-  background: #699;
+  background-color: #699;
   color: #fff;
+  transition: all 0.5s;
 }
 
 .first-menu>li:hover>ul>li>a {
@@ -74,8 +75,8 @@ export default {
 
 .first-menu>li:hover,
 .first-menu>li:hover>ul>li:hover {
-  color: #699;
-  background-color: #eee;
+  color: #000;
+  background-color: #9cc;
 }
 
 @media screen and (max-width: 1000px) {
