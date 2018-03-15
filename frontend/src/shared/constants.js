@@ -16,6 +16,9 @@ export const ATTR_TYPES = [{
 }, {
   type: 'pictureTable',
   type_cn: '图片列表'
+}, {
+  type: 'tbody',
+  type_cn: '表格'
 }]
 
 export const TABS_LIST = [

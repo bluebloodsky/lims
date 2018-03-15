@@ -9,9 +9,9 @@
         </li>
       </ul>
       <div class="right-btn">
-        <button>流程复制</button>
-        <button v-if="currentPage == 2 && !currentProject.doneSteps" @click="submitProject">下单</button>
-        <button @click="savePage">保存</button>
+        <el-button type="text">流程复制</el-button>
+        <el-button type="text" v-if="currentPage == 2 && !currentProject.doneSteps" @click="submitProject">下单</el-button>
+        <el-button type="text" @click="savePage">保存</el-button>
       </div>
     </div>
     <div class="main-wrapper">
@@ -20,7 +20,7 @@
           <div class="h">
             <span>{{orderAttr.name_cn}}</span>
             <div class="right-btn" v-if="orderAttr.name == 'order_client'">
-              <button type="text"><i class="iconfont icon-search"></i></button>
+              <el-button type="text"><i class="iconfont icon-search"></i></el-button>
             </div>
           </div>
           <div class="b1">
@@ -246,14 +246,6 @@ export default {
   color: white;
 }
 
-.right-btn {
-  margin: 0px 3px;
-  float: right;
-}
-
-.right-btn>button {
-  width: 80px;
-}
 
 .main-wrapper {
   margin: 10px 15px;

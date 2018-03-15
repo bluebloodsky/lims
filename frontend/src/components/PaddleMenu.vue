@@ -75,8 +75,7 @@ export default {
 
 .first-menu>li:hover,
 .first-menu>li:hover>ul>li:hover {
-  color: #000;
-  background-color: #9cc;
+  background-color: #066;
 }
 
 @media screen and (max-width: 1000px) {

@@ -49,29 +49,7 @@
         </div>
       </div>
       <div class="b">
-        <el-table :data="currentTpl.data.attrs" border>
-          <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in attrFields" :formatter="cellFormatter">
-          </el-table-column>
-          <el-table-column label="操作" align="center">
-            <template scope="scope">
-              <el-button @click.native.prevent="editRow(scope.row)" type="text"><i class="iconfont icon-edit"></i>
-              </el-button>
-              <el-button @click.native.prevent="delRow(scope.row)" type="text"><i class="iconfont icon-trash"></i>
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-    </div>
-    <div class="right-pad-box"  :class="{ showbox:flg_showRightBox}">
-      <div class="h">
-        <span>属性编辑</span>
-        <div class="right-btn">
-          <el-button type="text" @click="hideDetail"><i class="iconfont icon-cancel"></i></el-button>
-        </div>
-      </div>
-      <div class="b">
-        <AttrEdit v-model="currentRow" style="padding:15px;" />
+        <AttrList v-model="currentTpl.data.attrs"></AttrList>      
       </div>
     </div>
     <el-dialog title="修改记录" :visible.sync="logVisible" width="80%" draggable>
@@ -98,8 +76,7 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
-import { ATTR_FIELDS, ATTR_TYPES } from '@/shared/constants'
-import AttrEdit from '../components/AttrEdit'
+import AttrList from '../components/AttrList'
 import TplRender from '../components/TplRender'
 import LogContents from '../components/LogContents'
 import { copyObject, rollbackMap } from '@/shared/util'
@@ -112,19 +89,15 @@ var TempTestItemParam = {
 
 export default {
   name: 'PageTplConfig',
-  components: { TempTestItemParam, AttrEdit, TplRender, LogContents },
+  components: { TempTestItemParam, AttrList, TplRender, LogContents },
   data() {
     return {
       mode: 0,
-      flg_showRightBox: false,
-      currentRow: {},
       testItems: [],
       currentTpl: {
         order: [],
         data: {}
       },
-      attrFields: [],
-      attrTypes: [],
       logVisible: false
     }
   },
@@ -153,8 +126,6 @@ export default {
     }
   },
   created() {
-    this.attrFields = ATTR_FIELDS
-    this.attrTypes = ATTR_TYPES
     this.axios.get("test-items").then(response => {
       this.testItems = response.data
     }).catch(e => {
@@ -165,35 +136,8 @@ export default {
     })
   },
   methods: {
-    hideDetail() {
-      this.flg_showRightBox = false
-    },
-    cellFormatter(row, column, cellValue) {
-      if (Array.isArray(cellValue))
-        return cellValue.join('/')
-      else if (typeof cellValue == 'boolean') {
-        return cellValue ? '是' : '否'
-      } else if (column.property == 'attr_type') {
-        let attr_type = this.attrTypes.find(i => i.type == cellValue)
-        return attr_type ? attr_type.type_cn : cellValue
-      }
-      return cellValue
-    },
     addAttr() {
-      this.currentRow = {}
-      this.currentTpl.data.attrs.push(this.currentRow)
-      this.flg_showRightBox = true
-    },
-    editRow(row) {
-      this.flg_showRightBox = true
-      this.currentRow = row
-    },
-    delRow(row) {
-      this.currentTpl.data.attrs.map((attr, index) => {
-        if (attr.name == row.name) {
-          this.currentTpl.data.attrs.splice(index, 1)
-        }
-      })
+      this.currentTpl.data.attrs.push({})
     },
     submit() {
       let infos = this.currentTpl.order
@@ -267,10 +211,9 @@ export default {
 }
 
 button.mode-edit {
-  background-color: #fff;
+  background-color: #066;
   border: 1px solid #aaa;
 }
-
 textarea {
   position: absolute;
   top: 0;
@@ -297,11 +240,4 @@ td input {
   font-size: 18px;
 }
 
-.disabled {
-  background-color: rgb(235, 235, 228);
-}
-
-.showbox{
-  left: 70%;
-}
 </style>

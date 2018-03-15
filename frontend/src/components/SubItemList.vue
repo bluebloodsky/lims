@@ -11,6 +11,7 @@
   </section>
 </template>
 <script>
+import {copyObject} from '@/shared/util'
 export default {
   name: 'SubItemList',
   props: {
@@ -30,11 +31,8 @@ export default {
         this.$emit('input', newVal)
       },
       deep: true
-    }
-  },
-  computed: {},
-  mounted() {
-    if (this.value) {
+    },
+    value : function(){
       this.subItems = this.value
     }
   },

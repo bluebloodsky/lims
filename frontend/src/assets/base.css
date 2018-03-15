@@ -62,39 +62,38 @@ img {
   right: 0;
   overflow-y: auto;
 }
-.h>span {
-  color: #01301E;
+
+.h button,
+.h button .iconfont {
+  font-size: 16px;
+  color: #fff;
+  padding: 0;
 }
 
-.h>a {
+.h button:hover,
+.h button:hover .iconfont{
+   color: #cff;
+}
+
+.right-btn {
   float: right;
-  padding: 0 10px;
 }
 
-.h .iconfont {
-  font-size: 15px;
-}
 
-.h>.right-btn {
-  float: right;
-}
 
-.h>.right-btn>input,
-.h>.right-btn>span,
-.h>.right-btn>button {
+.right-btn>button {
   font-size: 16px;
   margin-right: 8px;
-  border: none;
-  background-color: transparent;
   padding: 0;
 }
 
 .right-pad-box {
-  position: absolute;
-  top: 0;
+  position: fixed;
+  top: 88px;
   bottom: 0;
   right: 0;
-  left: 100%;
+  left: auto;
+  width: 0;
   background-color: #fff;
 
   box-sizing: border-box;
@@ -102,18 +101,13 @@ img {
   -webkit-box-sizing: border-box;/* Safari */
   border: 1px solid #ccc;
   z-index: 99;
-  transition: left 0.6s ease 0s;
+  transition: width 0.6s ease 0s;
   overflow-x: hidden;
 }
 
 .right-pad-box>.h {
-  background-color: #cff;
+  background-color: #066;
 }
-
-.right-pad-box>.h>span {
-  left: 20px;
-}
-
 
 .desc-item-box {
   text-align: left;
@@ -133,10 +127,6 @@ img {
   font-weight: bold;
 }
 
-.disabled {
-  background-color: rgb(235, 235, 228);
-}
-
 .add {
   color: #7CA;
 }
@@ -151,6 +141,7 @@ ul.tabs {
   height: 34px;
   background-color: #ddd;
   width: 100%;
+  min-width: 800px
 }
 
 .tabs li {  

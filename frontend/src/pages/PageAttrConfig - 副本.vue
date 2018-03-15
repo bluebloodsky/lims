@@ -32,7 +32,29 @@
         </div>
       </div>
       <div class="b">
-        <AttrList v-model="currentAttrs.attrs"></AttrList>
+        <el-table :data="currentAttrs.attrs" border>
+          <el-table-column align="center" :prop="item.name" :label="item.caption" v-for="item in attrFields" :formatter="cellFormatter">
+          </el-table-column>
+          <el-table-column label="操作" align="center">
+            <template scope="scope">
+              <el-button @click.native.prevent="editRow(scope.row)" type="text"><i class="iconfont icon-edit"></i>
+              </el-button>
+              <el-button @click.native.prevent="delRow(scope.row)" type="text"><i class="iconfont icon-trash"></i>
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
+    <div class="right-pad-box" :class="{ 'show-box':flg_showRightBox}">
+      <div class="h">
+        <span>属性编辑</span>
+        <div class="right-btn">
+          <el-button type="text" @click="hideDetail"><i class="iconfont icon-cancel"></i></el-button>
+        </div>
+      </div>
+      <div class="b">
+        <AttrEdit v-model="currentRow"/>
       </div>
     </div>
     <el-dialog title="修改记录" :visible.sync="logVisible" width="80%">
@@ -55,7 +77,8 @@
   </div>
 </template>
 <script>
-import AttrList from '../components/AttrList'
+import AttrEdit from '../components/AttrEdit'
+import { ATTR_FIELDS, ATTR_TYPES } from '@/shared/constants'
 import { copyObject, rollbackMap } from '@/shared/util'
 import {
   mapGetters
@@ -65,12 +88,14 @@ import LogContents from '../components/LogContents'
 export default {
   name: 'PageAttrConfig',
   components: {
-    AttrList,
+    AttrEdit,
     LogContents
   },
   data() {
     return {
       logVisible: false,
+      attrFields: [],
+      attrTypes: [],
       orderClientAttrs: {
         name: "order_client",
         name_cn: "委托方",
@@ -103,6 +128,8 @@ export default {
       },
       currentAttrs: {},
       currentAttrsName: 'orderClientAttrs',
+      currentRow: {},
+      flg_showRightBox: false,
       navMenus: [{
         name: 'orderAttrs',
         label: '委托单属性',
@@ -133,6 +160,8 @@ export default {
     }
   },
   mounted() {
+    this.attrFields = ATTR_FIELDS
+    this.attrTypes = ATTR_TYPES
     this.axios.get("order-attrs").then(response => {
       response.data.forEach(item => {
         if (item.name == 'order_client') {
@@ -166,6 +195,33 @@ export default {
       this.currentAttrsName = key
       this.currentAttrs = copyObject(this[key])
     },
+    cellFormatter(row, column, cellValue) {
+      if (Array.isArray(cellValue))
+        return cellValue.join('/')
+      else if (typeof cellValue == 'boolean') {
+        return cellValue ? '是' : '否'
+      } else if (column.property == 'attr_type') {
+        let attr_type = this.attrTypes.find(i => i.type == cellValue)
+        return attr_type ? attr_type.type_cn : cellValue
+      }
+      return cellValue
+    },
+    addAttr() {
+      this.currentRow = {}
+      this.currentAttrs.attrs.push(this.currentRow)
+      this.flg_showRightBox = true
+    },
+    editRow(row) {
+      this.flg_showRightBox = true
+      this.currentRow = row
+    },
+    delRow(row) {
+      this.currentAttrs.attrs.map((attr, index) => {
+        if (attr.name == row.name) {
+          this.currentAttrs.attrs.splice(index, 1)
+        }
+      })
+    },
     submit() {
       let url = null
       if (this.currentAttrs.name.indexOf('order') != -1) {
@@ -188,8 +244,8 @@ export default {
         })
       }
     },
-    addAttr() {
-      this.currentAttrs.attrs.push({})
+    hideDetail() {
+      this.flg_showRightBox = false
     },
     loadVersion(index) {
       this.currentAttrs.attrs = copyObject(this[this.currentAttrsName].attrs)
@@ -221,5 +277,8 @@ export default {
 
 .middle-box {
   width: 80%;
+}
+.show-box{
+  width: 30%;
 }
 </style>

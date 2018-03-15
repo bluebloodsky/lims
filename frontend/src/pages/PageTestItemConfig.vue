@@ -23,7 +23,7 @@
         </el-table>
       </div>
     </div>
-    <div class="right-pad-box" :class="{ showbox:flg_showRightBox}">
+    <div class="right-pad-box" :class="{ 'show-box':flg_showRightBox}">
       <div class="h">
         <span>试验项目编辑</span>
         <div class="right-btn">
@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="b">
-        <el-form label-width="120px" onsubmit="return false;">
+        <el-form label-width="120px"  style="padding:15px 5px;"  onsubmit="return false;">
           <el-form-item label="名称">
             <el-input v-model="currentRow.name"></el-input>
           </el-form-item>
@@ -71,7 +71,7 @@ export default {
         caption: '记录子项'
       }],
       flg_showRightBox: false,
-      currentItem: {},
+      currentRow: {},
       testItems: []
     }
   },
@@ -131,8 +131,8 @@ export default {
 </script>
 <style scoped>
 
-.showbox{
-  left: 70%;
+.show-box{
+  width: 40%;
 }
 
 </style>

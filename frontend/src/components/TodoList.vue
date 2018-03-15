@@ -7,6 +7,7 @@
   </section>
 </template>
 <script>
+import { copyObject ,remove} from '@/shared/util'
 import Todo from './Todo'
 export default {
   name: 'TodoList',
@@ -19,33 +20,30 @@ export default {
   data() {
     return {
       newTodo: '',
-      maxId:0,
-      todos: []
+      maxId: 0,
     }
   },
   components: {
     Todo
   },
-  watch: {
+  computed: {
     todos: {
-      handler(newVal) {
+      get() {
+        if (this.value) {
+          return this.value.map(val => {
+            return {
+              id: this.maxId++,
+              text: val
+            }
+          })
+        }
+      },
+      set(newVal) {
         let result = newVal.map(item => {
           return item.text
         })
         this.$emit('input', result)
-      },
-      deep: true
-    }
-  },
-  computed: {},
-  mounted() {
-    if (this.value) {
-      this.todos = this.value.map(val => {
-        return {
-          id: this.maxId++,
-          text: val
-        }
-      })
+      }
     }
   },
   methods: {
@@ -54,14 +52,18 @@ export default {
       if (!value) {
         return
       }
-      this.todos.push({
+      let _todos = copyObject(this.todos)
+      _todos.push({
         id: this.maxId++,
         text: value,
       })
       this.newTodo = ''
-    },   
+      this.todos = _todos
+    },
     deleteTodo(todo) {
-      this.todos.splice(this.todos.indexOf(todo), 1)
+      let _todos = copyObject(this.todos)
+      remove(_todos , todo)
+      this.todos = _todos
     }
   }
 }

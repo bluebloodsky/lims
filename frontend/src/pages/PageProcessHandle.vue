@@ -5,9 +5,9 @@
         <span v-if="currentProject&&currentProject.order_info&&currentProject.order_info">
       "{{currentProject.order_info.order_content.order_code}}"</span>的业务办理流程
         <div class="right-btn">
-          <button @click="stepRollback" v-if="currentProject.step&&currentProject.step.name!='ORDER_RECEIVE'">
-            <<回退</button>
-              <button @click="stepSubmit"  v-if="currentProject.step&&currentProject.step.name!='ARCHIVE'">>>移交</button>
+          <el-button type="text"  @click="stepRollback" v-if="currentProject.step&&currentProject.step.name!='ORDER_RECEIVE'"><<回退
+            </el-button>
+              <el-button type="text"  @click="stepSubmit"  v-if="currentProject.step&&currentProject.step.name!='ARCHIVE'">>>移交</el-button>
         </div>
       </div>
       <div class="b">
@@ -28,12 +28,12 @@
     </div>
     <div class="box bottom-box">
       <div class="h" v-if="currentProject.step">
-        <button v-if="currentProject.step.name == 'ORDER_RECEIVE'" @click="openOrderRec">协议修改</button>
-        <button v-if="currentProject.step.name != 'ORDER_RECEIVE'">协议详情查看</button>
-        <button v-if="currentProject.step.name == 'RECORD_EDIT'">原始记录编辑</button>
-        <button v-if="currentProject.step.name == 'RECORD_REVIEW'">原始记录查看</button>
-        <button v-if="currentProject.step.name == 'RECORD_REVIEW'">试验报告查看</button>
-      </div>
+        <el-button type="text" v-if="currentProject.step.name == 'ORDER_RECEIVE'" @click="openOrderRec">协议修改</el-button>
+        <el-button type="text" v-if="currentProject.step.name != 'ORDER_RECEIVE'">协议详情查看</el-button>
+        <el-button type="text" v-if="currentProject.step.name == 'RECORD_EDIT'">原始记录编辑</el-button>
+        <el-button type="text" v-if="currentProject.step.name == 'RECORD_REVIEW'">原始记录查看</el-button>
+        <el-button type="text" v-if="currentProject.step.name == 'RECORD_REVIEW'">试验报告查看</el-button>
+    </div>
       <div class="b">
       </div>
     </div>

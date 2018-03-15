@@ -25,7 +25,7 @@
         <tbody>          
           <tr v-for="row in [1,2,3]">
             <td v-for="col in param.cols">
-              <input type="" name="" :disabled="col.readonly" :class="{disabled:col.readonly}">
+              <input type="" name="" :disabled="col.readonly">
             </td>
             <td style="text-align:center">
               <button>-</button>
