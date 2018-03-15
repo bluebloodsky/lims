@@ -1,5 +1,5 @@
 <template>
-  <div style="padding:15px;">
+  <div style="margin:15px;">
     <el-form label-width="120px" onsubmit="return false;">
       <el-form-item label="名称">
         <el-input v-model="value.name"></el-input>
@@ -37,6 +37,7 @@
 </template>
 <script>
 import { ATTR_TYPES } from '@/shared/constants'
+import { copyObject } from '@/shared/util'
 import TodoList from './TodoList'
 import AttrList from './AttrList'
 export default {
@@ -71,7 +72,7 @@ export default {
   methods: {
     addAttr() {
       if (!this.value.columns) {
-        this.value.columns = []
+        this.$set(this.value, "columns", [])
       }
       this.value.columns.push({})
     }
@@ -81,7 +82,12 @@ export default {
 </script>
 <style scoped>
 .box {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 200px;
+  bottom: 0;
+  height: auto;
 }
+
 </style>

@@ -33,7 +33,6 @@ export default {
   name: 'AttrList',
   props: {
     value: {
-      type: Array | Object,
       requied: true
     }
   },
