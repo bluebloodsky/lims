@@ -1,6 +1,7 @@
 <template>
   <div>
-    <ZlCalendar></ZlCalendar>  
+    <input v-model="date" disabled>
+    <ZlCalendar v-model="date" ></ZlCalendar>  
 <!--     <div v-for="color in colors" :style="{'background-color':color.bg_color , 'color':color.ft_color}">{{color.bg_color}}</div> -->
   </div>
 </template>
@@ -12,6 +13,7 @@ export default {
   data() {
     return {
       colors: [],
+      date : new Date()
     }
   },
   created() {
