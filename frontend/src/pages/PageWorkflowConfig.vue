@@ -4,7 +4,7 @@
       <div class="h">
         <span>流程图</span>
         <div class="right-btn">
-          <el-button type="text" @click="submit"><i class="iconfont icon-submit"></i></el-button>
+          <button type="text" @click="submit"><i class="iconfont icon-submit"></i></button>
         </div>
       </div>
       <div class="b">
@@ -23,11 +23,11 @@
         <span>工作流组件</span>
       </div>
       <div class="b">
-        <el-button-group>
-          <el-button :class="{choose:eventStatus==1}" @click="eventStatus = 1">对象</el-button>
-          <el-button :class="{choose:eventStatus==2}" @click="eventStatus = 2">正向连接</el-button>
-          <el-button :class="{choose:eventStatus==3}" @click="eventStatus = 3">回退连接</el-button>
-        </el-button-group>
+        <button-group>
+          <button :class="{choose:eventStatus==1}" @click="eventStatus = 1">对象</button>
+          <button :class="{choose:eventStatus==2}" @click="eventStatus = 2">正向连接</button>
+          <button :class="{choose:eventStatus==3}" @click="eventStatus = 3">回退连接</button>
+        </button-group>
         <svg class="wfcs" @mouseup="drop">
           <StepSvg :item="item" @grab="grab" v-for="item in wfcs"></StepSvg>
         </svg>

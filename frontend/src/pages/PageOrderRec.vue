@@ -1,26 +1,26 @@
 <template>
   <div>
     <h2>委托协议</h2>
-    <div class="nav">
+    <nav>
       <ul class="left-info">
         <li :class="{done:donePage>index,current:currentPage==index}" v-for="(page,index) in pages">
           <a @click="currentPage=index" v-if="donePage>index">{{page}}</a>
           <span v-else>{{page}}</span>
         </li>
       </ul>
-      <div class="right-btn">
-        <el-button type="text">流程复制</el-button>
-        <el-button type="text" v-if="currentPage == 2 && !currentProject.doneSteps" @click="submitProject">下单</el-button>
-        <el-button type="text" @click="savePage">保存</el-button>
+      <div class="right-operate">
+        <button type="text">流程复制</button>
+        <button type="text" v-if="currentPage == 2 && !currentProject.doneSteps" @click="submitProject">下单</button>
+        <button type="text" @click="savePage">保存</button>
       </div>
-    </div>
+    </nav>
     <div class="main-wrapper">
       <div v-show="currentPage==0">
         <div class="box" v-for="orderAttr in orderAttrs">
           <div class="h">
             <span>{{orderAttr.name_cn}}</span>
             <div class="right-btn" v-if="orderAttr.name == 'order_client'">
-              <el-button type="text"><i class="iconfont icon-search"></i></el-button>
+              <button type="text"><i class="iconfont icon-search"></i></button>
             </div>
           </div>
           <div class="b1">
@@ -156,9 +156,11 @@ export default {
           })
           item["params"].map(param => {
             this.testInfo[item.name]["params"][param.name] = {}
-            param.attrs.map(attr => {
-              this.testInfo[item.name]["params"][param.name][attr.name] = attr.default_value ? attr.default_value : ''
-            })
+            if (param.attrs) {
+              param.attrs.map(attr => {
+                this.testInfo[item.name]["params"][param.name][attr.name] = attr.default_value ? attr.default_value : ''
+              })
+            }
           })
         })
         mixObject(this.testInfo, this.currentProject['test_info'])
@@ -209,11 +211,13 @@ export default {
 
 </script>
 <style scoped>
-.nav {
+nav {
   margin: 0 15px;
   border: 1px solid #D4D4D4;
   height: 28px;
   line-height: 28px;
+  background-color: #F7F7F7;
+  margin-top: 8px;
 }
 
 .box {
@@ -234,6 +238,11 @@ export default {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+.right-operate {
+  float: right;
+  margin-right: 10px;
 }
 
 .done {
@@ -284,32 +293,6 @@ export default {
   float: left;
 }
 
-.box-img {
-  position: relative;
-  display: inline-block;
-  height: 50px;
-  width: 100px;
-  line-height: 50px;
-  margin: 5px 10px;
-  border: #dfdfdf 1px solid;
-}
-
-.box-img>img {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-.box-img>button {
-  position: absolute;
-  font-size: 12px;
-  right: -2px;
-  top: 0px;
-  color: red;
-  text-align: center;
-  border: none;
-  background-color: transparent;
-}
-
 table {
   width: 100%;
   border: 1px solid #ccc;
@@ -319,6 +302,10 @@ table {
 td,
 th {
   border: 1px solid #ccc;
+}
+
+td {
+  padding-left: 5px;
 }
 
 </style>

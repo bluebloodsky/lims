@@ -1,11 +1,11 @@
 <template>
 <div>
-  <el-button plain @click="open">
+  <button plain @click="open">
     可自动关闭
-  </el-button>
-  <el-button plain @click="open2">
+  </button>
+  <button plain @click="open2">
     不会自动关闭
-  </el-button>
+  </button>
   </div>
 </template>
 <script>

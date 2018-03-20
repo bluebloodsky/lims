@@ -5,7 +5,7 @@
       <span v-if="attr.required">*</span>
     </div>
     <div class="right-info">
-      <input :disabled="attr.readonly" v-model="realValue" v-if="attr.attr_type=='input'">
+      <input :disabled="attr.readonly" v-model="realValue" v-if="attr.attr_type=='input'" required>
       <el-date-picker v-model="realValue" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" v-else-if="attr.attr_type=='date'">
       </el-date-picker>
       <select v-model="realValue" v-else-if="attr.attr_type=='select'">
@@ -88,15 +88,12 @@ export default {
   display: inline-block;
 }
 
-input,
+input:not([type]),
+input[type=text],
 select {
   width: 100%;
   font-size: 14px;
-}
-
-input[type=checkbox],
-input[type=radio] {
-  width: 15px;
-  height: 15px;
+  height: 25px;
+  box-sizing: border-box;
 }
 </style>

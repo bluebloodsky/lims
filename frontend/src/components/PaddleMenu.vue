@@ -28,61 +28,75 @@ export default {
 </script>
 <style scoped>
 .first-menu {
-  height: 32px;
+  height: 21px;
 }
 
 .first-menu>li {
   position: relative;
   float: left;
-  width: 120px;
-  overflow: hidden;
-  border-right: 1px solid #ccc;
+  width: 128px;
+  background-color: #55819D;
+  color: #fff;
+  border-left: 1px solid #D4D4D4;
+  font-size: 16px;
+  transition: background-color 0.2s;
+  text-align: center;
 }
 
 .first-menu>li>ul {
   position: absolute;
+  width: 170px;
+  background-color: #fff;
+  border: 1px solid #D4D4D4;
+  border-top: none;
   left: -9999px;
+  padding: 10px;
 }
 
 .first-menu>li:hover>ul {
-  display: block;
   position: relative;
-  left: 0;
-  border: 1px solid #ccc;
-  z-index: 9999;
+  left: -1px;
+  z-index: 999;
 }
 
-.first-menu>li,
 .first-menu>li:hover>ul>li {
-  background-color: #699;
-  color: #fff;
-  transition: all 0.5s;
+  text-align: left;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #ccc;
+  font-size: 14px;
+  font-weight: normal;
+  background-color: #fff;
+  color: #484848
 }
 
-.first-menu>li:hover>ul>li>a {
-  min-width: 120px;
-  border-bottom: 1px solid #ccc;
+.first-menu>li:hover>ul>li:last-child {
+  border-bottom: none;
 }
 
 .first-menu>li>a,
 .first-menu>li>span,
 .first-menu>li:hover>ul>li>a {
-  height: 32px;
-  line-height: 32px;
-  text-align: center;
+  height: 28px;
+  line-height: 28px;
   display: block;
 }
 
-.first-menu>li:hover,
-.first-menu>li:hover>ul>li:hover {
-  background-color: #066;
+.first-menu>li:hover {
+  background-color: #fff;
+  color: #484848
 }
 
-@media screen and (max-width: 1000px) {
+
+.first-menu>li:hover>ul>li:hover {
+  background-color: #55819D;
+  color: #fff;
+}
+
+@media screen and (max-width: 1100px) {
   .first-menu {
     height: auto;
     width: auto;
-    border: 1px solid #ccc;
+    border: 1px solid #D4D4D4;
   }
   .first-menu>li {
     float: none;
@@ -92,9 +106,9 @@ export default {
   }
   .first-menu>li:hover>ul {
     position: absolute;
-    left: 120px;
-    width: 120px;
+    left: 128px;
     top: 0;
+    border: 1px solid #D4D4D4;
   }
 }
 

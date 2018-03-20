@@ -13,7 +13,7 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="login" class="primary">登录</el-button>
+        <button @click="login" class="primary">登录</button>
       </el-form-item>
     </el-form>
   </div>

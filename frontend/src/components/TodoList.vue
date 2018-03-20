@@ -13,8 +13,7 @@ export default {
   name: 'TodoList',
   props: {
     value: {
-      type: Array,
-      requied: true
+      required: true
     }
   },
   data() {

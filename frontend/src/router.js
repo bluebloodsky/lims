@@ -9,6 +9,8 @@ import PageWorkflowConfig from './pages/PageWorkflowConfig'
 import PageProcessHandle from './pages/PageProcessHandle'
 import PageAttrConfig from './pages/PageAttrConfig'
 import PageOrderTodo from './pages/PageOrderTodo'
+import PageRecordList from './pages/PageRecordList'
+import PageRecordEdit from './pages/PageRecordEdit'
 import store from './store'
 
 Vue.use(Router)
@@ -25,12 +27,12 @@ const router = new Router({
     path: '/',
     redirect: '/home'
   }, {
-    name:'home',
+    name: 'home',
     path: '/home',
     redirect: '/home/desktop',
     component: PageHome,
     children: [{
-      name:'desktop',
+      name: 'desktop',
       path: 'desktop',
       component: PageDeskTop
     }, {
@@ -39,6 +41,12 @@ const router = new Router({
     }, {
       path: 'order-todo',
       component: PageOrderTodo
+    }, {
+      path: 'record-list',
+      component: PageRecordList
+    }, {
+      path: 'record-edit',
+      component: PageRecordEdit
     }, {
       path: 'test-item-config',
       component: PageTestItemConfig

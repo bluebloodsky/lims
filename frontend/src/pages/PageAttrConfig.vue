@@ -26,9 +26,9 @@
       <div class="h">
         <span>{{currentAttrs.name_cn}}属性列表</span>
         <div class="right-btn">
-          <el-button type="text" @click="logVisible=true"><i class="iconfont icon-log"></i></el-button>
-          <el-button type="text" @click="addAttr"><i class="iconfont icon-plus"></i></el-button>
-          <el-button type="text" @click="submit"><i class="iconfont icon-submit"></i></el-button>
+          <button type="text" @click="logVisible=true"><i class="iconfont icon-log"></i></button>
+          <button type="text" @click="addAttr"><i class="iconfont icon-plus"></i></button>
+          <button type="text" @click="submit"><i class="iconfont icon-submit"></i></button>
         </div>
       </div>
       <div class="b">
@@ -46,8 +46,8 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template scope="scope">
-            <el-button @click.native.prevent="loadVersion(scope.$index)" type="text">加载
-            </el-button>
+            <button @click="loadVersion(scope.$index)" type="text">加载
+            </button>
           </template>
         </el-table-column>
       </el-table>
@@ -208,14 +208,13 @@ export default {
 </script>
 <style scoped>
 .box {
-  border: #ccc 1px solid;
   height: 100%;
   float: left;
   overflow: auto;
-  width: 100%;
 }
 
 .left-box {
+  border-right: 1px solid #ccc;
   width: 20%;
 }
 

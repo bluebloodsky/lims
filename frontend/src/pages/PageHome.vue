@@ -4,7 +4,6 @@
       <div id="logo"><img src="../assets/logo2.png"></div>
       <h1>{{title}}</h1>
       <nav>
-        <a class="menu-button"><img src="../assets/menu.png"></a>
         <PaddleMenu :datas="menuItems" :callback="openTab"></PaddleMenu>
       </nav>
       <ul class="right-btns">
@@ -29,7 +28,7 @@
     </ul>
     <transition>
       <keep-alive :include="includedComponents">
-        <router-view :closeCurrentTab="closeCurrentTab" style="position:absolute;top:88px;bottom:0;left:0;width:100%;"></router-view>
+        <router-view :closeCurrentTab="closeCurrentTab" style="position:absolute;top:100px;bottom:0;left:0;width:100%;"></router-view>
       </keep-alive>
     </transition>
   </div>
@@ -128,27 +127,25 @@ header {
   position: fixed;
   display: flex;
   width: 100%;
-  height: 50px;
+  height: 60px;
   justify-content: space-around;
-  align-items: center;  
+  align-items: center;
   color: white;
-  background-color: #699;
+  background-color: #55819D;
   z-index: 999;
 }
 
 #logo {
-  height: 50px;
+  height: 30px;
   width: 110px;
   overflow: hidden;
 }
 
 #logo>img {
   height: 30px;
-  margin: 10px 0;
 }
 
 header>h1 {
-  color: #699;
   text-shadow: 1px 1px 1px #00000088, -1px -1px 1px #ffffff88;
   font-size: 26px;
 }
@@ -156,6 +153,7 @@ header>h1 {
 nav {
   height: 32px;
 }
+
 .right-btns>li {
   float: left;
   margin-right: 20px;
@@ -167,13 +165,15 @@ nav {
 
 ul.tabs {
   position: fixed;
-  top: 52px;
+  top: 60px;
   z-index: 99;
 }
 
 a.router-link-active {
   background-color: #fff;
-  color: #666;
+  color: #56575B;
+  height: 26px;
+  line-height: 26px;
 }
 
 a.router-link-active:before {
@@ -206,31 +206,37 @@ a.router-link-active:before {
   width: 50px;
 }
 
-@media screen and (max-width: 1250px) {
+@media screen and (max-width: 1300px) {
   header>h1 {
     display: none;
   }
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1100px) {
   header>h1 {
     display: block;
   }
   nav {
+    position: relative;
     order: -1;
-    width: 50px;
-    height: 50px;
-    background-color: #000;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    padding: 0;
+    margin: 0;
+  }
+  nav:before {
+    content: '≡';
+    font-size: 40px;
   }
   nav>ul {
     display: none;
   }
-  .menu-button {
-    display: block;
-  }
   nav:hover>ul {
     display: block;
-    position: relative;
+    position: absolute;
+    top: 60px;
+    left: 0;
     z-index: 9999;
   }
 }

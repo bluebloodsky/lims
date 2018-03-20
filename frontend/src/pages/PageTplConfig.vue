@@ -16,7 +16,7 @@
                 <span>{{param.name_cn}}</span>
               </el-menu-item>
             </el-menu-item-group>
-             <el-menu-item-group v-if="menu.records">
+            <el-menu-item-group v-if="menu.records">
               <template slot="title">原始记录模板</template>
               <el-menu-item :index="menu_index+'-records-'+ record_index" v-for="(record,record_index) in menu.records">
                 <span>{{record.name_cn}}</span>
@@ -30,9 +30,9 @@
       <div class="h">
         <span>项目模板</span>
         <div class="right-btn">
-          <el-button type="text" @click="submit"><i class="iconfont icon-submit"></i></el-button>
-          <el-button type="text" @click="mode=1-mode" :class="{'mode-edit': mode==0}"><i class="iconfont icon-edit"></i></el-button>
-          <el-button type="text" @click="logVisible=true"><i class="iconfont icon-log"></i></el-button>
+          <button type="text" @click="submit"><i class="iconfont icon-submit"></i></button>
+          <button type="text" @click="mode=1-mode" :class="{'mode-edit': mode==0}"><i class="iconfont icon-edit"></i></button>
+          <button type="text" @click="logVisible=true"><i class="iconfont icon-log"></i></button>
         </div>
       </div>
       <div class="b">
@@ -45,11 +45,11 @@
       <div class="h">
         <span>项目参数</span>
         <div class="right-btn">
-          <el-button type="text" @click="addAttr"><i class="iconfont icon-plus"></i></el-button>
+          <button type="text" @click="addAttr"><i class="iconfont icon-plus"></i></button>
         </div>
       </div>
       <div class="b">
-        <AttrList v-model="currentTpl.data.attrs"></AttrList>      
+        <AttrList v-model="currentTpl.data.attrs"></AttrList>
       </div>
     </div>
     <el-dialog title="修改记录" :visible.sync="logVisible" width="80%" draggable>
@@ -63,8 +63,8 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template scope="scope">
-            <el-button @click.native.prevent="loadVersion(scope.$index)" type="text">加载
-            </el-button>
+            <button @click="loadVersion(scope.$index)" type="text">加载
+            </button>
           </template>
         </el-table-column>
       </el-table>
@@ -80,16 +80,10 @@ import AttrList from '../components/AttrList'
 import TplRender from '../components/TplRender'
 import LogContents from '../components/LogContents'
 import { copyObject, rollbackMap } from '@/shared/util'
-var TempTestItemParam = {
-  props: ['tpl'],
-  created() {
-    this.$options.template = '<div>' + this.tpl + '</div>'
-  }
-}
 
 export default {
   name: 'PageTplConfig',
-  components: { TempTestItemParam, AttrList, TplRender, LogContents },
+  components: {  AttrList, TplRender, LogContents },
   data() {
     return {
       mode: 0,
@@ -160,16 +154,16 @@ export default {
       let l_infos = key.split('-')
 
       this.currentTpl.data = copyObject(this.testItems[l_infos[0]][l_infos[1]][l_infos[2]])
-      if(!this.currentTpl.data["attrs"]){
-        this.$set(this.currentTpl.data,"attrs" , [])
+      if (!this.currentTpl.data["attrs"]) {
+        this.$set(this.currentTpl.data, "attrs", [])
       }
-      if(!this.currentTpl.data["tpl"]){
-        this.$set(this.currentTpl.data,"tpl" , '')
+      if (!this.currentTpl.data["tpl"]) {
+        this.$set(this.currentTpl.data, "tpl", '')
       }
       this.currentTpl.order = l_infos
       if (this.mode == 1) {
         this.mode = 0
-        this.$nextTick(()=>{
+        this.$nextTick(() => {
           this.mode = 1
         })
       }
@@ -190,13 +184,14 @@ export default {
 </script>
 <style scoped>
 .box {
-  border: #ccc 1px solid;
+  border-top: #ccc 1px solid;
   height: 100%;
   float: left;
   overflow: auto;
 }
 
 .left-box {
+  border-right: #ccc 1px solid;
   width: 20%;
 }
 
@@ -212,8 +207,10 @@ export default {
 
 button.mode-edit {
   background-color: #066;
-  border: 1px solid #aaa;
+  border: 1px solid #ccc;
+  color: #fff;
 }
+
 textarea {
   position: absolute;
   top: 0;
@@ -223,21 +220,4 @@ textarea {
   box-sizing: border-box;
   font-size: 16px;
 }
-
-table.dataintable {
-  margin-top: 15px;
-  border-collapse: collapse;
-  border: 1px solid #aaa;
-  width: 100%;
-  border-spacing: 0px;
-}
-
-td input {
-  margin: -1px;
-  padding: 0;
-  height: 25px;
-  width: 99%;
-  font-size: 18px;
-}
-
 </style>

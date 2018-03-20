@@ -4,7 +4,7 @@ export default {
   props: {
     tpl: {
       type: String,
-      requied: true
+      required: true
     }
   },
   created() {

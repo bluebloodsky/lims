@@ -16,7 +16,7 @@ export default {
   name: 'SubItemList',
   props: {
     value: {
-      requied: true
+      required: true
     }
   },
   data() {

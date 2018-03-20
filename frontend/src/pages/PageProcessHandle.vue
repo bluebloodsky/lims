@@ -5,14 +5,14 @@
         <span v-if="currentProject&&currentProject.order_info&&currentProject.order_info">
       "{{currentProject.order_info.order_content.order_code}}"</span>的业务办理流程
         <div class="right-btn">
-          <el-button type="text"  @click="stepRollback" v-if="currentProject.step&&currentProject.step.name!='ORDER_RECEIVE'"><<回退
-            </el-button>
-              <el-button type="text"  @click="stepSubmit"  v-if="currentProject.step&&currentProject.step.name!='ARCHIVE'">>>移交</el-button>
+          <button type="text" @click="stepRollback" v-if="currentProject.step&&currentProject.step.name!='ORDER_RECEIVE'">
+            <<回退 </button>
+              <button type="text" @click="stepSubmit" v-if="currentProject.step&&currentProject.step.name!='ARCHIVE'">>>移交</button>
         </div>
       </div>
       <div class="b">
         <ul class="tabs">
-          <li  v-for="(tabName,tabIndex) in tabPages">
+          <li v-for="(tabName,tabIndex) in tabPages">
             <a :class="{active:activeTab==tabIndex}" @click="activeTab=tabIndex">{{tabName}}</a>
           </li>
         </ul>
@@ -28,12 +28,12 @@
     </div>
     <div class="box bottom-box">
       <div class="h" v-if="currentProject.step">
-        <el-button type="text" v-if="currentProject.step.name == 'ORDER_RECEIVE'" @click="openOrderRec">协议修改</el-button>
-        <el-button type="text" v-if="currentProject.step.name != 'ORDER_RECEIVE'">协议详情查看</el-button>
-        <el-button type="text" v-if="currentProject.step.name == 'RECORD_EDIT'">原始记录编辑</el-button>
-        <el-button type="text" v-if="currentProject.step.name == 'RECORD_REVIEW'">原始记录查看</el-button>
-        <el-button type="text" v-if="currentProject.step.name == 'RECORD_REVIEW'">试验报告查看</el-button>
-    </div>
+        <button type="text" v-if="currentProject.step.name == 'ORDER_RECEIVE'" @click="openOrderRec">协议修改</button>
+        <button type="text" v-if="currentProject.step.name != 'ORDER_RECEIVE'">协议详情查看</button>
+        <button type="text" v-if="currentProject.step.name == 'RECORD_EDIT'" @click="openRecordEdit">原始记录编辑</button>
+        <button type="text" v-if="currentProject.step.name == 'RECORD_REVIEW'">原始记录查看</button>
+        <button type="text" v-if="currentProject.step.name == 'RECORD_REVIEW'">试验报告查看</button>
+      </div>
       <div class="b">
       </div>
     </div>
@@ -54,7 +54,7 @@ export default {
       tabPages: ["办理过程", "流程图"],
       pre_url: '/home/',
       activeTab: 0,
-      proId:'',
+      proId: '',
       currentProject: {},
       fields: [{
         name: 'alias',
@@ -100,6 +100,11 @@ export default {
       this.$store.commit('addTab', url)
       this.$router.push({ path: this.pre_url + url + "?id=" + this.proId })
     },
+    openRecordEdit() {
+      let url = "record-list"
+      this.$store.commit('addTab', url)
+      this.$router.push({ path: this.pre_url + url, params: { id: this.proId } })
+    },
     stepSubmit() {
       this.axios.post("projects/step-submit/" + this.proId).then(response => {
         this.closeCurrentTab()
@@ -115,7 +120,6 @@ export default {
 
 </script>
 <style scoped>
-
 .top-box {
   height: 60%;
 }

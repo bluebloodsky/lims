@@ -5,10 +5,10 @@
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template scope="scope">
-          <el-button @click.native.prevent="editRow(scope.row)" type="text"><i class="iconfont icon-edit"></i>
-          </el-button>
-          <el-button @click.native.prevent="delRow(scope.row)" type="text"><i class="iconfont icon-trash"></i>
-          </el-button>
+          <button @click="editRow(scope.row)" type="text"><i class="iconfont icon-edit"></i>
+          </button>
+          <button @click="delRow(scope.row)" type="text"><i class="iconfont icon-trash"></i>
+          </button>
         </template>
       </el-table-column>
     </el-table>
@@ -16,7 +16,7 @@
       <div class="h">
         <span>属性编辑</span>
         <div class="right-btn">
-          <el-button type="text" @click="hideDetail"><i class="iconfont icon-cancel"></i></el-button>
+          <button type="text" @click="hideDetail"><i class="iconfont icon-cancel"></i></button>
         </div>
       </div>
       <div class="b">
@@ -33,7 +33,7 @@ export default {
   name: 'AttrList',
   props: {
     value: {
-      requied: true
+      required: true
     }
   },
   data() {

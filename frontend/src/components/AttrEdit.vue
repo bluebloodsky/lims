@@ -26,7 +26,7 @@
       <div class="h">
         <span>表格列属性列表</span>
         <div class="right-btn">
-          <el-button type="text" @click="addAttr"><i class="iconfont icon-plus"></i></el-button>
+          <button type="text" @click="addAttr"><i class="iconfont icon-plus"></i></button>
         </div>
       </div>
       <div class="b">
@@ -45,7 +45,7 @@ export default {
   props: {
     value: {
       type: Object,
-      requied: true
+      required: true
     }
   },
   data() {

@@ -4,8 +4,8 @@
       <div class="h">
         <span>试验项目</span>
         <div class="right-btn">
-          <el-button type="text" @click="addItem"><i class="iconfont icon-plus"></i></el-button>
-          <el-button type="text" @click="submit"><i class="iconfont icon-submit"></i></el-button>
+          <button type="text" @click="addItem"><i class="iconfont icon-plus"></i></button>
+          <button type="text" @click="submit"><i class="iconfont icon-submit"></i></button>
         </div>
       </div>
       <div class="b">
@@ -14,10 +14,10 @@
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template scope="scope">
-              <el-button @click.native.prevent="editRow(scope.row)" type="text"><i class="iconfont icon-edit"></i>
-              </el-button>
-              <el-button @click.native.prevent="delRow(scope.row)" type="text"><i class="iconfont icon-trash"></i>
-              </el-button>
+              <button @click="editRow(scope.row)" type="text"><i class="iconfont icon-edit"></i>
+              </button>
+              <button @click="delRow(scope.row)" type="text"><i class="iconfont icon-trash"></i>
+              </button>
             </template>
           </el-table-column>
         </el-table>
@@ -27,7 +27,7 @@
       <div class="h">
         <span>试验项目编辑</span>
         <div class="right-btn">
-          <el-button type="text" @click="hideDetail"><i class="iconfont icon-cancel"></i></el-button>
+          <button type="text" @click="hideDetail"><i class="iconfont icon-cancel"></i></button>
         </div>
       </div>
       <div class="b">
@@ -130,7 +130,10 @@ export default {
 
 </script>
 <style scoped>
-
+.box{
+  height: 100%;
+  width: 100%;
+}
 .show-box{
   width: 40%;
 }

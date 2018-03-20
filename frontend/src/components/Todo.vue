@@ -13,7 +13,7 @@ export default {
   props: {
     value: {
       type: String,
-      requied: true
+      required: true
     }
   },
   data() {

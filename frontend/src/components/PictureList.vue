@@ -23,7 +23,7 @@ export default {
   },
   props: {
     value: {
-      requied: true
+      required: true
     }
   },
   data() {
