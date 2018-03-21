@@ -23,11 +23,11 @@
         <span>工作流组件</span>
       </div>
       <div class="b">
-        <button-group>
-          <button :class="{choose:eventStatus==1}" @click="eventStatus = 1">对象</button>
-          <button :class="{choose:eventStatus==2}" @click="eventStatus = 2">正向连接</button>
-          <button :class="{choose:eventStatus==3}" @click="eventStatus = 3">回退连接</button>
-        </button-group>
+        <div class="button-group">
+          <button type="text" :class="{choose:eventStatus==1}" @click="eventStatus = 1">对象</button>
+          <button type="text" :class="{choose:eventStatus==2}" @click="eventStatus = 2">正向连接</button>
+          <button type="text" :class="{choose:eventStatus==3}" @click="eventStatus = 3">回退连接</button>
+        </div>
         <svg class="wfcs" @mouseup="drop">
           <StepSvg :item="item" @grab="grab" v-for="item in wfcs"></StepSvg>
         </svg>
@@ -383,6 +383,25 @@ export default {
 
 .choose {
   background-color: #f4e284;
+}
+
+.button-group {
+  margin: 10px auto;
+  text-align: center;
+  overflow: hidden;
+  width: 80%;
+  height: 30px;
+  display: flex;
+  border: 1px solid #ccc;
+}
+
+.button-group button {
+  flex: 1;
+  border:  none;
+  border-right:  1px solid #ccc;
+}
+.button-group button:last-child {
+  border:  none;
 }
 
 </style>

@@ -6,8 +6,8 @@
     </div>
     <div class="right-info">
       <input :disabled="attr.readonly" v-model="realValue" v-if="attr.attr_type=='input'" required>
-      <el-date-picker v-model="realValue" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" v-else-if="attr.attr_type=='date'">
-      </el-date-picker>
+      <ZlDatePicker v-model="realValue" v-else-if="attr.attr_type=='date'">
+      </ZlDatePicker>
       <select v-model="realValue" v-else-if="attr.attr_type=='select'">
         <option :value="opt" v-for="opt in attr.options">{{opt}}</option>
       </select>
@@ -22,10 +22,12 @@
 </template>
 <script>
 import PictureList from './PictureList'
+import ZlDatePicker from './ZlDatePicker'
+
 export default {
   name: 'AttrRender',
   components: {
-    PictureList
+    PictureList,ZlDatePicker
   },
   props: {
     attr: {

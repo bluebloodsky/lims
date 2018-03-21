@@ -113,12 +113,6 @@ export default {
       }).join(',')
     }
   },
-
-
-  destroyed() {
-    //window.clearInterval(this.timer)
-  }
-
 }
 
 </script>

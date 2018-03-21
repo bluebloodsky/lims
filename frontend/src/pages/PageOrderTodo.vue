@@ -1,15 +1,14 @@
 <template>
   <div>
-    <input v-model="date" disabled>
-    <ZlCalendar v-model="date" ></ZlCalendar>  
+    <ZlDatePicker v-model="date" ></ZlDatePicker>  
 <!--     <div v-for="color in colors" :style="{'background-color':color.bg_color , 'color':color.ft_color}">{{color.bg_color}}</div> -->
   </div>
 </template>
 <script>
-import ZlCalendar from '../components/ZlCalendar'
+import ZlDatePicker from '../components/ZlDatePicker'
 export default {
   name: 'PageOrderTodo',
-  components: { ZlCalendar },
+  components: { ZlDatePicker },
   data() {
     return {
       colors: [],

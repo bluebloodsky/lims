@@ -2,13 +2,15 @@
   <div class="zl-calendar">
     <div class="zl-calendar-header">
       <div>
-        <button @click="goPrevYear"></button>
-        <button @click="goPrevMonth"></button>
+        <button @click="goPrevYear">
+          <<</button>
+            <button @click="goPrevMonth">
+              <</button>
       </div>
       <span>{{title}}</span>
       <div>
-        <button @click="goNextMonth"></button>
-        <button @click="goNextYear"></button>
+        <button @click="goNextMonth">></button>
+        <button @click="goNextYear">>></button>
       </div>
     </div>
     <div class="zl-calendar-body">
@@ -18,7 +20,8 @@
       <div class="dates">
         <div class="week-row" v-for="week in currentDates">
           <a class="week-num">{{week.num}}</a>
-          <a class="day-cell" v-for="day in week.days" :class="{'today':day.isToday , 'not-cur-month': day.isLastMonth || day.isNextMonth}" @click="selectDate(day)">{{day.num}}</a>
+          <a class="day-cell" v-for="day in week.days" :class="{ 'today':day.isToday , 
+          'choose-day':day.isChooseDay,'weekend': day.weekDay == 0 || day.weekDay == 6, 'not-cur-month': day.isLastMonth || day.isNextMonth}" @click="selectDate(day)">{{day.num}}</a>
         </div>
       </div>
     </div>
@@ -37,6 +40,11 @@ const DateUtil = {
   getLastMonthEndDate(date) {
     let dt = new Date(date.getFullYear(), date.getMonth(), 1)
     dt.setDate(dt.getDate() - 1)
+    return dt
+  },
+  getNextMonthStartDate(date) {
+    let dt = new Date(date.getFullYear(), date.getMonth() + 1, 1)
+    dt.setDate(dt.getDate())
     return dt
   },
   getYearStartDate(date) {
@@ -58,6 +66,10 @@ export default {
     titleFormat: {
       type: String,
       default: 'yyyy年MM月'
+    },
+    valueFormat: {
+      type: String,
+      default: 'yyyy-MM-dd'
     }
   },
   data() {
@@ -70,6 +82,11 @@ export default {
       return this.currentDate.format(this.titleFormat)
     },
     currentDates() {
+      let today = new Date()
+      let [ty, tm, td] = [today.getFullYear(), today.getMonth(), today.getDate()]
+      let chooseDay = new Date(this.value)
+      let [cy, cm, cd] = [chooseDay.getFullYear(), chooseDay.getMonth(), chooseDay.getDate()]
+
       let dates = []
       let yearStartDate = DateUtil.getYearStartDate(this.currentDate)
       let startDate = DateUtil.getMonthStartDate(this.currentDate)
@@ -77,21 +94,29 @@ export default {
       let yearStartWeek = yearStartDate.getDay() //当年第一天星期几
       let weekDay = startDate.getDay() //本月第一天星期几
       let weekNum = Math.floor(((startDate.getTime() - yearStartDate.getTime()) / 86400000 + yearStartWeek) / 7) + 1
-      let [start, end] = [1, endDate.getDate()]
+      let [y, m, start, end] = [startDate.getFullYear(), startDate.getMonth(), 1, endDate.getDate()]
 
-      if (weekDay != 0) { //补充上一个月最后几天
+      //补充上一个月日期
+      if (weekDay != 0) {
         dates.push({
           num: weekNum++,
           days: []
         })
-        let lastMonthEndDate = DateUtil.getLastMonthEndDate(this.currentDate).getDate()
+        let lastMonthEndDate = DateUtil.getLastMonthEndDate(this.currentDate)
+        let [ly, lm, ld] = [lastMonthEndDate.getFullYear(), lastMonthEndDate.getMonth(), lastMonthEndDate.getDate()]
         for (let i = 0; i < weekDay; i++) {
           dates[0].days.unshift({
-            num: lastMonthEndDate--,
-            isLastMonth: true
+            num: ld,
+            isLastMonth: true,
+            weekDay: (weekDay + 6 - i) % 7,
+            isToday: ld == td && lm == tm && ly == ty,
+            isChooseDay: ld == cd && lm == cm && ly == cy,
           })
+          ld--
         }
       }
+
+      //填充当前月日期
       while (start < end + 1) {
         if (weekDay == 0) {
           dates.push({
@@ -100,25 +125,50 @@ export default {
           })
         }
         dates[dates.length - 1].days.push({
-          num: start++
+          num: start,
+          weekDay: weekDay,
+          isToday: start == td && m == tm && y == ty,
+          isChooseDay: start == cd && m == cm && y == cy,
         })
+        start++
         weekDay = (weekDay + 1) % 7
       }
 
-      if (weekDay != 0) {
-        for (let i = 1; i < 8 - weekDay; i++) {
-          dates[dates.length - 1].days.push({
-            num: i,
-            isNextMonth: true
+      // 补充下一个月的日期
+      let NextMonthStartDate = DateUtil.getNextMonthStartDate(this.currentDate)
+      let [ny, nm, nd] = [NextMonthStartDate.getFullYear(), NextMonthStartDate.getMonth(), 1]
+
+      let nextDiff = (7 - weekDay) % 7
+      if (dates.length != 6) {
+        nextDiff += 7
+      }
+      for (let i = 0; i < nextDiff; i++) {
+        if (weekDay == 0) {
+          dates.push({
+            num: weekNum++,
+            days: []
           })
         }
+        dates[dates.length - 1].days.push({
+          num: nd,
+          isNextMonth: true,
+          weekDay: weekDay,
+          isToday: nd == td && nm == tm && ny == ty,
+          isChooseDay: nd == cd && nm == cm && ny == cy,
+        })
+        nd++
+        weekDay = (weekDay + 1) % 7
       }
-
       return dates
     }
   },
   created() {
     this.currentDate = this.value ? new Date(this.value) : new Date()
+  },
+  watch: {
+    value: function(newVal) {
+      this.currentDate = new Date(newVal)
+    }
   },
   methods: {
     goPrevYear() {
@@ -139,8 +189,8 @@ export default {
     },
     selectDate(day) {
       let monthDiff = day.isLastMonth ? -1 : day.isNextMonth ? 1 : 0
-      let newDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + monthDiff , day.num)
-      this.$emit("input" , newDate)
+      let newDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + monthDiff, day.num)
+      this.$emit("input", newDate.format(this.valueFormat))
     }
   }
 }
@@ -153,7 +203,7 @@ export default {
   background-color: #CFDDEE;
   font-size: 14px;
   height: auto;
-  padding-bottom: 15px;
+  padding-bottom: 10px;
 }
 
 .zl-calendar-header {
@@ -170,12 +220,13 @@ export default {
   border: 1px solid #8BA0BC;
   border-radius: 8px;
   outline: none;
+  color: #8BA0BC;
+  font-size: 10px;
 }
 
 .zl-calendar-body {}
 
 .weeks {
-  width: 182px;
   height: 40px;
   border-bottom: 1px solid #B7C8DD;
   margin: 0 20px 0 36px;
@@ -186,28 +237,46 @@ export default {
 }
 
 .week-row {
-  width: 220px;
-  height: 30px;
-  margin-right: 30px;
+  height: 20px;
+  margin-right: 20px;
   display: flex;
   justify-content: space-between;
   text-align: center;
+  font-size: 12px;
 }
 
 .day-cell {
-  width: 26px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
 }
 
 .week-num {
-  width: 35px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  margin: 0 6px;
   color: gray;
   pointer-events: none;
   cursor: default;
-  opacity: 0.6;
 }
 
+.weekend {
+  color: #C2004A;
+}
+
+.week-num,
 .not-cur-month {
-  color: gray;
+  color: #999;
+}
+
+.today {
+  border: 1px solid #C95C05;
+}
+
+.choose-day {
+  background-color: #A9C1DE;
+  color: #000;
 }
 
 </style>

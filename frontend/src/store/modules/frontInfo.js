@@ -1,5 +1,5 @@
 import * as types from '../mutation-types'
-import {TABS_LIST} from '@/shared/constants'
+import { TABS_LIST } from '@/shared/constants'
 const state = {
   tabs: [TABS_LIST[0]]
 }
@@ -9,10 +9,11 @@ const getters = {
 }
 
 const mutations = {
-  addTab(state, url) {
-  	let _index = state.tabs.findIndex(tab => tab.url == url)
+  addTab(state, fullPath) {
+    let path = fullPath.indexOf('?') == -1 ? fullPath : fullPath.substr(0, fullPath.indexOf('?'))
+    let _index = state.tabs.findIndex(tab => tab.url == path)
     if (_index == -1) {
-      let tab_info = TABS_LIST.find(tab => tab.url == url)
+      let tab_info = TABS_LIST.find(tab => tab.url == path)
       state.tabs.push(tab_info)
     }
   },

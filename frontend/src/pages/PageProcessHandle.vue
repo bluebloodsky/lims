@@ -96,14 +96,14 @@ export default {
   },
   methods: {
     openOrderRec() {
-      let url = "order-rec"
+      let url = "order-rec?id=" + this.proId
       this.$store.commit('addTab', url)
-      this.$router.push({ path: this.pre_url + url + "?id=" + this.proId })
+      this.$router.push({ path: this.pre_url + url})
     },
     openRecordEdit() {
-      let url = "record-list"
+      let url = "record-list?id=" + this.proId
       this.$store.commit('addTab', url)
-      this.$router.push({ path: this.pre_url + url, params: { id: this.proId } })
+      this.$router.push({ path: this.pre_url + url})
     },
     stepSubmit() {
       this.axios.post("projects/step-submit/" + this.proId).then(response => {

@@ -62,9 +62,9 @@ export default {
   },
   methods: {
     todoClick(row) {
-      let url = "process-handle"
+      let url = "process-handle?id=" + row['_id']['$oid']
       this.$store.commit('addTab', url)
-      this.$router.push({ path: this.pre_url + url + "?id=" + row['_id']['$oid'] })
+      this.$router.push({ path: this.pre_url + url})
     }
   },
   mounted() {

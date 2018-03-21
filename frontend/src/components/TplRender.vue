@@ -53,7 +53,9 @@ export default {
       type: [String,undefined],
       required: true
     },
-    value: {}
+    value: {
+      type:[Object,undefined]
+    }
   },
   data() {
     return {
