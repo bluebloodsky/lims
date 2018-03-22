@@ -1,14 +1,14 @@
 <template>
   <div>
     <h2>{{title}}</h2>
-    <div class="box top-box">
+    <div class="box">
       <div class="h">
         <span>检测仪器设备信息</span>
         <div class="right-btn">
           <button type="text" @click="addInstr"><i class="iconfont icon-plus"></i></button>
         </div>
       </div>
-      <div class="b">
+      <div>
         <el-table :data="selectInstruments" border>
           <el-table-column type="index" width="60">
           </el-table-column>
@@ -23,11 +23,11 @@
         </el-table>
       </div>
     </div>
-    <div class="box bottom-box">
+    <div class="box">
       <div class="h">
         <span>检测数据</span>
       </div>
-      <div class="b">
+      <div>
         <TplRender :tpl="curTestItem.tpl" :attrs="curTestItem.attrs" v-model="curTestItem.data" v-if="curTestItem">
         </TplRender>
       </div>
@@ -76,7 +76,7 @@ export default {
             name: testItem['name'],
             tpl: testItem["records"][0]['tpl'],
             attrs: testItem["records"][0]['attrs'],
-            data: []
+            data: {}
           })
         }
       }
@@ -85,20 +85,12 @@ export default {
   },
   methods: {
     addInstr() {},
+    delRow(row) {}
   }
 }
 
 </script>
 <style scoped>
-.top-box {
-  width: 100%;
-  height: 30%;
-  margin-top: 50px;
-}
 
-.bottom-box {
-  width: 100%;
-  height: 70%;
-}
 
 </style>

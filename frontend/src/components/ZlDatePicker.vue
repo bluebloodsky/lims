@@ -21,9 +21,9 @@ export default {
       showCalendar: false
     }
   },
-  created() {
+  mounted() {
     this.currentDate = this.value ? new Date(this.value) : new Date()
-    window.onclick = e => this.showCalendar = false
+    // window.onclick = e => this.showCalendar = false
   },
   computed: {
     showValue() {
@@ -59,16 +59,20 @@ export default {
 <style scoped>
 .zl-date-picker {
   position: relative;
-  height: 20px;
+  margin:0;
+  padding: 0;
+  height: 22px;
+  width: 130px;
   line-height: 18px;
-  width: 100px;
+  display: inline-block;
+  white-space:normal;
 }
 
 .zl-date-picker input {
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 0 20px 0 0;
+  padding: 0 20px 0 0;  
   box-sizing: border-box;
   text-align: center;
   border: none;
@@ -79,8 +83,8 @@ export default {
   position: absolute;
   right: 1px;
   top: 1px;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border: none;
   border-left: 1px solid #8BA0BC;
   background-color: #CADAEA;
@@ -88,7 +92,7 @@ export default {
 
 .calendar {
   position: absolute;
-  top: 20px;
+  top: 21px;
   left: -9999px;
 }
 

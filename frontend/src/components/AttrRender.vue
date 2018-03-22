@@ -4,30 +4,18 @@
       <span>{{attr.name_cn}}</span>
       <span v-if="attr.required">*</span>
     </div>
-    <div class="right-info">
-      <input :disabled="attr.readonly" v-model="realValue" v-if="attr.attr_type=='input'" required>
-      <ZlDatePicker v-model="realValue" v-else-if="attr.attr_type=='date'">
-      </ZlDatePicker>
-      <select v-model="realValue" v-else-if="attr.attr_type=='select'">
-        <option :value="opt" v-for="opt in attr.options">{{opt}}</option>
-      </select>
-      <ul v-else-if="attr.attr_type=='checkbox'">
-        <li v-for="(opt,opt_index) in attr.options">
-          <input type="checkbox" :id="opt_index" :value="opt" v-model="realValue"> {{opt}}
-        </li>
-      </ul>
-      <PictureList v-model="realValue" v-else-if="attr.attr_type=='pictureTable'"></PictureList>
+    <div class="right-info">     
+      <AttrValueRender v-model="realValue" :attr="attr"></AttrValueRender>
     </div>
   </div>
 </template>
 <script>
-import PictureList from './PictureList'
-import ZlDatePicker from './ZlDatePicker'
+import AttrValueRender from './AttrValueRender'
 
 export default {
   name: 'AttrRender',
   components: {
-    PictureList,ZlDatePicker
+    AttrValueRender
   },
   props: {
     attr: {
@@ -41,21 +29,12 @@ export default {
   computed: {
     realValue: {
       get() {
-        if (this.attr.attr_type == "checkbox") {
-          return this.value ? Array.isArray(this.value) ? this.value : this.value.split(",") : []
-        } else if (this.attr.attr_type == "pictureTable") {
-          return this.value && Array.isArray(this.value) ? this.value : []
-        } else {
-          return this.value
-        }
+        return this.value
       },
       set(val) {
         this.$emit('input', val)
       }
     }
-  },
-  watch: {
-
   }
 }
 
@@ -83,7 +62,6 @@ export default {
 }
 
 .right-info {
-
   margin-left: 150px;
   min-width: 300px;
   max-width: 1000px;
@@ -98,4 +76,5 @@ select {
   height: 25px;
   box-sizing: border-box;
 }
+
 </style>

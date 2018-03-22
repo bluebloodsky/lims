@@ -23,7 +23,7 @@
               <button type="text"><i class="iconfont icon-search"></i></button>
             </div>
           </div>
-          <div class="b1">
+          <div>
             <AttrRender :attr="attr" v-model="orderInfo[orderAttr.name][attr.name]" v-for="attr in orderAttr.attrs"></AttrRender>
           </div>
         </div>
@@ -33,7 +33,7 @@
           <div class="h">
             <span>{{sampleAttr.name_cn}}</span>
           </div>
-          <div class="b1">
+          <div>
             <AttrRender :attr="attr" v-model="sampleInfo[sampleAttr.name][attr.name]" v-for="attr in sampleAttr.attrs"></AttrRender>
           </div>
         </div>

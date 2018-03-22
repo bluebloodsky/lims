@@ -37,4 +37,17 @@ tfoot{
   text-align: left;
 }
 
+table input:not([type]) {
+  width: auto;
+  height: auto;
+}
+table.data-table input:not([type]) {
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+  text-align: center;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 </style>
